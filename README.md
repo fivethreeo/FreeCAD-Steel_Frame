@@ -5,7 +5,7 @@ Installation:
 ==================================================================
 in FreeCAD 0.16 go to Macro-->Macros 
 Hit the Create Button
-Copy and paste the macro code
+Copy and paste the code from the file Steel_Frame_Creator.py
 
 ==================================================================
 Operating Instruccions:
