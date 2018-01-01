@@ -6,6 +6,8 @@ Installation:
 in FreeCAD 0.16 go to Macro-->Macros 
 Hit the Create Button
 Copy and paste the code from the file Steel_Frame_Creator.py
+An icon Steel_Frame.svg is included in case you want to assing 
+the macro to a button as it is covered in the FreeCAD documentation.
 
 ==================================================================
 Operating Instruccions:
