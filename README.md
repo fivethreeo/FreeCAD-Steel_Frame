@@ -20,7 +20,7 @@ to your custom value.
 Windows are defined by a tuple: 
 (x position,z position,  window x size, window z size)
 the x position and z position should point to the lower left corner
-of the window. 
+of the window. For now, these tuples have to be specified in mm
 
 For a reason I still don't understand, after modifying the windows property, 
 you will need to manually recompute the active document for them to show
