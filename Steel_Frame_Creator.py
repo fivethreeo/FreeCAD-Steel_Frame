@@ -314,11 +314,11 @@ class Steel_Frame:
 	def onChanged(self, fp, prop):
 	###### Calculo centro de masa
 		v=FreeCAD.Vector(0,0,0)
-		solidos=a.Shape.Solids
+		solidos=fp.Shape.Solids #decia a
 		for b in solidos:
 			v2=b.CenterOfMass*b.Volume
 			v=v.add(v2)
-		vt=a.Shape.Volume
+		vt=fp.Shape.Volume
 		print('Center of Mass',v*(1/vt))
 
 a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
