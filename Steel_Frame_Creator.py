@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __Title__="Steel Frame Creator"
 __Author__ = "Humberto Hassey, Beatriz Arellano"
-__Version__ = "00.01"
+__Version__ = "00.02"
 __Date__    = "2017-12-27"
 
 __Comment__ = "None"
@@ -311,17 +311,18 @@ class Steel_Frame:
 		obj.Weight=comp.Volume*7850/1e9
 		obj.Stud_L=FreeCAD.Units.Metre*lstud/1e3
 		obj.Track_L=FreeCAD.Units.Metre*ltrack/1e3
-	def onChanged(self, fp, prop):
+	#def onChanged(self, fp, prop):
 	###### Calculo centro de masa
 		v=FreeCAD.Vector(0,0,0)
-		solidos=fp.Shape.Solids #decia a
+		solidos=obj.Shape.Solids 
 		for b in solidos:
 			v2=b.CenterOfMass*b.Volume
 			v=v.add(v2)
-		vt=fp.Shape.Volume
+		vt=obj.Shape.Volume
 		print('Center of Mass',v*(1/vt))
 
 a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
 Steel_Frame(a)
 a.ViewObject.Proxy	=	0
+
 App.ActiveDocument.recompute()
