@@ -5,14 +5,14 @@ __Version__ = "00.02"
 __Date__    = "2017-12-27"
 
 __Comment__ = "None"
-__Web__ = ""
+__Web__ = "https://gitlab.com/Oriond/FreeCAD-Steel_Frame"
 __Wiki__ = ""
 __Icon__  = "/usr/lib/freecad/Mod/plugins/icons/Title_Of_macro"
 __IconW__  = "C:/Documents and Settings/YourUserName/Application Data/FreeCAD"
-__Help__ = "Windows are defined by a tuple (x position,z position,  window x size, window z size"
+__Help__ = "See Readme.MD on Gitlab"
 __Status__ = "stable"
 __Requires__ = "freecad 0.16"
-__Communication__ = "http://www.freecadweb.org/wiki/index.php?title=User:User_Name" 
+__Communication__ = "https://forum.freecadweb.org/viewtopic.php?f=23&t=26092" 
 
 def nstuds(x,s,f): #numero de studs en el frame
     resta=x%s
