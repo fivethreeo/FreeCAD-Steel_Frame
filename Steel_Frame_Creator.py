@@ -128,20 +128,6 @@ def Draw_Steel_Stud(y,x,th1,z,falange=8,fliped =0):
 	L11=Part.makeLine(V11,V12)
 	L12=Part.makeLine(V12,V1)
 
-	#Edges
-	#E1=L1.toShape()
-	#E2=L2.toShape()
-	#E3=L3.toShape()
-	#E4=L4.toShape()
-	#E5=L5.toShape()
-	#E6=L6.toShape()
-	#E7=L7.toShape()
-	#E8=L8.toShape()
-	#E9=L9.toShape()
-	#E10=L10.toShape()
-	#E11=L11.toShape()
-	#E12=L12.toShape()
-
 	W=Part.Wire([L1,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12])
 	F=Part.Face(W)
 	P=F.extrude(FreeCAD.Vector(0,0,z))
@@ -184,16 +170,6 @@ def Draw_Steel_Track(x,y,falange,th1,lcut=0,rcut=0,fliped=0):
 	L11=Part.makeLine(V6,V11)
 	L12=Part.makeLine(V12,V5)
 
-	'''#Edges
-	E1=L1.toShape()
-	E2=L2.toShape()
-	E3=L3.toShape()
-	E4=L4.toShape()
-	E5=L5.toShape()
-	E6=L6.toShape()
-	E7=L7.toShape()
-	E8=L8.toShape()'''
-	
 	W1=Part.Wire([L1,L11,L8,L9,L10])
 	W2=Part.Wire([L2,L12,L7,L11])
 	W3=Part.Wire([L3,L4,L5,L6,L12])
