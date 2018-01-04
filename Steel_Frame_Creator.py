@@ -206,7 +206,7 @@ class Steel_Frame:
 	def execute(self,obj):
 		ventanas=[]
 		nvent=len(obj.Windows)
-		if obj.Windows[0]<>'':			
+		if obj.Windows[0]<>'':	 # If There are windows in this frame		
 			for a in range(len(obj.Windows)):
 				ventanas.append(eval(obj.Windows[a]))		
 		
@@ -287,8 +287,8 @@ class Steel_Frame:
 		obj.Weight=comp.Volume*7850/1e9
 		obj.Stud_L=FreeCAD.Units.Metre*lstud/1e3
 		obj.Track_L=FreeCAD.Units.Metre*ltrack/1e3
-	#def onChanged(self, fp, prop):
-	###### Calculo centro de masa
+	
+########## Calculo centro de masa
 		v=FreeCAD.Vector(0,0,0)
 		solidos=obj.Shape.Solids 
 		for b in solidos:
