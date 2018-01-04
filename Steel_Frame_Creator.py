@@ -14,12 +14,6 @@ __Status__ = "stable"
 __Requires__ = "freecad 0.16"
 __Communication__ = "https://forum.freecadweb.org/viewtopic.php?f=23&t=26092" 
 
-def nstuds(x,s,f): #numero de studs en el frame
-    resta=x%s
-    adicional=0
-    if resta > 2*f and resta < s-f:
-        adicional=1
-    return int(x/s)+1+adicional
 
 def calcStuds(l,h,s,f,win,doors,pz0=0):
     """
