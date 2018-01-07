@@ -185,6 +185,7 @@ class Steel_Frame:
 	def __init__ (self , obj):
 		doc=App.ActiveDocument
 		obj.Proxy = self
+		obj.addProperty("App::PropertyBool","FEM","Frame").FEM=False
 		obj.addProperty("App::PropertyStringList","Windows","Frame").Windows=['1200,900,1000,1000']
 		obj.addProperty("App::PropertyLength","Length","Frame").Length=3500
 		obj.addProperty("App::PropertyLength","Height","Frame").Height=3000
@@ -209,8 +210,9 @@ class Steel_Frame:
 		#ventanas=[(1200,900,1000,1000)]# (position x,position z,length x,length z)
 		ltrack=0
 		lstud=0
-		
-		#npostes=nstuds(obj.Length.Value,obj.Separation.Value,obj.Falange.Value)
+		#post_W=0
+		FEM=not(obj.FEM)#FEM=hacer postes y tracks mismo tamaño
+				
 		gauges={25:0.4572, 22:0.6858, 20:0.8382, 18:1.0922, 16:1.3716, 14:1.7272, 12:2.4638,10:2.9972}
 		if obj.Gauge.Value in gauges and obj.Gauge.Value !=0:
 			obj.Thickness.Value=gauges[obj.Gauge.Value]
@@ -220,13 +222,13 @@ class Steel_Frame:
 			obj.Gauge.Value=0
 		x=obj.Falange.Value; y =obj.Width.Value; z=obj.Height.Value; th1=obj.Thickness.Value
 		fal=obj.Lip.Value; Flip=0
-		postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,puertas,th1)	
+		postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,puertas,0)	#0 decia th1
 		parte=[]
 ################### Dibuja Postes
-		for ip,poste in enumerate(postes):  #-1 para que no dibuje el poste final, pues este va volteado		
-			parte.append(Draw_Steel_Stud(y-2*th1,x,th1,poste[2]-2*th1,fal,poste[3])) #dibujar poste
-			parte[ip].Placement.Base=FreeCAD.Vector(poste[0],th1,poste[1])#Colocar poste
-			lstud+=poste[2]-2*th1
+		for ip,poste in enumerate(postes):  #-1 para que no dibuje el poste final, pues este va volteado
+			parte.append(Draw_Steel_Stud(y-2*th1*FEM,x,th1,poste[2]-2*th1*FEM,fal,poste[3])) #dibujar poste
+			parte[ip].Placement.Base=FreeCAD.Vector(poste[0],th1*FEM,poste[1]+th1*FEM)#Colocar poste #corregir Z para FEM
+			lstud+=poste[2]-2*th1*FEM
 		
 ################## Dibuja Tracks
 		#dibujo track de abajo		
