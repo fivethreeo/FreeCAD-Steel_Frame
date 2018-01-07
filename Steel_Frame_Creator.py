@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __Title__="Steel Frame Creator"
 __Author__ = "Humberto Hassey, Beatriz Arellano"
-__Version__ = "00.03"
+__Version__ = "00.04"
 __Date__    = "2017-12-27"
 
 __Comment__ = "None"
