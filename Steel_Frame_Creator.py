@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __Title__="Steel Frame Creator"
 __Author__ = "Humberto Hassey, Beatriz Arellano"
-__Version__ = "00.04"
+__Version__ = "00.05"
 __Date__    = "2017-12-27"
 
 __Comment__ = "None"
@@ -13,7 +13,7 @@ __Help__ = "See Readme.MD on Gitlab"
 __Status__ = "stable"
 __Requires__ = "freecad 0.16"
 __Communication__ = "https://forum.freecadweb.org/viewtopic.php?f=23&t=26092" 
-
+import Part
 
 def calcStuds(l,h,s,f,win,doors,pz0=0):
     """
