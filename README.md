@@ -29,7 +29,12 @@ its the button that looks like a curved circular arrow.
 
 If a you set a z position =0 then the program interprets it as a door.
 
-The rest is pretty much self explanatory.
+-----------------
+FEM Switch, when set to True, the steel studs and tracks have the exact same width and
+the object returned is one solid which is good for meshing and finite element analysis
+otherwise the steel studs fit "inside" of the tracks and the object returned, is a 
+compound of solids, this makes better sense for drawings and architecture work.
+
 
 Enjoy.
 
