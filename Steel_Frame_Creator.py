@@ -280,7 +280,7 @@ class Steel_Frame:
 ##################
 		comp=Part.makeCompound(parte)
 		if obj.FEM: #make one solid for FEM analysis
-			comp=Part.makeSolid(comp)
+			comp=Part.makeSolid(comp) #check if we can do with Shape.multiFuse
 			comp=comp.removeSplitter()
 			obj.Shape=comp
 			print('Center of Mass',obj.Shape.CenterOfMass)
