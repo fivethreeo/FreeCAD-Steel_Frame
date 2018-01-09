@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __Title__="Steel Frame Creator"
 __Author__ = "Humberto Hassey, Beatriz Arellano"
-__Version__ = "00.05"
+__Version__ = "00.07"
 __Date__    = "2017-12-27"
 
 __Comment__ = "None"
@@ -223,7 +223,7 @@ class Steel_Frame:
 		x=obj.Falange.Value; y =obj.Width.Value; z=obj.Height.Value; th1=obj.Thickness.Value
 		fal=obj.Lip.Value; Flip=0
 		postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,puertas,0)	#0 decia th1
-		parte=[]
+		parte=[] #list of parts that will make the frame
 ################### Dibuja Postes
 		for ip,poste in enumerate(postes):  #-1 para que no dibuje el poste final, pues este va volteado
 			parte.append(Draw_Steel_Stud(y-2*th1*FEM,x,th1,poste[2]-2*th1*FEM,fal,poste[3])) #dibujar poste
@@ -279,19 +279,25 @@ class Steel_Frame:
 				parte.append(v1)
 ##################
 		comp=Part.makeCompound(parte)
+		if obj.FEM: #make one solid for FEM analysis
+			comp=Part.makeSolid(comp)
+			comp=comp.removeSplitter()
+			obj.Shape=comp
+			print('Center of Mass',obj.Shape.CenterOfMass)
 		obj.Shape=comp
 		obj.Weight=comp.Volume*7850/1e9
 		obj.Stud_L=FreeCAD.Units.Metre*lstud/1e3
 		obj.Track_L=FreeCAD.Units.Metre*ltrack/1e3
 	
 ########## Calculo centro de masa
-		v=FreeCAD.Vector(0,0,0)
-		solidos=obj.Shape.Solids 
-		for b in solidos:
-			v2=b.CenterOfMass*b.Volume
-			v=v.add(v2)
-		vt=obj.Shape.Volume
-		print('Center of Mass',v*(1/vt))
+		if not(obj.FEM):	
+			v=FreeCAD.Vector(0,0,0)
+			solidos=obj.Shape.Solids 
+			for b in solidos:
+				v2=b.CenterOfMass*b.Volume
+				v=v.add(v2)
+			vt=obj.Shape.Volume
+			print('Center of Mass',v*(1/vt))
 
 a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
 Steel_Frame(a)
