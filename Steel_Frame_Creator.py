@@ -14,7 +14,7 @@ __Requires__ = "freecad 0.16"
 __Communication__ = "https://forum.freecadweb.org/viewtopic.php?f=23&t=26092" 
 import Part
 #-------------------------------------------------------------------------------
-def calcStuds(l,h,s,f,win,doors,pz0=0):
+def calcStuds(l,h,s,f,win,pz0=0):
     """
     Función que calcula la longitud de los postes a utilizar para un muro
     Recibe como parametros:
@@ -23,9 +23,7 @@ def calcStuds(l,h,s,f,win,doors,pz0=0):
         -s: (float) separación entre postes a lo largo del eje x
         -f: (float) longitud del "flange" del poste
         -win: lista de tuplas con la información de las ventanas, cada tupla es como sigue:
-            (posición en x, posición en z, longitud en x, altura en z)
-        -doors: lista de tuplas con la información de las puertas,
-                 contiene la misma información que las ventanas.
+            (posición en x, posición en z, longitud en x, altura en z)        
         -pz0: (float) Posición inicial en z de los postes.
         
     Devuelve una lista de tuplas con la información de cada poste metálico:
@@ -46,14 +44,14 @@ def calcStuds(l,h,s,f,win,doors,pz0=0):
     
     margen=2*f #Espacio mínimo entre dos postes
     studs=[]
-    if 0 not in [w[0] for w in win+doors]: #Verifica si hay una ventana o puerta en la arista inicial para girar o no el primer poste
+    if 0 not in [w[0] for w in win]: #Verifica si hay una ventana o puerta en la arista inicial para girar o no el primer poste
         studs.append((0,pz0,h,False))
-    for w in win+doors:
+    for w in win:
         studs=AddStud(w[0],pz0,h,True,studs)
         studs=AddStud(w[0]+w[2],pz0,h,False,studs)        
         #***Verificar qué pasa si el poste que ya existe tiene otra orientación
         #***Verificar qué pasa si ese poste pasa por una puerta o ventana
-    if l not in [w[0]+w[2] for w in win+doors]:
+    if l not in [w[0]+w[2] for w in win]:
         studs.append((l,pz0,h, True)) #Agrega el último poste verificando que no esté agregado aún como marco de puerta o ventana
     studs.sort(key=lambda tup: tup[0]) #Ordena a los postes por su posición en el eje x
     #Se agregan los postes intermedios que no forman parte de marcos
@@ -69,7 +67,7 @@ def calcStuds(l,h,s,f,win,doors,pz0=0):
      
     studs+=notFrames    
     ##********Cortar los postes que atraviesan ventanas y puertas
-    for w in win+doors:        
+    for w in win:        
         interStuds = list(filter(lambda x: w[0]< x[0]< w[0]+w[2] and x[1]<= w[1] +pz0 and w[1]+w[3]< x[1]+x[2], studs))
         for iStu in interStuds:
             studs.remove(iStu)
