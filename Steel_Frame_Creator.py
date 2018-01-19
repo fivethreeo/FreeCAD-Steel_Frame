@@ -235,9 +235,8 @@ def Draw_Box_Beam(x,y,z,th1,falange=8,box=1):
 		p1.Placement.Base=v1
 		p2.Placement.Base=v2
 	P=p1.fuse(p2)
-	P=P.removeSplitter()
-
-	comp=Part.makeCompound([p1,p2])
+	#P=P.removeSplitter()
+	#comp=Part.makeCompound([p1,p2])
 	return P#comp
 #------------------------------------------------------------------------------
 def vigass(vigas):
@@ -283,6 +282,9 @@ class Steel_Frame:
 		obj.addProperty("App::PropertyLength","Beam_Height","Structural").Beam_Height=150
 		obj.addProperty("App::PropertyLength","Stud_Width","Structural").Stud_Width=41.275
 		obj.addProperty("App::PropertyBool","Box","Structural").Box=True
+	#def onChanged(self, fp, prop):
+		#FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
+		
 	def execute(self,obj):
 		ventanas=[]
 		trabes=[] #trabes estructurales
