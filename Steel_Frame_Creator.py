@@ -234,8 +234,11 @@ def Draw_Box_Beam(x,y,z,th1,falange=8,box=1):
 		v2=FreeCAD.Vector(0,y/2.0,0)
 		p1.Placement.Base=v1
 		p2.Placement.Base=v2
+	P=p1.fuse(p2)
+	P=P.removeSplitter()
+
 	comp=Part.makeCompound([p1,p2])
-	return comp
+	return P#comp
 #------------------------------------------------------------------------------
 def vigass(vigas):
     '''Funcion que sustituye una lista de vigas=[(pos x,longitud)] y entrega una
@@ -366,9 +369,14 @@ class Steel_Frame:
 				xs=a[1] #longitud de la trabe
 				ys=2*obj.Stud_Width.Value
 				zs=obj.Beam_Height.Value			
-				sb1=Draw_Box_Beam(xs,ys,zs,th1,obj.Lip.Value,obj.Box)
-				sb1.Placement.Base=FreeCAD.Vector(a[0],obj.Width/2,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
+				sb1=Draw_Box_Beam(xs,ys,zs,th1,obj.Lip.Value,obj.Box);print('Ancho',y)
+				sb1.Placement.Base=FreeCAD.Vector(a[0],y/2,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
 				parte.append(sb1)
+				#Draw Track Below beam...
+				sb2=Draw_Steel_Track(xs,obj.Width.Value,obj.Falange.Value,th1,lcut=0,rcut=0,fliped=0)
+				sb2.Placement.Base=FreeCAD.Vector(a[0],0,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
+				ltrack+=xs
+				parte.append(sb2)
 				#aqui Falta Agregar las longitudes de las secciones OJO
 	
 		comp=Part.makeCompound(parte)
