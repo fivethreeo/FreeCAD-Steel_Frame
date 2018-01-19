@@ -14,7 +14,7 @@ __Requires__ = "freecad 0.16"
 __Communication__ = "https://forum.freecadweb.org/viewtopic.php?f=23&t=26092" 
 import Part
 #-------------------------------------------------------------------------------
-def calcStuds(l,h,s,f,win,pz0=0):
+def calcStuds(l,h,s,f, isBeamOn=False,zBeam=0,win,pz0=0):
     """
     Función que calcula la longitud de los postes a utilizar para un muro
     Recibe como parametros:
@@ -307,7 +307,7 @@ class Steel_Frame:
 			obj.Gauge.Value=0
 		x=obj.Falange.Value; y =obj.Width.Value; z=obj.Height.Value; th1=obj.Thickness.Value
 		fal=obj.Lip.Value; Flip=0
-		postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,puertas,0)	#0 decia th1
+		postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,0)	#0 decia th1
 		parte=[] #list of parts that will make the frame
 ################### Dibuja Postes
 		for ip,poste in enumerate(postes):  #-1 para que no dibuje el poste final, pues este va volteado
