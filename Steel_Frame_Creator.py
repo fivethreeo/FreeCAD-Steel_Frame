@@ -14,7 +14,7 @@ __Status__ = "stable"
 __Requires__ = "freecad 0.16"
 __Communication__ = "https://forum.freecadweb.org/viewtopic.php?f=23&t=26092" 
 import Part
-
+#-------------------------------------------------------------------------------
 def calcStuds(l,h,s,f,win,doors,pz0=0):
     """
     Función que calcula la longitud de los postes a utilizar para un muro
@@ -81,7 +81,7 @@ def calcStuds(l,h,s,f,win,doors,pz0=0):
 
     studs.sort(key=lambda tup: tup[0])
     return studs
-        
+ #------------------------------------------------------------------------------       
 def Draw_Steel_Stud(y,x,th1,z,falange=8,fliped =0):
 	'''Author = Humberto Hassey
 	Version=1.0
@@ -126,6 +126,7 @@ def Draw_Steel_Stud(y,x,th1,z,falange=8,fliped =0):
 	F=Part.Face(W)
 	P=F.extrude(FreeCAD.Vector(0,0,z))
 	return P
+#------------------------------------------------------------------------------
 def Draw_Steel_Track(x,y,falange,th1,lcut=0,rcut=0,fliped=0):
 	'''Version=2.0
 	Draw a Steel Track
@@ -179,8 +180,86 @@ def Draw_Steel_Track(x,y,falange,th1,lcut=0,rcut=0,fliped=0):
 	P=P.removeSplitter()
 
 	return P
+#------------------------------------------------------------------------------
+def Draw_Box_Beam(x,y,z,th1,falange=8,box=1):
+	'''Author = Humberto Hassey
+	Draw a box or I beam
+	x=Length
+	y=Width outside to outside
+	z=height
+	Th1=steel thickness
+	th1=espesor
+	box=[bool] weather we want a box beam or an I beam'
+	La coordenada (0,0,0) cae en el centroide de la seccíon en el eje Y y al inicio del eje X, y hasta abajo del Z'''
+	def Draw_half(x,y,z,th1,falange=8,fliped =0):	
+		y=y/2.0
+		F=1
+		if fliped ==1:
+			F=-1
+		# Vertices del stud
+		V1=FreeCAD.Vector(0,0,0)
+		V2=FreeCAD.Vector(0,y*F,0)
+		V3=FreeCAD.Vector(0,y*F,falange)
+		V4=FreeCAD.Vector(0,(y-th1)*F,falange)
+		V5=FreeCAD.Vector(0,(y-th1)*F,th1)
+		V6=FreeCAD.Vector(0,th1*F,th1)
+		V7=FreeCAD.Vector(0,th1*F,z-th1)#x por z
+		V8=FreeCAD.Vector(0,(y-th1)*F,z-th1)
+		V9=FreeCAD.Vector(0,(y-th1)*F,z-falange)
+		V10=FreeCAD.Vector(0,y*F,z-falange)
+		V11=FreeCAD.Vector(0,y*F,z)
+		V12=FreeCAD.Vector(0,0,z)
 
-
+		#Lines
+		L1=Part.makeLine(V1,V2)
+		L2=Part.makeLine(V2,V3)
+		L3=Part.makeLine(V3,V4)
+		L4=Part.makeLine(V4,V5)
+		L5=Part.makeLine(V5,V6)
+		L6=Part.makeLine(V6,V7)
+		L7=Part.makeLine(V7,V8)
+		L8=Part.makeLine(V8,V9)
+		L9=Part.makeLine(V9,V10)
+		L10=Part.makeLine(V10,V11)
+		L11=Part.makeLine(V11,V12)
+		L12=Part.makeLine(V12,V1)
+	
+		W=Part.Wire([L1,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12])
+		F=Part.Face(W)
+		P=F.extrude(FreeCAD.Vector(x,0,0))
+		return P
+	p1=Draw_half(x,y,z,th1,falange,0)
+	p2=Draw_half(x,y,z,th1,falange,1)
+	if  box==1:
+		v1=FreeCAD.Vector(0,-y/2.0,0)		
+		v2=FreeCAD.Vector(0,y/2.0,0)
+		p1.Placement.Base=v1
+		p2.Placement.Base=v2
+	comp=Part.makeCompound([p1,p2])
+	return comp
+#------------------------------------------------------------------------------
+def vigass(vigas):
+    '''Funcion que sustituye una lista de vigas=[(pos x,longitud)] y entrega una
+    lista mejorada en que los traslapes son contados como una sola viga'''
+    def isin(x1,x2,xt1,xt2):
+        if (x1<=xt1) and (xt1 <= x2): #se traslapan las trabes y deb en cambiarse por una
+            return True
+        else:
+            return False
+    vigas.sort(key=lambda item: item[0])
+    for indice,a in enumerate (vigas[:-1]):
+        x1_inicial=a[0]
+        x1_final=x1_inicial+a[1]
+        x2_inicial=vigas[indice+1][0]
+        x2_final=x2_inicial+vigas[indice+1][1]
+        if isin(x1_inicial,x1_final,x2_inicial,x2_final): #Trabes Traslapadas
+            vigas.pop(indice)
+            vigas.pop(indice)
+            vigas.insert(0,(x1_inicial,max(x2_final,x1_final)-x1_inicial))
+            return vigass(vigas) #repeat until there are no overlaping beams
+    return vigas
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 class Steel_Frame:
 	def __init__ (self , obj):
 		doc=App.ActiveDocument
@@ -198,18 +277,22 @@ class Steel_Frame:
 		obj.addProperty("App::PropertyQuantity","Weight","Take Off").Weight=0
 		obj.addProperty("App::PropertyLength","Stud_L","Take Off").Stud_L=0
 		obj.addProperty("App::PropertyLength","Track_L","Take Off").Track_L=0
+		obj.addProperty("App::PropertyBool","Structural","Structural").Structural=False
+		obj.addProperty("App::PropertyLength","Beam_Height","Structural").Beam_Height=150
+		obj.addProperty("App::PropertyLength","Stud_Width","Structural").Stud_Width=41.275
+		obj.addProperty("App::PropertyBool","Box","Structural").Box=True
 	def execute(self,obj):
 		ventanas=[]
+		trabes=[] #trabes estructurales
 		nvent=len(obj.Windows)
-		if obj.Windows[0]<>'':	 # If There are windows in this frame		
+        	if obj.Windows[0]<>'':	 # If There are windows in this frame		
 			for a in range(len(obj.Windows)):
-				ventanas.append(eval(obj.Windows[a]))		
-		
+				ventanas.append(eval(obj.Windows[a])) #crea la lista de ventanas		
+				trabes.append((eval(obj.Windows[a])[0],eval(obj.Windows[a])[2]))
 		puertas=[x for x in ventanas if x[1]==0] #obtener todas las puertas para poder cortar el track de abajo
 		puertas.sort(key=lambda tup: tup[0])		#ordenar las puertas por coordenada x
-		#ventanas=[(1200,900,1000,1000)]# (position x,position z,length x,length z)
-		ltrack=0
-		lstud=0
+		ltrack=0 #contadores para cuantificacion de track y stud
+		lstud=0 #contadores para cuantificacion de track y stud
 		#post_W=0
 		FEM=not(obj.FEM)#FEM=hacer postes y tracks mismo tamaño
 				
@@ -232,7 +315,7 @@ class Steel_Frame:
 		
 ################## Dibuja Tracks
 		#dibujo track de abajo		
-		if len(puertas)==0:		
+		if len(puertas)==0:	#si no hay puertas el track de abajo va corrido	
 			L=obj.Length.Value 
 			lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
 			lt.Placement.Base=FreeCAD.Vector(0,0,0)
@@ -261,13 +344,13 @@ class Steel_Frame:
 			lt.Placement.Base=FreeCAD.Vector(puertas[-1][0]+puertas[-1][2],0,0)
 			ltrack+=L
 			parte.append(lt)
-		#######Dibujo del Track de arriba
+##########Dibujo del Track de arriba
 		L=obj.Length.Value 		
 		tt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=0) #top Track
 		tt.Placement.Base=FreeCAD.Vector(0,0,z)
 		ltrack+=L
 		parte.append(tt)
-		for vent in ventanas:
+		for vent in ventanas: #dibujo Tracks de ventanas y puertas
 			v=Draw_Steel_Track(vent[2]+2*x,y,x,th1,x,x,1) #top piece x=flange
 			v.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1]+vent[3])
 			ltrack+=vent[2]+2*x
@@ -277,7 +360,18 @@ class Steel_Frame:
 				v1.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1])
 				ltrack+=vent[2]+2*x
 				parte.append(v1)
-##################
+################## Dibujo Trabes Estructurales
+		if obj.Structural ==True:
+			trabes=vigass(trabes)
+			for a in trabes:
+				xs=a[1] #longitud de la trabe
+				ys=2*obj.Stud_Width.Value
+				zs=obj.Beam_Height.Value			
+				sb1=Draw_Box_Beam(xs,ys,zs,th1,obj.Lip.Value,obj.Box)
+				sb1.Placement.Base=FreeCAD.Vector(a[0],obj.Width/2,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
+				parte.append(sb1)
+				#aqui Falta Agregar las longitudes de las secciones OJO
+	
 		comp=Part.makeCompound(parte)
 		if obj.FEM: #make one solid for FEM analysis
 			comp=Part.makeSolid(comp) 
