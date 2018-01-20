@@ -43,7 +43,7 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
         if x not in [s[0] for s in stu]:
             stu.append((x,pz0,h,flipped)) #(px,pz,height,flipped)
         return stu    
-    reduceLength=not(isFEMOff)
+    
     margen=2*f #Espacio mínimo entre dos postes
     studs=[]
     if 0 not in [w[0] for w in win]: #Verifica si hay una ventana o puerta en la arista inicial para girar o no el primer poste
@@ -76,7 +76,7 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
             if w[1]>0: #Revisa si hay espacio para que haya poste abajo
                 studs.append((iStu[0],iStu[1],w[1]-iStu[1],iStu[3]))#Agrega el poste bajo la ventana
             if w[1]+w[3]<h-isBeamOn*zBeam: #Revisa si hay espacio arriba de la ventana                                
-                studs.append((iStu[0],w[1]+w[3],iStu[2]-w[1]-w[3]+iStu[1]-isBeamOn*zBeam+reduceLength*thick,iStu[3]))                
+                studs.append((iStu[0],w[1]+w[3],iStu[2]-w[1]-w[3]+iStu[1]-isBeamOn*zBeam-isFEMOff*thick,iStu[3]))                
 
     studs.sort(key=lambda tup: tup[0])
     return studs
