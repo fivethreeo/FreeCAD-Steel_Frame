@@ -14,7 +14,7 @@ __Requires__ = "freecad 0.16"
 __Communication__ = "https://forum.freecadweb.org/viewtopic.php?f=23&t=26092" 
 import Part
 #-------------------------------------------------------------------------------
-def calcStuds(l,h,s,f, isBeamOn=False,zBeam=0,win,pz0=0):
+def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     """
     Función que calcula la longitud de los postes a utilizar para un muro
     Recibe como parametros:
@@ -25,6 +25,8 @@ def calcStuds(l,h,s,f, isBeamOn=False,zBeam=0,win,pz0=0):
         -win: lista de tuplas con la información de las ventanas, cada tupla es como sigue:
             (posición en x, posición en z, longitud en x, altura en z)        
         -pz0: (float) Posición inicial en z de los postes.
+        -isBeamOn: (Boolean) If the structural option is selected or not
+        -zBeam: Beam height
         
     Devuelve una lista de tuplas con la información de cada poste metálico:
         (px, pz, h, flipped):
@@ -40,8 +42,8 @@ def calcStuds(l,h,s,f, isBeamOn=False,zBeam=0,win,pz0=0):
         """
         if x not in [s[0] for s in stu]:
             stu.append((x,pz0,h,flipped)) #(px,pz,height,flipped)
-        return stu
-    
+        return stu    
+    reduceLength=not(isFEMOff)
     margen=2*f #Espacio mínimo entre dos postes
     studs=[]
     if 0 not in [w[0] for w in win]: #Verifica si hay una ventana o puerta en la arista inicial para girar o no el primer poste
@@ -73,8 +75,8 @@ def calcStuds(l,h,s,f, isBeamOn=False,zBeam=0,win,pz0=0):
             studs.remove(iStu)
             if w[1]>0: #Revisa si hay espacio para que haya poste abajo
                 studs.append((iStu[0],iStu[1],w[1]-iStu[1],iStu[3]))#Agrega el poste bajo la ventana
-            if w[1]+w[3]<h: #Revisa si hay espacio arriba de la ventana
-                studs.append((iStu[0],w[1]+w[3],iStu[2]-w[1]-w[3]+iStu[1],iStu[3]))
+            if w[1]+w[3]<h-isBeamOn*zBeam: #Revisa si hay espacio arriba de la ventana                                
+                studs.append((iStu[0],w[1]+w[3],iStu[2]-w[1]-w[3]+iStu[1]-isBeamOn*zBeam+reduceLength*thick,iStu[3]))                
 
     studs.sort(key=lambda tup: tup[0])
     return studs
@@ -307,7 +309,7 @@ class Steel_Frame:
 			obj.Gauge.Value=0
 		x=obj.Falange.Value; y =obj.Width.Value; z=obj.Height.Value; th1=obj.Thickness.Value
 		fal=obj.Lip.Value; Flip=0
-		postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,0)	#0 decia th1
+		postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,FEM,0,obj.Structural,obj.Beam_Height.Value,thick=th1)	#0 decia th1
 		parte=[] #list of parts that will make the frame
 ################### Dibuja Postes
 		for ip,poste in enumerate(postes):  #-1 para que no dibuje el poste final, pues este va volteado
