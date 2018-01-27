@@ -180,18 +180,18 @@ def Draw_Steel_Track(x,y,falange,th1,lcut=0,rcut=0,fliped=0):
 
 	return P
 #------------------------------------------------------------------------------
-def Draw_Box_Beam(x,y,z,th1,falange=8,box=1):
+def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1):
 	'''Author = Humberto Hassey
-	Draw a box or I beam
+	Version=1.0
+	Draw a Steel stud
 	x=Length
-	y=Width outside to outside
+	y=Width of the whole box
+	y1=width of the individual stud
 	z=height
-	Th1=steel thickness
-	th1=espesor
-	box=[bool] weather we want a box beam or an I beam'
-	La coordenada (0,0,0) cae en el centroide de la seccíon en el eje Y y al inicio del eje X, y hasta abajo del Z'''
-	def Draw_half(x,y,z,th1,falange=8,fliped =0):	
-		y=y/2.0
+	Th1=steel thickness'
+	'''
+	def Draw_half(x,y1,z,th1,falange=8,fliped =0):	
+		y=y1
 		F=1
 		if fliped ==1:
 			F=-1
@@ -227,17 +227,17 @@ def Draw_Box_Beam(x,y,z,th1,falange=8,box=1):
 		F=Part.Face(W)
 		P=F.extrude(FreeCAD.Vector(x,0,0))
 		return P
-	p1=Draw_half(x,y,z,th1,falange,0)
-	p2=Draw_half(x,y,z,th1,falange,1)
+	p1=Draw_half(x,y1,z,th1,falange,0)
+	p2=Draw_half(x,y1,z,th1,falange,1)
 	if  box==1:
 		v1=FreeCAD.Vector(0,-y/2.0,0)		
 		v2=FreeCAD.Vector(0,y/2.0,0)
 		p1.Placement.Base=v1
 		p2.Placement.Base=v2
-	P=p1.fuse(p2)
-	#P=P.removeSplitter()
+		P=p1.fuse(p2)
 	#comp=Part.makeCompound([p1,p2])
-	return P#comp
+	
+	return P# comp
 #------------------------------------------------------------------------------
 def vigass(vigas):
     '''Funcion que sustituye una lista de vigas=[(pos x,longitud)] y entrega una
@@ -369,9 +369,10 @@ class Steel_Frame:
 			trabes=vigass(trabes)
 			for a in trabes:
 				xs=a[1] #longitud de la trabe
-				ys=2*obj.Stud_Width.Value
+				ys=obj.Stud_Width.Value
+				yf=obj.Width.Value
 				zs=obj.Beam_Height.Value			
-				sb1=Draw_Box_Beam(xs,ys,zs,th1,obj.Lip.Value,obj.Box);print('Ancho',y)
+				sb1=Draw_Box_Beam(xs,yf,ys,zs,th1,obj.Lip.Value,obj.Box);print('Ancho',y)
 				sb1.Placement.Base=FreeCAD.Vector(a[0],y/2,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
 				parte.append(sb1)
 				#Draw Track Below beam...
@@ -379,7 +380,7 @@ class Steel_Frame:
 				sb2.Placement.Base=FreeCAD.Vector(a[0],0,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
 				ltrack+=xs
 				parte.append(sb2)
-				#aqui Falta Agregar las longitudes de las secciones OJO
+				#aqui Falta Agregar las longitudes de las secciones OJO OJO OJO OJO OJO
 	
 		comp=Part.makeCompound(parte)
 		if obj.FEM: #make one solid for FEM analysis
