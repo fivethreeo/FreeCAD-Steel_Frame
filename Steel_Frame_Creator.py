@@ -234,7 +234,7 @@ def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1):
 		v2=FreeCAD.Vector(0,y/2.0,0)
 		p1.Placement.Base=v1
 		p2.Placement.Base=v2
-		P=p1.fuse(p2)
+	P=p1.fuse(p2)
 	#comp=Part.makeCompound([p1,p2])
 	
 	return P# comp
