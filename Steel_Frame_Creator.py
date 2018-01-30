@@ -180,7 +180,7 @@ def Draw_Steel_Track(x,y,falange,th1,lcut=0,rcut=0,fliped=0):
 
 	return P
 #------------------------------------------------------------------------------
-def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1):
+def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1,FEM=True):
 	'''Author = Humberto Hassey
 	Version=1.0
 	Draw a Steel stud
@@ -190,7 +190,7 @@ def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1):
 	z=height
 	Th1=steel thickness'
 	'''
-	def Draw_half(x,y1,z,th1,falange=8,fliped =0):	
+	def Draw_half(x,y1,z,th1,falange=8,fliped =0,FEM=True):	
 		y=y1
 		F=1
 		if fliped ==1:
@@ -230,8 +230,8 @@ def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1):
 	p1=Draw_half(x,y1,z,th1,falange,0)
 	p2=Draw_half(x,y1,z,th1,falange,1)
 	if  box==1:
-		v1=FreeCAD.Vector(0,-y/2.0,0)		
-		v2=FreeCAD.Vector(0,y/2.0,0)
+		v1=FreeCAD.Vector(0,-y/2.0+((th1+1.7272)*FEM),0) #1.72=ga14 de la pieza con la que se monta la viga		
+		v2=FreeCAD.Vector(0,y/2.0-((th1+1.7272)*FEM),0)
 		p1.Placement.Base=v1
 		p2.Placement.Base=v2
 	P=p1.fuse(p2)
@@ -241,7 +241,8 @@ def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1):
 #------------------------------------------------------------------------------
 def vigass(vigas):
     '''Funcion que sustituye una lista de vigas=[(pos x,longitud)] y entrega una
-    lista mejorada en que los traslapes son contados como una sola viga'''
+    lista mejorada en que los traslapes son contados como una sola viga
+    para poner una sola viga sobre ventanas/puertas que se traslapan'''
     def isin(x1,x2,xt1,xt2):
         if (x1<=xt1) and (xt1 <= x2): #se traslapan las trabes y deb en cambiarse por una
             return True
@@ -364,7 +365,7 @@ class Steel_Frame:
 				v1.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1])
 				ltrack+=vent[2]+2*x
 				parte.append(v1)
-################## Dibujo Trabes Estructurales
+################## Dibujo Trabes Estructurales Bob Beams
 		if obj.Structural ==True:
 			trabes=vigass(trabes)
 			for a in trabes:
@@ -372,7 +373,7 @@ class Steel_Frame:
 				ys=obj.Stud_Width.Value
 				yf=obj.Width.Value
 				zs=obj.Beam_Height.Value			
-				sb1=Draw_Box_Beam(xs,yf,ys,zs,th1,obj.Lip.Value,obj.Box);print('Ancho',y)
+				sb1=Draw_Box_Beam(xs,yf,ys,zs,th1,obj.Lip.Value,obj.Box,FEM)
 				sb1.Placement.Base=FreeCAD.Vector(a[0],y/2,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
 				parte.append(sb1)
 				#Draw Track Below beam...
@@ -381,7 +382,17 @@ class Steel_Frame:
 				ltrack+=xs
 				parte.append(sb2)
 				#aqui Falta Agregar las longitudes de las secciones OJO OJO OJO OJO OJO
-	
+				
+			#####dibujo de piezas especiales para el montaje de la trabe
+				if obj.Box:
+					e1=Draw_Steel_Track(zs,yf-(2*th1*FEM),obj.Falange.Value,1.7272,lcut=0,rcut=0,fliped=0)#Ga14
+					e1.Placement.Rotation= App.Rotation(App.Vector(0,1,0),-90)
+					e1.Placement.Base=FreeCAD.Vector(a[0],th1*FEM,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
+					e2=Draw_Steel_Track(zs,yf-(2*th1*FEM),obj.Falange.Value,1.7272,lcut=0,rcut=0,fliped=1)
+					e2.Placement.Rotation= App.Rotation(App.Vector(0,1,0),-90)
+					e2.Placement.Base=FreeCAD.Vector(a[0]+a[1],th1*FEM,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
+				parte.append(e1)
+				parte.append(e2)
 		comp=Part.makeCompound(parte)
 		if obj.FEM: #make one solid for FEM analysis
 			comp=Part.makeSolid(comp) 
