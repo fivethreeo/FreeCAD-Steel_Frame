@@ -391,8 +391,8 @@ class Steel_Frame:
 					e2=Draw_Steel_Track(zs,yf-(2*th1*FEM),obj.Falange.Value,1.7272,lcut=0,rcut=0,fliped=1)
 					e2.Placement.Rotation= App.Rotation(App.Vector(0,1,0),-90)
 					e2.Placement.Base=FreeCAD.Vector(a[0]+a[1],th1*FEM,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
-				parte.append(e1)
-				parte.append(e2)
+					parte.append(e1)
+					parte.append(e2)
 		comp=Part.makeCompound(parte)
 		if obj.FEM: #make one solid for FEM analysis
 			comp=Part.makeSolid(comp) 
