@@ -365,7 +365,7 @@ class Steel_Frame:
 				v1.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1])
 				ltrack+=vent[2]+2*x
 				parte.append(v1)
-################## Dibujo Trabes Estructurales Bob Beams
+################## Dibujo Trabes Estructurales Box Beams
 		if obj.Structural ==True:
 			trabes=vigass(trabes)
 			for a in trabes:
