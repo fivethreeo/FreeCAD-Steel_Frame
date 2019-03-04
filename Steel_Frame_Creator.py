@@ -82,162 +82,162 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     return studs
  #------------------------------------------------------------------------------       
 def Draw_Steel_Stud(y,x,th1,z,falange=8,fliped =0):
-	'''Author = Humberto Hassey
-	Version=1.0
-	Draw a Steel stud
-	x=Width
-	y=depth
-	z=height
-	Th1=steel thickness'
-	Select Gauge=0 for custom thicknesses'''
-	F=1
-	if fliped ==1:
-		F=-1
-	# Vertices del stud
-	V1=FreeCAD.Vector(0,0,0)
-	V2=FreeCAD.Vector(x*F,0,0)
-	V3=FreeCAD.Vector(x*F,falange,0)
-	V4=FreeCAD.Vector((x-th1)*F,falange,0)
-	V5=FreeCAD.Vector((x-th1)*F,th1,0)
-	V6=FreeCAD.Vector(th1*F,th1,0)
-	V7=FreeCAD.Vector(th1*F,y-th1,0)
-	V8=FreeCAD.Vector((x-th1)*F,y-th1,0)
-	V9=FreeCAD.Vector((x-th1)*F,y-falange,0)
-	V10=FreeCAD.Vector(x*F,y-falange,0)
-	V11=FreeCAD.Vector(x*F,y,0)
-	V12=FreeCAD.Vector(0,y,0)
+    '''Author = Humberto Hassey
+    Version=1.0
+    Draw a Steel stud
+    x=Width
+    y=depth
+    z=height
+    Th1=steel thickness'
+    Select Gauge=0 for custom thicknesses'''
+    F=1
+    if fliped ==1:
+        F=-1
+    # Vertices del stud
+    V1=FreeCAD.Vector(0,0,0)
+    V2=FreeCAD.Vector(x*F,0,0)
+    V3=FreeCAD.Vector(x*F,falange,0)
+    V4=FreeCAD.Vector((x-th1)*F,falange,0)
+    V5=FreeCAD.Vector((x-th1)*F,th1,0)
+    V6=FreeCAD.Vector(th1*F,th1,0)
+    V7=FreeCAD.Vector(th1*F,y-th1,0)
+    V8=FreeCAD.Vector((x-th1)*F,y-th1,0)
+    V9=FreeCAD.Vector((x-th1)*F,y-falange,0)
+    V10=FreeCAD.Vector(x*F,y-falange,0)
+    V11=FreeCAD.Vector(x*F,y,0)
+    V12=FreeCAD.Vector(0,y,0)
 
-	#Lines
-	L1=Part.makeLine(V1,V2)
-	L2=Part.makeLine(V2,V3)
-	L3=Part.makeLine(V3,V4)
-	L4=Part.makeLine(V4,V5)
-	L5=Part.makeLine(V5,V6)
-	L6=Part.makeLine(V6,V7)
-	L7=Part.makeLine(V7,V8)
-	L8=Part.makeLine(V8,V9)
-	L9=Part.makeLine(V9,V10)
-	L10=Part.makeLine(V10,V11)
-	L11=Part.makeLine(V11,V12)
-	L12=Part.makeLine(V12,V1)
+    #Lines
+    L1=Part.makeLine(V1,V2)
+    L2=Part.makeLine(V2,V3)
+    L3=Part.makeLine(V3,V4)
+    L4=Part.makeLine(V4,V5)
+    L5=Part.makeLine(V5,V6)
+    L6=Part.makeLine(V6,V7)
+    L7=Part.makeLine(V7,V8)
+    L8=Part.makeLine(V8,V9)
+    L9=Part.makeLine(V9,V10)
+    L10=Part.makeLine(V10,V11)
+    L11=Part.makeLine(V11,V12)
+    L12=Part.makeLine(V12,V1)
 
-	W=Part.Wire([L1,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12])
-	F=Part.Face(W)
-	P=F.extrude(FreeCAD.Vector(0,0,z))
-	return P
+    W=Part.Wire([L1,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12])
+    F=Part.Face(W)
+    P=F.extrude(FreeCAD.Vector(0,0,z))
+    return P
 #------------------------------------------------------------------------------
 def Draw_Steel_Track(x,y,falange,th1,lcut=0,rcut=0,fliped=0):
-	'''Version=2.0
-	Draw a Steel Track
-	x=Length
-	y=Width
-	falange=Falange Height
-	Th1=steel thickness
-	fliped=[boolean] Draw falange to +z?'''
-	F=1
-	if fliped ==0:
-		F=-1
-	# Vertices del canal
-	V1=FreeCAD.Vector(0,0,0)
-	V11=FreeCAD.Vector(0,th1,0)
-	V12=FreeCAD.Vector(0,y-th1,0)
-	V2=FreeCAD.Vector(0,y,0)
-	V3=FreeCAD.Vector(0,y,falange*F)
-	V4=FreeCAD.Vector(0,y-th1,falange*F)
-	V5=FreeCAD.Vector(0,y-th1,(th1*F))
-	V6=FreeCAD.Vector(0,th1,th1*F)
-	V7=FreeCAD.Vector(0,th1,falange*F)
-	V8=FreeCAD.Vector(0,0,falange*F)
+    '''Version=2.0
+    Draw a Steel Track
+    x=Length
+    y=Width
+    falange=Falange Height
+    Th1=steel thickness
+    fliped=[boolean] Draw falange to +z?'''
+    F=1
+    if fliped ==0:
+        F=-1
+    # Vertices del canal
+    V1=FreeCAD.Vector(0,0,0)
+    V11=FreeCAD.Vector(0,th1,0)
+    V12=FreeCAD.Vector(0,y-th1,0)
+    V2=FreeCAD.Vector(0,y,0)
+    V3=FreeCAD.Vector(0,y,falange*F)
+    V4=FreeCAD.Vector(0,y-th1,falange*F)
+    V5=FreeCAD.Vector(0,y-th1,(th1*F))
+    V6=FreeCAD.Vector(0,th1,th1*F)
+    V7=FreeCAD.Vector(0,th1,falange*F)
+    V8=FreeCAD.Vector(0,0,falange*F)
 
 
-	#Lines
-	L1=Part.makeLine(V1,V11) #changed Line to makeLine
-	L2=Part.makeLine(V11,V12)
-	L3=Part.makeLine(V12,V2)
-	L4=Part.makeLine(V2,V3)
-	L5=Part.makeLine(V3,V4)
-	L6=Part.makeLine(V4,V5)
-	L7=Part.makeLine(V5,V6)
-	L8=Part.makeLine(V6,V7)
-	L9=Part.makeLine(V7,V8)
-	L10=Part.makeLine(V8,V1)
-	L11=Part.makeLine(V6,V11)
-	L12=Part.makeLine(V12,V5)
+    #Lines
+    L1=Part.makeLine(V1,V11) #changed Line to makeLine
+    L2=Part.makeLine(V11,V12)
+    L3=Part.makeLine(V12,V2)
+    L4=Part.makeLine(V2,V3)
+    L5=Part.makeLine(V3,V4)
+    L6=Part.makeLine(V4,V5)
+    L7=Part.makeLine(V5,V6)
+    L8=Part.makeLine(V6,V7)
+    L9=Part.makeLine(V7,V8)
+    L10=Part.makeLine(V8,V1)
+    L11=Part.makeLine(V6,V11)
+    L12=Part.makeLine(V12,V5)
 
-	W1=Part.Wire([L1,L11,L8,L9,L10])
-	W2=Part.Wire([L2,L12,L7,L11])
-	W3=Part.Wire([L3,L4,L5,L6,L12])
-	F1=Part.Face(W1)
-	F2=Part.Face(W2)
-	F3=Part.Face(W3)
-	S1=F1.extrude(FreeCAD.Vector(x,0,0))
-	S2=F2.extrude(FreeCAD.Vector(x-lcut-rcut,0,0))
-	S2.Placement.Base=FreeCAD.Vector(lcut,0,0)
-	S3=F3.extrude(FreeCAD.Vector(x,0,0))
-	P=S1.fuse(S2)
-	P=P.fuse(S3)	
-	P=P.removeSplitter()
+    W1=Part.Wire([L1,L11,L8,L9,L10])
+    W2=Part.Wire([L2,L12,L7,L11])
+    W3=Part.Wire([L3,L4,L5,L6,L12])
+    F1=Part.Face(W1)
+    F2=Part.Face(W2)
+    F3=Part.Face(W3)
+    S1=F1.extrude(FreeCAD.Vector(x,0,0))
+    S2=F2.extrude(FreeCAD.Vector(x-lcut-rcut,0,0))
+    S2.Placement.Base=FreeCAD.Vector(lcut,0,0)
+    S3=F3.extrude(FreeCAD.Vector(x,0,0))
+    P=S1.fuse(S2)
+    P=P.fuse(S3)    
+    P=P.removeSplitter()
 
-	return P
+    return P
 #------------------------------------------------------------------------------
 def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1,FEM=True):
-	'''Author = Humberto Hassey
-	Version=1.0
-	Draw a Steel stud
-	x=Length
-	y=Width of the whole box
-	y1=width of the individual stud
-	z=height
-	Th1=steel thickness'
-	'''
-	def Draw_half(x,y1,z,th1,falange=8,fliped =0,FEM=True):	
-		y=y1
-		F=1
-		if fliped ==1:
-			F=-1
-		# Vertices del stud
-		V1=FreeCAD.Vector(0,0,0)
-		V2=FreeCAD.Vector(0,y*F,0)
-		V3=FreeCAD.Vector(0,y*F,falange)
-		V4=FreeCAD.Vector(0,(y-th1)*F,falange)
-		V5=FreeCAD.Vector(0,(y-th1)*F,th1)
-		V6=FreeCAD.Vector(0,th1*F,th1)
-		V7=FreeCAD.Vector(0,th1*F,z-th1)#x por z
-		V8=FreeCAD.Vector(0,(y-th1)*F,z-th1)
-		V9=FreeCAD.Vector(0,(y-th1)*F,z-falange)
-		V10=FreeCAD.Vector(0,y*F,z-falange)
-		V11=FreeCAD.Vector(0,y*F,z)
-		V12=FreeCAD.Vector(0,0,z)
+    '''Author = Humberto Hassey
+    Version=1.0
+    Draw a Steel stud
+    x=Length
+    y=Width of the whole box
+    y1=width of the individual stud
+    z=height
+    Th1=steel thickness'
+    '''
+    def Draw_half(x,y1,z,th1,falange=8,fliped =0,FEM=True):    
+        y=y1
+        F=1
+        if fliped ==1:
+            F=-1
+        # Vertices del stud
+        V1=FreeCAD.Vector(0,0,0)
+        V2=FreeCAD.Vector(0,y*F,0)
+        V3=FreeCAD.Vector(0,y*F,falange)
+        V4=FreeCAD.Vector(0,(y-th1)*F,falange)
+        V5=FreeCAD.Vector(0,(y-th1)*F,th1)
+        V6=FreeCAD.Vector(0,th1*F,th1)
+        V7=FreeCAD.Vector(0,th1*F,z-th1)#x por z
+        V8=FreeCAD.Vector(0,(y-th1)*F,z-th1)
+        V9=FreeCAD.Vector(0,(y-th1)*F,z-falange)
+        V10=FreeCAD.Vector(0,y*F,z-falange)
+        V11=FreeCAD.Vector(0,y*F,z)
+        V12=FreeCAD.Vector(0,0,z)
 
-		#Lines
-		L1=Part.makeLine(V1,V2)
-		L2=Part.makeLine(V2,V3)
-		L3=Part.makeLine(V3,V4)
-		L4=Part.makeLine(V4,V5)
-		L5=Part.makeLine(V5,V6)
-		L6=Part.makeLine(V6,V7)
-		L7=Part.makeLine(V7,V8)
-		L8=Part.makeLine(V8,V9)
-		L9=Part.makeLine(V9,V10)
-		L10=Part.makeLine(V10,V11)
-		L11=Part.makeLine(V11,V12)
-		L12=Part.makeLine(V12,V1)
-	
-		W=Part.Wire([L1,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12])
-		F=Part.Face(W)
-		P=F.extrude(FreeCAD.Vector(x,0,0))
-		return P
-	p1=Draw_half(x,y1,z,th1,falange,0)
-	p2=Draw_half(x,y1,z,th1,falange,1)
-	if  box==1:
-		v1=FreeCAD.Vector(0,-y/2.0+((th1+1.7272)*FEM),0) #1.72=ga14 de la pieza con la que se monta la viga		
-		v2=FreeCAD.Vector(0,y/2.0-((th1+1.7272)*FEM),0)
-		p1.Placement.Base=v1
-		p2.Placement.Base=v2
-	P=p1.fuse(p2)
-	#comp=Part.makeCompound([p1,p2])
-	
-	return P# comp
+        #Lines
+        L1=Part.makeLine(V1,V2)
+        L2=Part.makeLine(V2,V3)
+        L3=Part.makeLine(V3,V4)
+        L4=Part.makeLine(V4,V5)
+        L5=Part.makeLine(V5,V6)
+        L6=Part.makeLine(V6,V7)
+        L7=Part.makeLine(V7,V8)
+        L8=Part.makeLine(V8,V9)
+        L9=Part.makeLine(V9,V10)
+        L10=Part.makeLine(V10,V11)
+        L11=Part.makeLine(V11,V12)
+        L12=Part.makeLine(V12,V1)
+    
+        W=Part.Wire([L1,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12])
+        F=Part.Face(W)
+        P=F.extrude(FreeCAD.Vector(x,0,0))
+        return P
+    p1=Draw_half(x,y1,z,th1,falange,0)
+    p2=Draw_half(x,y1,z,th1,falange,1)
+    if  box==1:
+        v1=FreeCAD.Vector(0,-y/2.0+((th1+1.7272)*FEM),0) #1.72=ga14 de la pieza con la que se monta la viga        
+        v2=FreeCAD.Vector(0,y/2.0-((th1+1.7272)*FEM),0)
+        p1.Placement.Base=v1
+        p2.Placement.Base=v2
+    P=p1.fuse(p2)
+    #comp=Part.makeCompound([p1,p2])
+    
+    return P# comp
 #------------------------------------------------------------------------------
 def vigass(vigas):
     '''Funcion que sustituye una lista de vigas=[(pos x,longitud)] y entrega una
@@ -263,159 +263,161 @@ def vigass(vigas):
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 class Steel_Frame:
-	def __init__ (self , obj):
-		doc=App.ActiveDocument
-		obj.Proxy = self
-		obj.addProperty("App::PropertyBool","FEM","Frame").FEM=False
-		obj.addProperty("App::PropertyStringList","Windows","Frame").Windows=['1200,900,1000,1000']
-		obj.addProperty("App::PropertyLength","Length","Frame").Length=3500
-		obj.addProperty("App::PropertyLength","Height","Frame").Height=3000
-		obj.addProperty("App::PropertyLength","Width","Frame").Width=152.4
-		obj.addProperty("App::PropertyLength","Separation","Frame").Separation=304.8
-		obj.addProperty("App::PropertyLength","Falange","Stud").Falange=41.275
-		obj.addProperty("App::PropertyLength","Lip","Stud").Lip=8
-		obj.addProperty("App::PropertyLength","Thickness","Steel").Thickness=0.8382
-		obj.addProperty("App::PropertyQuantity","Gauge","Steel").Gauge=22
-		obj.addProperty("App::PropertyQuantity","Weight","Take Off").Weight=0
-		obj.addProperty("App::PropertyLength","Stud_L","Take Off").Stud_L=0
-		obj.addProperty("App::PropertyLength","Track_L","Take Off").Track_L=0
-		obj.addProperty("App::PropertyBool","Structural","Structural").Structural=False
-		obj.addProperty("App::PropertyLength","Beam_Height","Structural").Beam_Height=150
-		obj.addProperty("App::PropertyLength","Stud_Width","Structural").Stud_Width=41.275
-		obj.addProperty("App::PropertyBool","Box","Structural").Box=True
-	#def onChanged(self, fp, prop):
-		#FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
-		
-	def execute(self,obj):
-		ventanas=[]
-		trabes=[] #trabes estructurales
-		nvent=len(obj.Windows)
-        	if obj.Windows[0]<>'':	 # If There are windows in this frame		
-			for a in range(len(obj.Windows)):
-				ventanas.append(eval(obj.Windows[a])) #crea la lista de ventanas		
-				trabes.append((eval(obj.Windows[a])[0],eval(obj.Windows[a])[2]))
-		puertas=[x for x in ventanas if x[1]==0] #obtener todas las puertas para poder cortar el track de abajo
-		puertas.sort(key=lambda tup: tup[0])		#ordenar las puertas por coordenada x
-		ltrack=0 #contadores para cuantificacion de track y stud
-		lstud=0 #contadores para cuantificacion de track y stud
-		#post_W=0
-		FEM=not(obj.FEM)#FEM=hacer postes y tracks mismo tamaño
-				
-		gauges={25:0.4572, 22:0.6858, 20:0.8382, 18:1.0922, 16:1.3716, 14:1.7272, 12:2.4638,10:2.9972}
-		if obj.Gauge.Value in gauges and obj.Gauge.Value !=0:
-			obj.Thickness.Value=gauges[obj.Gauge.Value]
-		else:
-			obj.Gauge.Value=0
-		if obj.Thickness.Value  not in gauges.values() and obj.Gauge.Value !=0:
-			obj.Gauge.Value=0
-		x=obj.Falange.Value; y =obj.Width.Value; z=obj.Height.Value; th1=obj.Thickness.Value
-		fal=obj.Lip.Value; Flip=0
-		postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,FEM,0,obj.Structural,obj.Beam_Height.Value,thick=th1)	#0 decia th1
-		parte=[] #list of parts that will make the frame
+    def __init__ (self , obj):
+        doc=App.ActiveDocument
+        obj.Proxy = self
+        obj.addProperty("App::PropertyBool","FEM","Frame").FEM=False
+        obj.addProperty("App::PropertyStringList","Windows","Frame").Windows=['1200,900,1000,1000']
+        obj.addProperty("App::PropertyLength","Length","Frame").Length=3500
+        obj.addProperty("App::PropertyLength","Height","Frame").Height=3000
+        obj.addProperty("App::PropertyLength","Width","Frame").Width=152.4
+        obj.addProperty("App::PropertyLength","Separation","Frame").Separation=304.8
+        obj.addProperty("App::PropertyLength","Falange","Stud").Falange=41.275
+        obj.addProperty("App::PropertyLength","Lip","Stud").Lip=8
+        obj.addProperty("App::PropertyLength","Thickness","Steel").Thickness=0.8382
+        obj.addProperty("App::PropertyQuantity","Gauge","Steel").Gauge=22
+        obj.addProperty("App::PropertyQuantity","Weight","Take Off").Weight=0
+        obj.addProperty("App::PropertyLength","Stud_L","Take Off").Stud_L=0
+        obj.addProperty("App::PropertyLength","Track_L","Take Off").Track_L=0
+        obj.addProperty("App::PropertyBool","Structural","Structural").Structural=False
+        obj.addProperty("App::PropertyLength","Beam_Height","Structural").Beam_Height=150
+        obj.addProperty("App::PropertyLength","Stud_Width","Structural").Stud_Width=41.275
+        obj.addProperty("App::PropertyBool","Box","Structural").Box=True
+    #def onChanged(self, fp, prop):
+        #FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
+    def onChanged(self, obj, prop):
+        App.activeDocument().recompute()
+    
+    def execute(self,obj):
+        ventanas=[]
+        trabes=[] #trabes estructurales
+        nvent=len(obj.Windows)
+        if obj.Windows[0]!='':     # If There are windows in this frame        
+            for a in range(len(obj.Windows)):
+                ventanas.append(eval(obj.Windows[a])) #crea la lista de ventanas        
+                trabes.append((eval(obj.Windows[a])[0],eval(obj.Windows[a])[2]))
+        puertas=[x for x in ventanas if x[1]==0] #obtener todas las puertas para poder cortar el track de abajo
+        puertas.sort(key=lambda tup: tup[0])        #ordenar las puertas por coordenada x
+        ltrack=0 #contadores para cuantificacion de track y stud
+        lstud=0 #contadores para cuantificacion de track y stud
+        #post_W=0
+        FEM=not(obj.FEM)#FEM=hacer postes y tracks mismo tamaño
+                
+        gauges={25:0.4572, 22:0.6858, 20:0.8382, 18:1.0922, 16:1.3716, 14:1.7272, 12:2.4638,10:2.9972}
+        if obj.Gauge.Value in gauges and obj.Gauge.Value !=0:
+            obj.Thickness.Value=gauges[obj.Gauge.Value]
+        else:
+            obj.Gauge.Value=0
+        if obj.Thickness.Value  not in gauges.values() and obj.Gauge.Value !=0:
+            obj.Gauge.Value=0
+        x=obj.Falange.Value; y =obj.Width.Value; z=obj.Height.Value; th1=obj.Thickness.Value
+        fal=obj.Lip.Value; Flip=0
+        postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,FEM,0,obj.Structural,obj.Beam_Height.Value,thick=th1)    #0 decia th1
+        parte=[] #list of parts that will make the frame
 ################### Dibuja Postes
-		for ip,poste in enumerate(postes):  #-1 para que no dibuje el poste final, pues este va volteado
-			parte.append(Draw_Steel_Stud(y-2*th1*FEM,x,th1,poste[2]-2*th1*FEM,fal,poste[3])) #dibujar poste
-			parte[ip].Placement.Base=FreeCAD.Vector(poste[0],th1*FEM,poste[1]+th1*FEM)#Colocar poste #corregir Z para FEM
-			lstud+=poste[2]-2*th1*FEM
-		
+        for ip,poste in enumerate(postes):  #-1 para que no dibuje el poste final, pues este va volteado
+            parte.append(Draw_Steel_Stud(y-2*th1*FEM,x,th1,poste[2]-2*th1*FEM,fal,poste[3])) #dibujar poste
+            parte[ip].Placement.Base=FreeCAD.Vector(poste[0],th1*FEM,poste[1]+th1*FEM)#Colocar poste #corregir Z para FEM
+            lstud+=poste[2]-2*th1*FEM
+        
 ################## Dibuja Tracks
-		#dibujo track de abajo		
-		if len(puertas)==0:	#si no hay puertas el track de abajo va corrido	
-			L=obj.Length.Value 
-			lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
-			lt.Placement.Base=FreeCAD.Vector(0,0,0)
-			ltrack+=L
-			parte.append(lt)
-		else:
-			#dibuja el track desde 0 a la primer puerta
-			L=puertas[0][0]
-			lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
-			lt.Placement.Base=FreeCAD.Vector(0,0,0)
-			ltrack+=L
-			parte.append(lt)
-			#dibuja el track desde la puerta n a la n+1
-			Puertas_hechas=1
-			while len(puertas)>Puertas_hechas:
-				L=puertas[Puertas_hechas][0]-puertas[Puertas_hechas-1][0]-puertas[Puertas_hechas-1][2]
-				lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
-				pos=puertas[Puertas_hechas-1][0]+puertas[Puertas_hechas-1][2] #calculo de la posicion del tramo
-				lt.Placement.Base=FreeCAD.Vector(pos,0,0)
-				ltrack+=L
-				parte.append(lt)
-				Puertas_hechas+=1
-			#dibujar tramo de la ultima puerta al final
-			L=obj.Length.Value-(puertas[-1][0]+puertas[-1][2])
-			lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
-			lt.Placement.Base=FreeCAD.Vector(puertas[-1][0]+puertas[-1][2],0,0)
-			ltrack+=L
-			parte.append(lt)
+        #dibujo track de abajo        
+        if len(puertas)==0:    #si no hay puertas el track de abajo va corrido    
+            L=obj.Length.Value 
+            lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
+            lt.Placement.Base=FreeCAD.Vector(0,0,0)
+            ltrack+=L
+            parte.append(lt)
+        else:
+            #dibuja el track desde 0 a la primer puerta
+            L=puertas[0][0]
+            lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
+            lt.Placement.Base=FreeCAD.Vector(0,0,0)
+            ltrack+=L
+            parte.append(lt)
+            #dibuja el track desde la puerta n a la n+1
+            Puertas_hechas=1
+            while len(puertas)>Puertas_hechas:
+                L=puertas[Puertas_hechas][0]-puertas[Puertas_hechas-1][0]-puertas[Puertas_hechas-1][2]
+                lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
+                pos=puertas[Puertas_hechas-1][0]+puertas[Puertas_hechas-1][2] #calculo de la posicion del tramo
+                lt.Placement.Base=FreeCAD.Vector(pos,0,0)
+                ltrack+=L
+                parte.append(lt)
+                Puertas_hechas+=1
+            #dibujar tramo de la ultima puerta al final
+            L=obj.Length.Value-(puertas[-1][0]+puertas[-1][2])
+            lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
+            lt.Placement.Base=FreeCAD.Vector(puertas[-1][0]+puertas[-1][2],0,0)
+            ltrack+=L
+            parte.append(lt)
 ##########Dibujo del Track de arriba
-		L=obj.Length.Value 		
-		tt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=0) #top Track
-		tt.Placement.Base=FreeCAD.Vector(0,0,z)
-		ltrack+=L
-		parte.append(tt)
-		for vent in ventanas: #dibujo Tracks de ventanas y puertas
-			v=Draw_Steel_Track(vent[2]+2*x,y,x,th1,x,x,1) #top piece x=flange
-			v.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1]+vent[3])
-			ltrack+=vent[2]+2*x
-			parte.append(v)
-			if vent[1]!=0:	 #si es puerta no dibujo track abajo		
-				v1=Draw_Steel_Track(vent[2]+2*x,y,x,th1,x,x,0) #bottom piece x=flange
-				v1.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1])
-				ltrack+=vent[2]+2*x
-				parte.append(v1)
+        L=obj.Length.Value         
+        tt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=0) #top Track
+        tt.Placement.Base=FreeCAD.Vector(0,0,z)
+        ltrack+=L
+        parte.append(tt)
+        for vent in ventanas: #dibujo Tracks de ventanas y puertas
+            v=Draw_Steel_Track(vent[2]+2*x,y,x,th1,x,x,1) #top piece x=flange
+            v.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1]+vent[3])
+            ltrack+=vent[2]+2*x
+            parte.append(v)
+            if vent[1]!=0:     #si es puerta no dibujo track abajo        
+                v1=Draw_Steel_Track(vent[2]+2*x,y,x,th1,x,x,0) #bottom piece x=flange
+                v1.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1])
+                ltrack+=vent[2]+2*x
+                parte.append(v1)
 ################## Dibujo Trabes Estructurales Box Beams
-		if obj.Structural ==True:
-			trabes=vigass(trabes)
-			for a in trabes:
-				xs=a[1] #longitud de la trabe
-				ys=obj.Stud_Width.Value
-				yf=obj.Width.Value
-				zs=obj.Beam_Height.Value			
-				sb1=Draw_Box_Beam(xs,yf,ys,zs,th1,obj.Lip.Value,obj.Box,FEM)
-				sb1.Placement.Base=FreeCAD.Vector(a[0],y/2,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
-				parte.append(sb1)
-				#Draw Track Below beam...
-				sb2=Draw_Steel_Track(xs,obj.Width.Value,obj.Falange.Value,th1,lcut=0,rcut=0,fliped=0)
-				sb2.Placement.Base=FreeCAD.Vector(a[0],0,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
-				ltrack+=xs
-				parte.append(sb2)
-				#aqui Falta Agregar las longitudes de las secciones OJO OJO OJO OJO OJO
-				
-			#####dibujo de piezas especiales para el montaje de la trabe
-				if obj.Box:
-					e1=Draw_Steel_Track(zs,yf-(2*th1*FEM),obj.Falange.Value,1.7272,lcut=0,rcut=0,fliped=0)#Ga14
-					e1.Placement.Rotation= App.Rotation(App.Vector(0,1,0),-90)
-					e1.Placement.Base=FreeCAD.Vector(a[0],th1*FEM,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
-					e2=Draw_Steel_Track(zs,yf-(2*th1*FEM),obj.Falange.Value,1.7272,lcut=0,rcut=0,fliped=1)
-					e2.Placement.Rotation= App.Rotation(App.Vector(0,1,0),-90)
-					e2.Placement.Base=FreeCAD.Vector(a[0]+a[1],th1*FEM,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
-					parte.append(e1)
-					parte.append(e2)
-		comp=Part.makeCompound(parte)
-		if obj.FEM: #make one solid for FEM analysis
-			comp=Part.makeSolid(comp) 
-			comp2=comp.removeSplitter()
-			obj.Shape=comp2
-			print('Center of Mass',obj.Shape.CenterOfMass)
-		obj.Shape=comp
-		obj.Weight=comp.Volume*7850/1e9
-		obj.Stud_L=FreeCAD.Units.Metre*lstud/1e3
-		obj.Track_L=FreeCAD.Units.Metre*ltrack/1e3
-	
+        if obj.Structural ==True:
+            trabes=vigass(trabes)
+            for a in trabes:
+                xs=a[1] #longitud de la trabe
+                ys=obj.Stud_Width.Value
+                yf=obj.Width.Value
+                zs=obj.Beam_Height.Value            
+                sb1=Draw_Box_Beam(xs,yf,ys,zs,th1,obj.Lip.Value,obj.Box,FEM)
+                sb1.Placement.Base=FreeCAD.Vector(a[0],y/2,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
+                parte.append(sb1)
+                #Draw Track Below beam...
+                sb2=Draw_Steel_Track(xs,obj.Width.Value,obj.Falange.Value,th1,lcut=0,rcut=0,fliped=0)
+                sb2.Placement.Base=FreeCAD.Vector(a[0],0,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
+                ltrack+=xs
+                parte.append(sb2)
+                #aqui Falta Agregar las longitudes de las secciones OJO OJO OJO OJO OJO
+                
+            #####dibujo de piezas especiales para el montaje de la trabe
+                if obj.Box:
+                    e1=Draw_Steel_Track(zs,yf-(2*th1*FEM),obj.Falange.Value,1.7272,lcut=0,rcut=0,fliped=0)#Ga14
+                    e1.Placement.Rotation= App.Rotation(App.Vector(0,1,0),-90)
+                    e1.Placement.Base=FreeCAD.Vector(a[0],th1*FEM,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
+                    e2=Draw_Steel_Track(zs,yf-(2*th1*FEM),obj.Falange.Value,1.7272,lcut=0,rcut=0,fliped=1)
+                    e2.Placement.Rotation= App.Rotation(App.Vector(0,1,0),-90)
+                    e2.Placement.Base=FreeCAD.Vector(a[0]+a[1],th1*FEM,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
+                    parte.append(e1)
+                    parte.append(e2)
+        comp=Part.makeCompound(parte)
+        if obj.FEM: #make one solid for FEM analysis
+            comp=Part.makeSolid(comp) 
+            comp2=comp.removeSplitter()
+            obj.Shape=comp2
+            print('Center of Mass',obj.Shape.CenterOfMass)
+        obj.Shape=comp
+        obj.Weight=comp.Volume*7850/1e9
+        obj.Stud_L=FreeCAD.Units.Metre*lstud/1e3
+        obj.Track_L=FreeCAD.Units.Metre*ltrack/1e3
+    
 ########## Calculo centro de masa
-		if not(obj.FEM):	
-			v=FreeCAD.Vector(0,0,0)
-			solidos=obj.Shape.Solids 
-			for b in solidos:
-				v2=b.CenterOfMass*b.Volume
-				v=v.add(v2)
-			vt=obj.Shape.Volume
-			print('Center of Mass',v*(1/vt))
+        if not(obj.FEM):    
+            v=FreeCAD.Vector(0,0,0)
+            solidos=obj.Shape.Solids 
+            for b in solidos:
+                v2=b.CenterOfMass*b.Volume
+                v=v.add(v2)
+            vt=obj.Shape.Volume
+            print('Center of Mass',v*(1/vt))
 
 a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
 Steel_Frame(a)
-a.ViewObject.Proxy	=	0
+a.ViewObject.Proxy    =    0
 
 App.ActiveDocument.recompute()
