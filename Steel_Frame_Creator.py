@@ -420,4 +420,4 @@ a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
 Steel_Frame(a)
 a.ViewObject.Proxy    =    0
 
-App.ActiveDocument.recompute()
+#App.ActiveDocument.recompute()
