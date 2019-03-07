@@ -12,7 +12,9 @@ __Help__ = "See Readme.MD on Gitlab"
 __Status__ = "Experimental"
 __Requires__ = "freecad 0.16"
 __Communication__ = "https://forum.freecadweb.org/viewtopic.php?f=23&t=26092" 
-import Part
+import Part 
+import FreeCAD
+App=FreeCAD
 #-------------------------------------------------------------------------------
 def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     """
@@ -264,6 +266,7 @@ def vigass(vigas):
 #------------------------------------------------------------------------------
 class Steel_Frame:
     def __init__ (self , obj):
+        self.Object = obj #line not neccesary this was to try to keep the object after copying
         doc=App.ActiveDocument
         obj.Proxy = self
         obj.addProperty("App::PropertyBool","FEM","Frame").FEM=False
@@ -285,9 +288,14 @@ class Steel_Frame:
         obj.addProperty("App::PropertyBool","Box","Structural").Box=True
     #def onChanged(self, fp, prop):
         #FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
-    def onChanged(self, obj, prop):
-        App.activeDocument().recompute()
-    
+    #def onChanged(self, obj, prop):
+     #   App.activeDocument().recompute()
+    def onDocumentRestored(self, obj):
+        '''
+        Restore object references on reload
+        '''
+        print 'Document Restored'
+        self.Object = obj
     def execute(self,obj):
         ventanas=[]
         trabes=[] #trabes estructurales
@@ -415,9 +423,9 @@ class Steel_Frame:
                 v=v.add(v2)
             vt=obj.Shape.Volume
             print('Center of Mass',v*(1/vt))
-
-a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
-Steel_Frame(a)
-a.ViewObject.Proxy    =    0
+            
+#a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
+#Steel_Frame(a)
+#a.ViewObject.Proxy    =    0
 
 #App.ActiveDocument.recompute()
