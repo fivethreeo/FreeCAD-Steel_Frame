@@ -1,0 +1,33 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-03-04T13:31:19-08:00
+
+====== Macro FreeCAD ======
+Created Monday 04 March 2019
+
+* Convención de estilo de programación: 
+	[*] Incluir los metadatos: https://github.com/FreeCAD/FreeCAD-macros
+	[*] Utilizar siempre **4 espacios** para la indentación y no espacios de tabulador.
+	[*] [[+Estilo de código de QtSide|Estilo de código de QtSide]] tomando el siguiente ejemplo:
+		https://github.com/FreeCAD/FreeCAD/blob/master/src/Mod/TemplatePyMod/DocumentObject.py
+		https://wiki.qt.io/Qt_Coding_Style
+	[x] Alguien más sugiere seguir el estándar PEP 0008  https://www.python.org/dev/peps/pep-0008/ (FreeCAD se adhiere al estilo de Qt)
+	[*] Para [[+Estilo documentacion|documentación]] seguir los estándares PEP 257 y PEP 287:
+		* Estilo Numpy https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard y reStructuredText https://www.python.org/dev/peps/pep-0287/
+	[*] Pasar a Inglés el nombre de variables, clases, funciones, métodos y docstrings (por cortesía y universalidad)
+
+* Revisar herramientas de Python para crear la documentación:
+	[ ] Sphinx http://www.sphinx-doc.org/en/master/index.html
+
+[*] Revisar ésta documentación para encontrar un Bounding Box: http://geomalgorithms.com/a08-_containers.html
+	Se puede calcular la cubierta convexa del conjunto de vértices (son un conjunto convexo).
+	Existe una función de scipy para hacerlo: C''onvexHull''
+		'''
+		from scipy.spatial import ConvexHull
+		points=[[v.X,v.Y,v.Z] for v in obj.Shape.Vertexes]
+		hull = ConvexHull(points)
+		for i in hull.vertices: #Vértices extremos
+			print points[i]
+		'''
+
+

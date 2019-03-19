@@ -1,0 +1,175 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-03-05T11:03:09-08:00
+
+====== Estilo documentacion ======
+Created Tuesday 05 March 2019
+**Seguimos el estilo de Numpy, que sigue el estándar PEP 257 de Python en formato reStructuredText para documentar con Sphinx**
+https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
+El texto de la documentación (docstring) va contenido en un par de triples comillas:
+	'''
+	"""
+	Aquí va el docstring
+	"""
+	'''
+
+
+===== Estándar =====
+
+1. ==== Resumen corto ====
+
+	Se trata de una descripción de una línea sobre lo que hace la función o el módulo sin incluir nombres de variables ni el nombre de la función
+	'''
+	def add(a, b):
+	   """The sum of two numbers.
+	
+	   """
+	'''
+
+==== 2. Deprecation Warning ====
+	Si el objeto es obsoleto, se debe incluir ésta sección para advertir a los usuarios:
+	'''
+	.. deprecated:: 1.6.0
+	          `ndobj_old` will be removed in NumPy 2.0.0, it is replaced by
+	          `ndobj_new` because the latter works also with array subclasses.    
+	'''
+
+
+==== Descripción extendida ====
+
+	Descripción extendida de la funcionalidad, no discute los detalles de la implementación o la teoría que la soporta.
+
+==== Parámetros ====
+	Descripción de los argumentos de la función y sus respectivos tipos
+	'''
+	Parameters
+	----------
+	:x: type
+	    Description of parameter `x`.
+	:y:
+	    Description of parameter `y` (with type not specified)
+	'''
+	En éste caso seguimos el estilo de Sphinx para los argumentos:
+		'':fieldname: Field content''
+		
+==== Retorno ====
+	Explicación de los valores que retorna la función
+	'''
+	Returns
+	-------
+	int
+	    Description of anonymous integer return value.
+	'''
+	
+
+==== Yields ====
+	Relevante sólo para los generadores, es similar a la sección anterior:
+	'''
+	Yields
+	------
+	int
+	    Description of the anonymous integer return value.
+	'''
+	
+
+==== Otros parámetros ====
+	Sección opcional para describir parámetros poco frecuentes
+	
+==== Raises ====
+	Sección opcional que detalla los errores que se generan y en qué contexto.
+	'''
+	Raises
+	------
+	LinAlgException
+	    If the matrix is not numerically invertible.
+	'''
+	
+
+==== Warns ====
+Una sección similar a la anterior que detalla las advertencias generadas y bajo qué circunstancias.
+
+==== Warnings ====
+Sección opcional con advertencias para el usuario
+
+==== Ver también ====
+	Una sección opcional para referirse a código relacionado
+'''
+	See Also
+	--------
+	average : Weighted average
+	
+'''
+f''ft.fft2 : 2-D fast discrete Fourier transform''
+
+==== Notas ====
+	Sección opcional que proporciona información adicional acerca del código, posiblemente incluye una discusión del algoritmo.	
+	Puede incluir ecuaciones matemáticas escritas en formato Latex que se incluyen bajo la directiva ''math ''de RST:
+		'''
+		The discrete-time Fourier time-convolution property states that
+		.. math::
+		     x(n) * y(n) \Leftrightarrow X(e^{j\omega } )Y(e^{j\omega } )\\
+		     another equation here
+		'''
+
+
+==== Referencias ====
+	Son las referencias citadas en la sección de notas (citadas previamente con ''[1]_''):
+		'''
+		.. [1] O. McNoleg, "The integration of GIS, remote sensing,
+		   expert systems and adaptive co-kriging for environmental habitat
+		   modelling of the Highland Haggis using object-oriented, fuzzy-logic
+		   and neural-network techniques," Computers & Geosciences, vol. 22,
+		   pp. 585-588, 1996.
+		'''
+
+
+==== Ejemplos ====
+Sección opcional que incluye ejemplos de uso
+
+===== Estilo para Clases =====
+Una sección de atributos colocada bajo la sección de Parámetros, puede ser usada para describir los atributos de la clase:
+
+''Attributes''
+''----------''
+''x : float''
+''    The X coordinate.''
+''y : float''
+''    The Y coordinate.''
+También es útil tener una sección de Métodos:
+'''
+class Photo(ndarray):
+    """
+    Array with associated photographic information.
+
+    ...
+
+    Attributes
+    ----------
+    exposure : float
+        Exposure in seconds.
+
+    Methods
+    -------
+    colorspace(c='rgb')
+        Represent the photo in the given colorspace.
+    gamma(n=1.0)
+        Change the photo's gamma exposure.
+
+    """
+'''
+
+===== Módulos =====
+'''
+Los módulos siguen el mismo estilo y se proponen éstas secciones:
+'''
+	1. ''summary''
+	2. ''extended summary''
+	3. ''routine listings''
+	4. ''see also''
+	5. ''notes''
+	6. ''references''
+	7. ''examples''
+
+
+
+

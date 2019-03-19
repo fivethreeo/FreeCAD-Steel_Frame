@@ -1,0 +1,46 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-03-05T10:14:42-08:00
+
+====== Estilo de código de QtSide ======
+Created Tuesday 05 March 2019
+
+
+
+===== Indentación =====
+	4 espacios y no tabs
+
+
+===== Declaración de variables y funciones =====
+	* Evitar nombres cortos sin significado, excepto para variables de iteración o contadores.
+	* Las variables y funciones comienzan con minúscula y cada palabra consecutiva con mayúscula (camel-case)
+		miVariable
+		miFuncion
+	Para funciones privadas que son de uso exclusivo dentro de una clase o modulo, utilizar guión bajo antes del nombre:
+		_funcionPrivada
+	Las funciones o métodos que regresan un valor booleano deben empezar con is o has:
+		isCube 
+		hasWindows
+	El resto de las funciones  debe comenzar con el verbo de la acción que realizan y luego su objetivo:
+		findWindows
+		removeElement
+		drawPanel
+		
+
+===== Clases =====
+	Siempre comienzan con mayúscula y se escriben con camel-case:
+		MiClase
+	Nombrar a las clases con el tipo de objeto que representan:
+		LoggerBrowser
+		PlaylistTreeWidget
+
+
+===== Elementos de la interfaz gráfica =====
+	Seguir un patrón consistente para los nombres:
+	  Ejemplo: ui[Uso][Tipo]
+
+
+===== Líneas =====
+	Mantener las líneas con menos de 100 caracteres, separar en caso de ser necesario en varias líneas, se puede hacer uso del separador ''\''
+
+
