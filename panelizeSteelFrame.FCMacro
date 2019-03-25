@@ -1,0 +1,60 @@
+__Name__ = 'Panelize Steel Frame'
+__Comment__ = ''
+__Author__ = ''
+__Version__ = ''
+__Date__ = ''
+__License__ = ''
+__Web__ = ''
+__Wiki__ = ''
+__Icon__ = ''
+__Help__ = ''
+__Status__ = 'Pre-alpha'
+__Requires__ = ''
+__Communication__ = ''
+__Files__ = ''
+
+from PySide import QtGui
+import funcPanelizer as fP
+
+
+
+class DialogPanelize():
+	def __init__(self):		
+		self.form = FreeCADGui.PySideUic.loadUi(fP.tools.pathUI)
+		# self.form.selArista.clicked.connect(self.onSelParte)		
+		# self.form.cambiaSeleccion.clicked.connect(self.onCambiaSel)
+		# self.form.cancelar.clicked.connect(self.cancelar)
+		# self.form.panelizar.clicked.connect(self.panelizar)
+		self.form.reutilizaPiezas.setChecked(True)
+		self.form.exportarPdf.setChecked(True)
+		self.form.mousePosLab.setText("")	
+		#self.frame=None
+		#self.form.directorio.setProperty("fileName",archDir)		
+		#self.grupo=Gui.Selection.getSelection()
+		#self.obtieneFrame(self.grupo)
+		
+	#Removes standard buttons from the tasks panel
+	def getStandardButtons(self):		
+		return int() 
+
+
+###Dialog is created as an instance of the DialogPanelize class and put into the Tasks Panel
+dialog = DialogPanelize() 
+
+if FreeCADGui.Control.activeDialog()==False:
+	FreeCADGui.Control.showDialog(dialog)
+else:
+	flags = QtGui.QMessageBox.StandardButton.Yes
+	flags |= QtGui.QMessageBox.StandardButton.No
+	cerrar = QtGui.QMessageBox.question(None,
+					  "Question",
+                       "There are dialogs open in the Tasks Panel Do you want to close them?",
+						flags)
+	if cerrar== QtGui.QMessageBox.Yes:
+		FreeCADGui.Control.closeDialog()
+		FreeCADGui.Control.showDialog(dialog)
+	else:
+		print("Macro not executed")
+
+
+
