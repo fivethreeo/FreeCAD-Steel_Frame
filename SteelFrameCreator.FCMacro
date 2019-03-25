@@ -1,4 +1,4 @@
-import Steel_Frame_Creator as sfc
+import SteelFrameCreator as sfc
 
 a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
 sfc.Steel_Frame(a)
