@@ -294,7 +294,7 @@ class Steel_Frame:
         '''
         Restore object references on reload
         '''
-        print 'Document Restored'
+        print ('Document Restored')
         self.Object = obj
     def execute(self,obj):
         ventanas=[]
