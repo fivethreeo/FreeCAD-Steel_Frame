@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PanelizarMarco</class>
- <widget class="QWidget" name="PanelizarMarco">
+ <class>PanelizerForm</class>
+ <widget class="QWidget" name="PanelizerForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -29,10 +29,19 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Panelizar Marco</string>
+   <string>Panelize Steel Frame</string>
   </property>
   <layout class="QGridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <property name="topMargin">
+    <number>9</number>
+   </property>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <property name="bottomMargin">
     <number>9</number>
    </property>
    <property name="spacing">
@@ -62,7 +71,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="iconSize">
       <size>
@@ -75,32 +84,32 @@
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>Panelizar</string>
+       <string>Panelizer</string>
       </attribute>
       <widget class="QWidget" name="layoutWidget_4">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>410</y>
+         <y>430</y>
          <width>178</width>
          <height>29</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="2">
-         <widget class="QPushButton" name="panelizar">
+         <widget class="QPushButton" name="panelize">
           <property name="enabled">
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Panelizar</string>
+           <string>Panelize</string>
           </property>
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QPushButton" name="cancelar">
+         <widget class="QPushButton" name="cancel">
           <property name="text">
-           <string>Cerrar</string>
+           <string>Close</string>
           </property>
          </widget>
         </item>
@@ -110,7 +119,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>80</y>
+         <y>70</y>
          <width>196</width>
          <height>33</height>
         </rect>
@@ -131,8 +140,8 @@
         <enum>QFrame::Plain</enum>
        </property>
        <property name="text">
-        <string>Selecciona una arista o cara 
-del Frame del lado a panelizar</string>
+        <string>Select a face or edge from the 
+ side you want to panelize</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -142,12 +151,12 @@ del Frame del lado a panelizar</string>
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>180</y>
+         <y>160</y>
          <width>201</width>
-         <height>191</height>
+         <height>231</height>
         </rect>
        </property>
-       <layout class="QFormLayout" name="offSets">
+       <layout class="QFormLayout" name="setBacksLayout">
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
@@ -161,7 +170,7 @@ del Frame del lado a panelizar</string>
          <number>1</number>
         </property>
         <property name="verticalSpacing">
-         <number>5</number>
+         <number>10</number>
         </property>
         <property name="rightMargin">
          <number>1</number>
@@ -169,128 +178,7 @@ del Frame del lado a panelizar</string>
         <item row="0" column="0">
          <widget class="QLabel" name="label_8">
           <property name="text">
-           <string>Superior</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string>Inferior</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_10">
-          <property name="text">
-           <string>Eje min</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Eje max</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Ventanas</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Juntas </string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="Gui::InputField" name="offsetJuntas">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="unit" stdset="0">
-           <string>mm</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="Gui::InputField" name="offsetVentanas">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>-13 mm</string>
-          </property>
-          <property name="unit" stdset="0">
-           <string>mm</string>
-          </property>
-          <property name="quantity" stdset="0">
-           <double>-13.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="Gui::InputField" name="offsetDer">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="unit" stdset="0">
-           <string>mm</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="Gui::InputField" name="offsetIzq">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="unit" stdset="0">
-           <string>mm</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="Gui::InputField" name="offsetInf">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="unit" stdset="0">
-           <string>mm</string>
+           <string>Top</string>
           </property>
          </widget>
         </item>
@@ -319,6 +207,140 @@ del Frame del lado a panelizar</string>
           </property>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Bottom</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="Gui::InputField" name="offsetBottom">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="unit" stdset="0">
+           <string>mm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Left</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="Gui::InputField" name="offsetLeft">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="unit" stdset="0">
+           <string>mm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Right</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="Gui::InputField" name="offsetRight">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="unit" stdset="0">
+           <string>mm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Window</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="Gui::InputField" name="offsetWindows">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>-13 mm</string>
+          </property>
+          <property name="unit" stdset="0">
+           <string>mm</string>
+          </property>
+          <property name="quantity" stdset="0">
+           <double>-13.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Joints</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="Gui::InputField" name="offsetJoints">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="unit" stdset="0">
+           <string>mm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="layoutWidget_2">
@@ -335,7 +357,7 @@ del Frame del lado a panelizar</string>
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
         <item row="0" column="1">
-         <widget class="QPushButton" name="cambiaSeleccion">
+         <widget class="QPushButton" name="changeFrame">
           <property name="maximumSize">
            <size>
             <width>50</width>
@@ -348,12 +370,12 @@ del Frame del lado a panelizar</string>
            </font>
           </property>
           <property name="text">
-           <string>Cambiar</string>
+           <string>Change</string>
           </property>
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QLabel" name="nombreFrame">
+         <widget class="QLabel" name="infoFrame">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -383,14 +405,14 @@ del Frame del lado a panelizar</string>
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>120</y>
+         <y>100</y>
          <width>201</width>
          <height>37</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
-         <widget class="QLabel" name="mousePosLab">
+         <widget class="QLabel" name="infoSelection">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -415,7 +437,7 @@ del Frame del lado a panelizar</string>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QPushButton" name="selArista">
+         <widget class="QPushButton" name="selectFace">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -445,11 +467,11 @@ del Frame del lado a panelizar</string>
         </item>
        </layout>
       </widget>
-      <widget class="QLabel" name="Offset_label">
+      <widget class="QLabel" name="setBackLabel">
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>160</y>
+         <y>140</y>
          <width>196</width>
          <height>17</height>
         </rect>
@@ -467,20 +489,20 @@ del Frame del lado a panelizar</string>
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="Gui::PrefCheckBox" name="reutilizaPiezas">
+      <widget class="Gui::PrefCheckBox" name="reusePieces">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>380</y>
+         <y>400</y>
          <width>196</width>
          <height>22</height>
         </rect>
        </property>
        <property name="text">
-        <string>Reutilizar piezas</string>
+        <string>Use panel pieces</string>
        </property>
        <property name="tristate">
         <bool>false</bool>
@@ -489,9 +511,9 @@ del Frame del lado a panelizar</string>
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string>Exportar</string>
+       <string>Export</string>
       </attribute>
-      <widget class="Gui::FileChooser" name="directorio">
+      <widget class="Gui::FileChooser" name="directoryPdf">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -504,7 +526,7 @@ del Frame del lado a panelizar</string>
         <enum>Gui::FileChooser::Directory</enum>
        </property>
       </widget>
-      <widget class="QCheckBox" name="exportarPdf">
+      <widget class="QCheckBox" name="exportPdf">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -514,7 +536,7 @@ del Frame del lado a panelizar</string>
         </rect>
        </property>
        <property name="text">
-        <string>Exportar pdf</string>
+        <string>Export pdf</string>
        </property>
       </widget>
       <widget class="QLabel" name="labDir">
@@ -527,10 +549,10 @@ del Frame del lado a panelizar</string>
         </rect>
        </property>
        <property name="text">
-        <string>Seleccionar directorio</string>
+        <string>Select directory</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="nomProyecto">
+      <widget class="QLineEdit" name="nameProject">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -550,10 +572,10 @@ del Frame del lado a panelizar</string>
         </rect>
        </property>
        <property name="text">
-        <string>Nombre del Proyecto:</string>
+        <string>Project name</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="revision">
+      <widget class="QLineEdit" name="revisionProject">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -573,7 +595,7 @@ del Frame del lado a panelizar</string>
         </rect>
        </property>
        <property name="text">
-        <string>Revisión:</string>
+        <string>Revision:</string>
        </property>
       </widget>
      </widget>
