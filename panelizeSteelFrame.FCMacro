@@ -28,9 +28,14 @@ class DialogPanelizer():
 	"""
 	def __init__(self):		
 		self.form = FreeCADGui.PySideUic.loadUi(fP.tools.pathUI)		
-		self.form.cancel.clicked.connect(self.cancel)		
+		self.form.cancel.clicked.connect(self.cancel)
+		self.form.changeFrame.clicked.connect(self.updateFrameSelection)
+		self.form.selectFace.clicked.connect(self.getSelectedFace)
 		self.form.reusePieces.setChecked(True)		
-		self.form.infoSelection.setText("")	
+		self.form.infoFace.setText("")
+		self.selection=Gui.Selection.getSelection()
+		self.frame=None
+		self.getSteelFrame(self.selection)
 
 		
 	#Removes standard buttons from the tasks panel
@@ -39,6 +44,66 @@ class DialogPanelizer():
 	
 	def cancel(self):		
 		FreeCADGui.Control.closeDialog()
+	
+	#Get the Steel Frame	
+	def getSteelFrame(self,selection):
+		if len(selection)==1:
+			sel=selection[0]
+			#Check some attributes to ensure the selection is a Steel Frame object
+			if hasattr(sel,'Windows') and hasattr(sel,'Height') and hasattr(sel,'Height') and hasattr(sel,'Gauge'):
+				frameProperties="Label: "+str(sel.Label)
+				frameProperties+="\nLength: "+str(sel.Length)
+				frameProperties+="\nWindows: "+str(len(sel.Windows))
+				self.frame=sel
+				self.form.infoFrame.setText(frameProperties)
+				self.form.selectFace.setEnabled(True)
+			else:
+				self.form.infoFrame.setText("Select one Steel Frame")
+		else:
+			self.form.infoFrame.setText("Select one Steel Frame")
+			
+	def updateFrameSelection(self):
+		"""
+		Updates the frame selection
+		"""
+		try:
+			del self.selection
+		except:
+			pass
+		#self.habilitaElementos(False)
+		self.form.selectFace.setEnabled(False)
+		self.form.infoFace.setText("")
+		self.form.panelize.setEnabled(False)
+		self.selection=Gui.Selection.getSelection()
+		self.getSteelFrame(self.selection)
+	
+	def getSelectedFace(self):
+		try:
+			face=Gui.Selection.getSelectionEx()[0].SubObjects[0] #Get the edge or face selected
+			faceName=Gui.Selection.getSelectionEx()[0].SubElementNames[0]
+			frameLabel=Gui.Selection.getSelection()[0].Label
+		except:
+			self.form.infoFace.setText("Select a face on \nthe side to panelize.")
+			self.form.panelize.setEnabled(False)
+			face=None
+		if face and hasattr(face,'ShapeType') and frameLabel==self.frame.Label:
+			if face.ShapeType=='Face':
+				#Checks if the face orientation is the same as the Steel Frame
+				vectorWidth=self.frame.Placement.Rotation.multVec(FreeCAD.Vector(0,1,0)) #Vector defining the orientation along the Width
+				faceNormal=face.normalAt(0,0) #Normal vector
+				tolerance=FreeCAD.Units.MilliMetre*1e-3
+				
+				if faceNormal.cross(vectorWidth).isEqual(FreeCAD.Vector(0,0,0),tolerance): #Checks collinearity between the normal vector a vectorWidth
+					self.form.infoFace.setText(faceName)
+				else:
+					self.form.infoFace.setText('That\'s not a possible side')
+			else:
+				self.form.infoFace.setText('Select a face \non the side to panelize.')
+		else:
+			self.form.infoFace.setText('Select a face \non the side to panelize.')
+	
+	def enableFormElements(self,flag):
+		self.form.selectFace.setEnabled(flag)
 
 
 ###Dialog is created as an instance of the DialogPanelizer class and put into the Tasks Panel
