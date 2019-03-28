@@ -35,6 +35,7 @@ class DialogPanelizer():
 		self.form.infoFace.setText("")
 		self.selection=Gui.Selection.getSelection()
 		self.frame=None
+		self.face=None
 		self.getSteelFrame(self.selection)
 
 		
@@ -70,7 +71,7 @@ class DialogPanelizer():
 			del self.selection
 		except:
 			pass
-		#self.habilitaElementos(False)
+		self.enableFormElements(False)
 		self.form.selectFace.setEnabled(False)
 		self.form.infoFace.setText("")
 		self.form.panelize.setEnabled(False)
@@ -79,22 +80,22 @@ class DialogPanelizer():
 	
 	def getSelectedFace(self):
 		try:
-			face=Gui.Selection.getSelectionEx()[0].SubObjects[0] #Get the edge or face selected
+			self.face=Gui.Selection.getSelectionEx()[0].SubObjects[0] #Get the edge or face selected
 			faceName=Gui.Selection.getSelectionEx()[0].SubElementNames[0]
 			frameLabel=Gui.Selection.getSelection()[0].Label
 		except:
-			self.form.infoFace.setText("Select a face on \nthe side to panelize.")
-			self.form.panelize.setEnabled(False)
-			face=None
-		if face and hasattr(face,'ShapeType') and frameLabel==self.frame.Label:
-			if face.ShapeType=='Face':
+			self.form.infoFace.setText("Select a face on \nthe side to panelize.")						
+		self.enableFormElements(False)
+		if self.face and hasattr(self.face,'ShapeType') and frameLabel==self.frame.Label:
+			if self.face.ShapeType=='Face':
 				#Checks if the face orientation is the same as the Steel Frame
 				vectorWidth=self.frame.Placement.Rotation.multVec(FreeCAD.Vector(0,1,0)) #Vector defining the orientation along the Width
-				faceNormal=face.normalAt(0,0) #Normal vector
+				faceNormal=self.face.normalAt(0,0) #Normal vector
 				tolerance=FreeCAD.Units.MilliMetre*1e-3
 				
 				if faceNormal.cross(vectorWidth).isEqual(FreeCAD.Vector(0,0,0),tolerance): #Checks collinearity between the normal vector a vectorWidth
 					self.form.infoFace.setText(faceName)
+					self.enableFormElements(True)
 				else:
 					self.form.infoFace.setText('That\'s not a possible side')
 			else:
@@ -103,7 +104,14 @@ class DialogPanelizer():
 			self.form.infoFace.setText('Select a face \non the side to panelize.')
 	
 	def enableFormElements(self,flag):
-		self.form.selectFace.setEnabled(flag)
+		self.form.offsetSup.setEnabled(flag)
+		self.form.offsetBottom.setEnabled(flag)
+		self.form.offsetLeft.setEnabled(flag)
+		self.form.offsetRight.setEnabled(flag)
+		self.form.offsetWindows.setEnabled(flag)
+		self.form.offsetJoints.setEnabled(flag)
+		self.form.reusePieces.setEnabled(flag)
+		self.form.panelize.setEnabled(flag)
 
 
 ###Dialog is created as an instance of the DialogPanelizer class and put into the Tasks Panel
