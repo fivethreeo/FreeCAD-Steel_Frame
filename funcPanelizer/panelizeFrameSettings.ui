@@ -71,7 +71,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -384,6 +384,7 @@
           </property>
           <property name="font">
            <font>
+            <pointsize>10</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -412,7 +413,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
-         <widget class="QLabel" name="infoSelection">
+         <widget class="QLabel" name="infoFace">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -425,6 +426,11 @@
             <height>30</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
           <property name="frameShape">
            <enum>QFrame::Box</enum>
           </property>
@@ -433,6 +439,9 @@
           </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
