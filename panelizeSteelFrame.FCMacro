@@ -31,11 +31,13 @@ class DialogPanelizer():
 		self.form.cancel.clicked.connect(self.cancel)
 		self.form.changeFrame.clicked.connect(self.updateFrameSelection)
 		self.form.selectFace.clicked.connect(self.getSelectedFace)
+		self.form.panelize.clicked.connect(self.panelize)
 		self.form.reusePieces.setChecked(True)		
 		self.form.infoFace.setText("")
 		self.selection=Gui.Selection.getSelection()
 		self.frame=None
 		self.face=None
+		self.flip=0
 		self.getSteelFrame(self.selection)
 
 		
@@ -45,6 +47,17 @@ class DialogPanelizer():
 	
 	def cancel(self):		
 		FreeCADGui.Control.closeDialog()
+		
+	def enableFormElements(self,flag):
+		self.form.offsetSup.setEnabled(flag)
+		self.form.offsetBottom.setEnabled(flag)
+		self.form.offsetLeft.setEnabled(flag)
+		self.form.offsetRight.setEnabled(flag)
+		self.form.offsetWindows.setEnabled(flag)
+		self.form.offsetDoors.setEnabled(flag)
+		self.form.offsetJoints.setEnabled(flag)
+		self.form.reusePieces.setEnabled(flag)
+		self.form.panelize.setEnabled(flag)		
 	
 	#Get the Steel Frame	
 	def getSteelFrame(self,selection):
@@ -73,8 +86,7 @@ class DialogPanelizer():
 			pass
 		self.enableFormElements(False)
 		self.form.selectFace.setEnabled(False)
-		self.form.infoFace.setText("")
-		self.form.panelize.setEnabled(False)
+		self.form.infoFace.setText("")		
 		self.selection=Gui.Selection.getSelection()
 		self.getSteelFrame(self.selection)
 	
@@ -93,9 +105,14 @@ class DialogPanelizer():
 				faceNormal=self.face.normalAt(0,0) #Normal vector
 				tolerance=FreeCAD.Units.MilliMetre*1e-3
 				
-				if faceNormal.cross(vectorWidth).isEqual(FreeCAD.Vector(0,0,0),tolerance): #Checks collinearity between the normal vector a vectorWidth
+				if faceNormal.cross(vectorWidth).isEqual(FreeCAD.Vector(0,0,0),tolerance): #Checks collinearity between the normal vector and vectorWidth
 					self.form.infoFace.setText(faceName)
 					self.enableFormElements(True)
+					faceVertex=self.face.Vertexes[0].Point
+					if abs(faceVertex.distanceToPlane(self.frame.Placement.Base,faceNormal))>self.frame.Thickness+tolerance:
+						self.flip=1
+					else:
+						self.flip=0					
 				else:
 					self.form.infoFace.setText('That\'s not a possible side')
 			else:
@@ -103,15 +120,21 @@ class DialogPanelizer():
 		else:
 			self.form.infoFace.setText('Select a face \non the side to panelize.')
 	
-	def enableFormElements(self,flag):
-		self.form.offsetSup.setEnabled(flag)
-		self.form.offsetBottom.setEnabled(flag)
-		self.form.offsetLeft.setEnabled(flag)
-		self.form.offsetRight.setEnabled(flag)
-		self.form.offsetWindows.setEnabled(flag)
-		self.form.offsetJoints.setEnabled(flag)
-		self.form.reusePieces.setEnabled(flag)
-		self.form.panelize.setEnabled(flag)
+	def panelize(self):
+		"""
+		Panelize the steel Frame on the selected side 
+		"""
+		offSets={'Top': self.form.offsetSup.property("quantity").Value,
+				 'Bottom': self.form.offsetBottom.property("quantity").Value,
+				 'Left': self.form.offsetLeft.property("quantity").Value,
+				 'Right': self.form.offsetRight.property("quantity").Value,
+				 'Windows': self.form.offsetWindows.property("quantity").Value,
+				 'Doors': self.form.offsetDoors.property("quantity").Value,
+				 'Joints': self.form.offsetJoints.property("quantity").Value}
+		fP.tools.divideFrame(self.frame,offSets,self.flip)
+		
+		
+	
 
 
 ###Dialog is created as an instance of the DialogPanelizer class and put into the Tasks Panel
