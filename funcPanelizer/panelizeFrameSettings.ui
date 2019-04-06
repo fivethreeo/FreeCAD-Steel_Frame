@@ -317,6 +317,9 @@
             <height>25</height>
            </size>
           </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
           <property name="unit" stdset="0">
            <string>mm</string>
           </property>
@@ -533,7 +536,7 @@
       <attribute name="title">
        <string>Export</string>
       </attribute>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>0</x>
