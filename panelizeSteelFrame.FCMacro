@@ -38,6 +38,7 @@ class DialogPanelizer():
 		self.frame=None
 		self.face=None
 		self.flip=0
+		self.rectangles=[]
 		self.getSteelFrame(self.selection)
 
 		
@@ -131,7 +132,9 @@ class DialogPanelizer():
 				 'Windows': self.form.offsetWindows.property("quantity").Value,
 				 'Doors': self.form.offsetDoors.property("quantity").Value,
 				 'Joints': self.form.offsetJoints.property("quantity").Value}
-		fP.tools.divideFrame(self.frame,offSets,self.flip)
+		self.rectangles=fP.tools.divideFrame(self.frame,offSets,self.flip)
+		for r in self.rectangles:
+			fP.tools.drawRectangle(r,self.frame,self.flip)
 		
 		
 	
