@@ -46,7 +46,8 @@ class DialogPanelizer():
 		QtCore.QObject.connect(self.form.delButton,QtCore.SIGNAL("pressed()"),self.delPanelSize)
 		self.addPanelSize(1219,2743)
 		self.addPanelSize(1219,2438)
-		### 
+		###
+		self.existingmaterials = []
 		self.createDefaultMaterials()
 		self.fillMaterialsCombo()		
 		##
@@ -205,13 +206,26 @@ class DialogPanelizer():
 		if len(self.panelSizes)==0:
 			FreeCAD.Console.PrintWarning("Standard Panel Sizes not provided.\n")
 			return None
+
 		self.rectangles=fP.tools.divideFrame(self.frame,offSets,self.flip)
-		# piezas=[(1219,2438),(2438,1219),(2743,1219),(1219,2743)]
-		# self.listaPiezas=[]
-		# for sR in self.rectangles:
-			
+		# # piezas=[(1219,2438),(2438,1219),(2743,1219),(1219,2743)]
+		# # self.listaPiezas=[]
+		# # for sR in self.rectangles:
+		thickness=self.form.panelThickness.property("quantity").Value
+		if len(self.existingmaterials)>0:
+			iM=self.form.materialCombo.currentIndex()
+			try:
+				material=self.existingmaterials[iM]
+				if thickness<sum(material.Thicknesses):
+					FreeCAD.Console.PrintWarning("The thickness is too small for the material.\n")
+					return None
+			except:
+				material=None
+		else:
+			material=None
 		for r in self.rectangles:
-			fP.tools.drawRectangle(r,self.frame,self.flip)
+			fP.tools.drawRectangle(r,self.frame,self.flip,thickness,material)
+		FreeCAD.ActiveDocument.recompute()
 		
 
 class PanelSizesDelegate(QtGui.QStyledItemDelegate):
