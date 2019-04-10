@@ -1,7 +1,7 @@
 import os
 from itertools import groupby
 
-import FreeCAD, Draft
+import FreeCAD, Draft, Arch
 
 #Path to the user Interface
 funcDir = os.path.dirname(__file__)
@@ -15,20 +15,30 @@ class Rectangle(object):
 		self.vertI=FreeCAD.Vector()
 
 		
-def drawRectangle(rect,steelFrame,flip):
+def drawRectangle(rect,steelFrame,flip, thick, material=None):
 	"""
-	Draws the rectangle rect over the steelFrame
+	Draws the panel on the steelFrame
 	"""
 	orienX=steelFrame.Placement.Rotation.multVec(FreeCAD.Vector(1,0,0))
-	place = steelFrame.Placement.Base.add(orienX.multiply(rect.vertI.x))
+	if flip==0:
+		place = steelFrame.Placement.Base.add(orienX.multiply(rect.vertI.x))
+	else:
+		place = steelFrame.Placement.Base.add(orienX.multiply(rect.vertI.x+rect.Length))		
 	orienZ=steelFrame.Placement.Rotation.multVec(FreeCAD.Vector(0,0,1))
 	place = place.add(orienZ.multiply(rect.vertI.z))
 	if flip==1:
-		vectorWidth=steelFrame.Placement.Rotation.multVec(FreeCAD.Vector(0,1,0))
-		place=place.add(vectorWidth.multiply(steelFrame.Width))
-	rotE=steelFrame.Placement.Rotation.toEuler()
-	rot=FreeCAD.Rotation(rotE[0],rotE[1],rotE[2]+90)
-	rect=Draft.makeRectangle(rect.Length, rect.Height, placement=FreeCAD.Placement(place, rot))
+		vectorWidth=steelFrame.Placement.Rotation.multVec(FreeCAD.Vector(0,1,0))		
+		place=place.add(vectorWidth.multiply(steelFrame.Width))	
+	ro=FreeCAD.Rotation(0,0,90)
+	if flip==1:
+		ro=FreeCAD.Rotation(180,0,90)
+	rot=steelFrame.Placement.Rotation.multiply(ro)	
+	
+	Rect=Draft.makeRectangle(rect.Length, rect.Height, placement=FreeCAD.Placement(place, rot))
+	panel = Arch.makePanel(Rect, thickness=thick)
+	if material:	
+		panel.Material=material
+	
 	
 def mergeAdjacentRect(adj):
 	"""
