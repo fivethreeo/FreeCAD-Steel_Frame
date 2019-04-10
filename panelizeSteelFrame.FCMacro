@@ -14,7 +14,8 @@ __Communication__ = ''
 __Files__ = ''
 
 from importlib import reload
-from PySide import QtGui
+from PySide import QtGui, QtCore
+import FreeCADGui, Arch, Draft
 import funcPanelizer as fP
 
 #Reload in debug mode
@@ -32,8 +33,23 @@ class DialogPanelizer():
 		self.form.changeFrame.clicked.connect(self.updateFrameSelection)
 		self.form.selectFace.clicked.connect(self.getSelectedFace)
 		self.form.panelize.clicked.connect(self.panelize)
+		self.form.updateMaterialsButton.clicked.connect(self.fillMaterialsCombo)		
 		self.form.reusePieces.setChecked(True)		
 		self.form.infoFace.setText("")
+		##Panels
+		self.model = QtGui.QStandardItemModel()
+		self.model.setHorizontalHeaderLabels(["Length","Height"])
+		self.form.sizesList.setModel(self.model)
+		self.form.sizesList.setUniformRowHeights(True)
+		self.form.sizesList.setItemDelegate(PanelSizesDelegate())
+		QtCore.QObject.connect(self.form.addButton,QtCore.SIGNAL("pressed()"),self.addPanelSize)
+		QtCore.QObject.connect(self.form.delButton,QtCore.SIGNAL("pressed()"),self.delPanelSize)
+		self.addPanelSize(1219,2743)
+		self.addPanelSize(1219,2438)
+		### 
+		self.createDefaultMaterials()
+		self.fillMaterialsCombo()		
+		##
 		self.selection=Gui.Selection.getSelection()
 		self.frame=None
 		self.face=None
@@ -48,6 +64,59 @@ class DialogPanelizer():
 	
 	def cancel(self):		
 		FreeCADGui.Control.closeDialog()
+		
+	def addPanelSize(self, length=1000, height=2000):
+		item1 = QtGui.QStandardItem()		
+		item2 = QtGui.QStandardItem()
+		item1.setText(str(length)+" mm")
+		item2.setText(str(height)+" mm")
+		self.model.appendRow([item1,item2])
+		
+	def delPanelSize(self):
+		sel = self.form.sizesList.selectedIndexes()
+		if sel:
+			row = sel[0].row()
+			if row >= 0:
+				self.model.takeRow(row)
+				
+	def getPanelSizes(self):
+		sizes=[]		
+		for row in range(self.model.rowCount()):			
+			l = self.model.item(row,0).text()
+			h = self.model.item(row,1).text()
+			length, height=FreeCAD.Units.Quantity(l).Value,FreeCAD.Units.Quantity(h).Value
+			if (length,height) not in sizes and (height,length) not in sizes:
+				sizes.append((length,height))		
+		return sizes
+	
+	def createDefaultMaterials(self):
+		existingMaterials = []
+		for obj in FreeCAD.ActiveDocument.Objects:
+			if Draft.getType(obj) == "MultiMaterial" or obj.isDerivedFrom("App::MaterialObject"):
+				existingMaterials.append(obj.Label)
+		if "FRCC_Mat" not in existingMaterials:
+			frcc=Arch.makeMaterial()
+			frcc.Label="FRCC_Mat"
+			frcc.Color=(0.67,0.67,0.67)	
+			foam=Arch.makeMaterial()
+			foam.Label="Foam_Mat"
+			foam.Color=(1.0,1.0,0.75)			
+			rokon=Arch.makeMultiMaterial()
+			rokon.Label="ROK-ON_Mat"
+			rokon.Materials=[frcc,foam,frcc]
+			rokon.Names=["FRCC6","Foam","FRCC12"]
+			rokon.Thicknesses=[6.0,0.0,12.0]
+	
+	def fillMaterialsCombo(self):
+		"fills the existing multimaterials combo"		
+		self.existingmaterials = []
+		for obj in FreeCAD.ActiveDocument.Objects:
+			if Draft.getType(obj) == "MultiMaterial" or obj.isDerivedFrom("App::MaterialObject"):
+				self.existingmaterials.append(obj)
+		self.form.materialCombo.clear()
+		for m in self.existingmaterials:
+			self.form.materialCombo.addItem(m.Label)
+			
 		
 	def enableFormElements(self,flag):
 		self.form.offsetSup.setEnabled(flag)
@@ -132,10 +201,31 @@ class DialogPanelizer():
 				 'Windows': self.form.offsetWindows.property("quantity").Value,
 				 'Doors': self.form.offsetDoors.property("quantity").Value,
 				 'Joints': self.form.offsetJoints.property("quantity").Value}
+		self.panelSizes=self.getPanelSizes()
+		if len(self.panelSizes)==0:
+			FreeCAD.Console.PrintWarning("Standard Panel Sizes not provided.\n")
+			return None
 		self.rectangles=fP.tools.divideFrame(self.frame,offSets,self.flip)
+		# piezas=[(1219,2438),(2438,1219),(2743,1219),(1219,2743)]
+		# self.listaPiezas=[]
+		# for sR in self.rectangles:
+			
 		for r in self.rectangles:
 			fP.tools.drawRectangle(r,self.frame,self.flip)
 		
+
+class PanelSizesDelegate(QtGui.QStyledItemDelegate):
+	def __init__(self, parent=None, *args):
+		QtGui.QStyledItemDelegate.__init__(self, parent, *args)
+		
+	def createEditor(self,parent,option,index):
+		ui = FreeCADGui.UiLoader()
+		editor = ui.createWidget("Gui::InputField")
+		editor.setProperty("minimum",1)
+		editor.setProperty("unit","mm")		
+		editor.setSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Minimum)
+		editor.setParent(parent)
+		return editor
 		
 	
 
