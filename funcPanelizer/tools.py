@@ -15,7 +15,7 @@ class Rectangle(object):
 		self.vertI=FreeCAD.Vector()
 
 		
-def drawRectangle(rect,steelFrame,flip, thick, material=None):
+def drawPanel(rect,steelFrame,flip, thick, material=None):
 	"""
 	Draws the panel on the steelFrame
 	"""

@@ -224,7 +224,7 @@ class DialogPanelizer():
 		else:
 			material=None
 		for r in self.rectangles:
-			fP.tools.drawRectangle(r,self.frame,self.flip,thickness,material)
+			fP.tools.drawPanel(r,self.frame,self.flip,thickness,material)
 		FreeCAD.ActiveDocument.recompute()
 		
 
