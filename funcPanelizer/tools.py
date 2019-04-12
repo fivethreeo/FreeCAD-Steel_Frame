@@ -13,6 +13,16 @@ class Rectangle(object):
 		self.Length=0
 		self.Height=0		
 		self.vertI=FreeCAD.Vector()
+		
+def convertToRectangle(lis):
+	rectList=[]
+	for e in lis:
+		subF=Rectangle()			
+		subF.vertI=FreeCAD.Vector(tuple(e[0]))
+		subF.Length=e[1][0]
+		subF.Height=e[1][1]
+		rectList.append(subF)
+	return rectList
 
 		
 def drawPanel(rect,steelFrame,flip, thick, material=None):
