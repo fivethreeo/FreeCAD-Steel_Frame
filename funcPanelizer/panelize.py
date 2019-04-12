@@ -90,16 +90,8 @@ def paneliza(subFrame,piezas,reutilizar=1):
                     #1 Pieza < dist horizontal y pieza < dist vertical 
                     #####################################################
                 # No hay que cortar la pieza, calculamos coordenadas y la colocamos y ajusto distancias
-                    if subFrame[2]=='Y':
-                        coordenadaPiezaX =subFrame[0][0]
-                        
-                        #                coord inicial +ancho tota -distancia por cubrir
-                        coordenadaPiezaY =subFrame[0][1]+ancho-distanciaCubrirH
-                        
-                    else:
-                        coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
-                        coordenadaPiezaY =subFrame[0][1]
-                        
+                    coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
+                    coordenadaPiezaY =subFrame[0][1]                        
                     coordenadaPiezaZ = subFrame[0][2]+alto-distanciaCubrirV
                     #revisar que la pieza ultima en el margen derecho no sea menor que el minimo
                     if distanciaCubrirH-piezaElegida[0]<anchoMinimoLado:
@@ -135,16 +127,8 @@ def paneliza(subFrame,piezas,reutilizar=1):
                     #######################################################
                     #2Pieza < dist horizontal y pieza = dist vertical 
                     ######################################################
-                    if subFrame[2]=='Y':
-                        coordenadaPiezaX =subFrame[0][0]
-                        
-                        #                coord inicial +ancho tota -distancia por cubrir
-                        coordenadaPiezaY =subFrame[0][1]+ancho-distanciaCubrirH
-                        
-                    else:
-                        coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
-                        coordenadaPiezaY =subFrame[0][1]
-                        
+                    coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
+                    coordenadaPiezaY =subFrame[0][1]
                     coordenadaPiezaZ = subFrame[0][2]+alto-distanciaCubrirV
                     #revisar que la pieza ultima en el margen derecho no sea menor que el minimo
                     if distanciaCubrirH-piezaElegida[0]<anchoMinimoLado:
@@ -167,13 +151,9 @@ def paneliza(subFrame,piezas,reutilizar=1):
                     #######################################################
                 # hay que cortar la pieza horizontalmente, calcular coords e iniciar nueva columna.
                     piezaCortada=(piezaElegida[0],distanciaCubrirV)
-                    if subFrame[2]=='Y':
-                        coordenadaPiezaX =subFrame[0][0]
-                        coordenadaPiezaY =subFrame[0][1]+ancho-distanciaCubrirH
-                        
-                    else: # Marco en X
-                        coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
-                        coordenadaPiezaY =subFrame[0][1]
+                    
+                    coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
+                    coordenadaPiezaY =subFrame[0][1]
                     coordenadaPiezaZ = subFrame[0][2]+alto-distanciaCubrirV
                     #revisar que la proxima pieza ultima en el margen derecho no sea menor que el minimo
                     if distanciaCubrirH-piezaElegida[0]<anchoMinimoLado:
@@ -215,17 +195,10 @@ def paneliza(subFrame,piezas,reutilizar=1):
                     #####################################################
                     # No hay que cortar, calcular coords y ajustar dist vertical
                     
-                    if subFrame[2]=='Y':
-                        coordenadaPiezaX =subFrame[0][0]
-                        
-                        #                coord inicial +ancho tota -distancia por cubrir
-                        coordenadaPiezaY =subFrame[0][1]+ancho-distanciaCubrirH
-                        
-                    else:
-                        coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
-                        coordenadaPiezaY =subFrame[0][1]
-                        
+                    coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
+                    coordenadaPiezaY =subFrame[0][1]
                     coordenadaPiezaZ = subFrame[0][2]+alto-distanciaCubrirV
+                    
                     #revisamos si hay que ajustar la pieza verticalmente para no generar una pieza < minima 
                     if distanciaCubrirV-piezaElegida[1]<anchoMinimoAlto: #pero si hay ajuste en alto
                            distQueda=distanciaCubrirV-piezaElegida[1]
@@ -243,15 +216,8 @@ def paneliza(subFrame,piezas,reutilizar=1):
                     #5pieza = dist horizontal y pieza = dist Vertical
                     #######################################################
                     # meter pieza a la lista, calcular coords salir del programa.
-                    if subFrame[2]=='Y':
-                        coordenadaPiezaX =subFrame[0][0]
-                        
-                        #                coord inicial +ancho tota -distancia por cubrir
-                        coordenadaPiezaY =subFrame[0][1]+ancho-distanciaCubrirH
-                        
-                    else:
-                        coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
-                        coordenadaPiezaY =subFrame[0][1]
+                    coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
+                    coordenadaPiezaY =subFrame[0][1]
                     coordenadaPiezaZ = subFrame[0][2]+alto-distanciaCubrirV
                     
                     listaPiezas.append(((coordenadaPiezaX,coordenadaPiezaY,coordenadaPiezaZ),piezaElegida))
@@ -264,15 +230,8 @@ def paneliza(subFrame,piezas,reutilizar=1):
                     # hay que cortar la pieza horizontalmente, calcular coords e iniciar nueva columna.
                     piezaCortada=(distanciaCubrirH,distanciaCubrirV)
                     
-                    if subFrame[2]=='Y':
-                        coordenadaPiezaX =subFrame[0][0]
-                        
-                        #                coord inicial +ancho tota -distancia por cubrir
-                        coordenadaPiezaY =subFrame[0][1]+ancho-piezaCortada[0]
-                        
-                    else: # Marco en X
-                        coordenadaPiezaX =subFrame[0][0]+ancho-piezaCortada[0]
-                        coordenadaPiezaY =subFrame[0][1]
+                    coordenadaPiezaX =subFrame[0][0]+ancho-piezaCortada[0]
+                    coordenadaPiezaY =subFrame[0][1]
                         #distanciaCubrirH -= piezaMinimo[0] #actualizamos la distancia a cubrir
                     coordenadaPiezaZ = subFrame[0][2]+alto-piezaCortada[1]
                     listaPiezas.append(((coordenadaPiezaX,coordenadaPiezaY,coordenadaPiezaZ),piezaCortada))
@@ -291,15 +250,9 @@ def paneliza(subFrame,piezas,reutilizar=1):
                     # hay que cortar la pieza verticalmente, calculamos coordenadas y la colocamos y ajustamos coords
                     piezaCortada=(distanciaCubrirH,piezaElegida[1])
                     desperdicio += (piezaElegida[0]-distanciaCubrirH)*piezaElegida[1]
-                    if subFrame[2]=='Y':
-                        coordenadaPiezaX =subFrame[0][0]
-                        
-                        #                coord inicial +ancho tota -distancia por cubrir
-                        coordenadaPiezaY =subFrame[0][1]+ancho-distanciaCubrirH
-                        
-                    else:
-                        coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
-                        coordenadaPiezaY =subFrame[0][1]
+                    
+                    coordenadaPiezaX =subFrame[0][0]+ancho-distanciaCubrirH
+                    coordenadaPiezaY =subFrame[0][1]
                         
                     coordenadaPiezaZ = subFrame[0][2]+alto-distanciaCubrirV
                     #revisamos si hay que ajustar la pieza verticalmente para no generar una pieza < minima 
@@ -322,15 +275,9 @@ def paneliza(subFrame,piezas,reutilizar=1):
                     # hay que cortar la pieza verticalmente, calcular coords y salir
                     piezaCortada=(distanciaCubrirH,distanciaCubrirV)
                     desperdicio += (piezaElegida[0]-distanciaCubrirH)*piezaElegida[1]
-                    if subFrame[2]=='Y':
-                        coordenadaPiezaX =subFrame[0][0]
-                        
-                        #                coord inicial +ancho tota -distancia por cubrir
-                        coordenadaPiezaY =subFrame[0][1]+ancho-piezaCortada[0]
-                        
-                    else: # Marco en X
-                        coordenadaPiezaX =subFrame[0][0]+ancho-piezaCortada[0]
-                        coordenadaPiezaY =subFrame[0][1]
+                    
+                    coordenadaPiezaX =subFrame[0][0]+ancho-piezaCortada[0]
+                    coordenadaPiezaY =subFrame[0][1]
                         #distanciaCubrirH -= piezaMinimo[0] #actualizamos la distancia a cubrir
                     coordenadaPiezaZ = subFrame[0][2]+alto-piezaCortada[1]# estaba esto subFrame[0][2]
                     listaPiezas.append(((coordenadaPiezaX,coordenadaPiezaY,coordenadaPiezaZ),piezaCortada))
@@ -345,15 +292,9 @@ def paneliza(subFrame,piezas,reutilizar=1):
                     piezaCortada=(distanciaCubrirH,distanciaCubrirV)
                     desp=(piezaElegida[0]*piezaElegida[1])-(distanciaCubrirH*distanciaCubrirV)
                     desperdicio += desp
-                    if subFrame[2]=='Y':
-                        coordenadaPiezaX =subFrame[0][0]
-                        
-                        #                coord inicial +ancho tota -distancia por cubrir
-                        coordenadaPiezaY =subFrame[0][1]+ancho-piezaCortada[0]
-                        
-                    else: # Marco en X
-                        coordenadaPiezaX =subFrame[0][0]+ancho-piezaCortada[0]
-                        coordenadaPiezaY =subFrame[0][1]
+                    
+                    coordenadaPiezaX =subFrame[0][0]+ancho-piezaCortada[0]
+                    coordenadaPiezaY =subFrame[0][1]
                         #distanciaCubrirH -= piezaMinimo[0] #actualizamos la distancia a cubrir
                     coordenadaPiezaZ = subFrame[0][2]+alto-piezaCortada[1]# estaba esto subFrame[0][2]
                     listaPiezas.append(((coordenadaPiezaX,coordenadaPiezaY,coordenadaPiezaZ),piezaCortada))
@@ -362,7 +303,7 @@ def paneliza(subFrame,piezas,reutilizar=1):
     print('error Caso no contemplado')
     return listaPiezas,desperdicio,desperdicio/(ancho*alto)
 
-#subFrame=[(0,0,0),(6400,3309),'X'] #punto inicio,largo,alto,direccion
+#subFrame=[(0,0,0),(6400,3309)] #punto inicio,largo,alto,direccion
 #piezas=[(1219,2438),(2438,1219),(2743,1219),(1219,2743)] #tamano de los paneles que juega
 #s,d,p=paneliza(subFrame,piezas,1)
 #print ('Desperdicio ',round(p*100,3),'%')
