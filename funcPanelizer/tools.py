@@ -38,6 +38,7 @@ def drawPanel(rect,steelFrame,flip, thick, material=None):
 	panel = Arch.makePanel(Rect, thickness=thick)
 	if material:	
 		panel.Material=material
+	return panel
 	
 	
 def mergeAdjacentRect(adj):
@@ -189,3 +190,25 @@ def divideFrame(steelFrame,offSets,flip):
 						
 	# for r in rect:
 		# drawRectangle(r,steelFrame,flip)
+		
+def groupPanelPieces(panelPiece, steelFrame):
+	"""
+	This function groups the panel pieces recently created
+	It creates the group inside the parent group if it exists
+	otherwise directly into the document
+	"""
+	doc = FreeCAD.ActiveDocument
+	if len(steelFrame.InList) == 1:		
+		parentGroup = steelFrame.InList[0]
+		if parentGroup.Label == str(steelFrame.Label) + "Panels":
+			groupPanels = parentGroup
+		else:
+			groupPanels = doc.addObject("App::DocumentObjectGroup","Group")
+			parentGroup.addObject(groupPanels)
+			groupPanels.addObject(steelFrame)
+			groupPanels.Label = str(steelFrame.Label) + "Panels"
+	else:
+		groupPanels = doc.addObject("App::DocumentObjectGroup","Group")
+		groupPanels.Label = str(steelFrame.Label) + "Panels"
+		groupPanels.addObject(steelFrame)
+	groupPanels.addObject(panelPiece)
