@@ -56,6 +56,7 @@ class DialogPanelizer():
 		self.face=None
 		self.flip=0
 		self.rectangles=[]
+		self.panelPieces=[]
 		self.getSteelFrame(self.selection)
 
 		
@@ -87,7 +88,8 @@ class DialogPanelizer():
 			h = self.model.item(row,1).text()
 			length, height=FreeCAD.Units.Quantity(l).Value,FreeCAD.Units.Quantity(h).Value
 			if (length,height) not in sizes and (height,length) not in sizes:
-				sizes.append((length,height))		
+				sizes.append((length,height))
+				sizes.append((height,length))	
 		return sizes
 	
 	def createDefaultMaterials(self):
@@ -128,7 +130,8 @@ class DialogPanelizer():
 		self.form.offsetDoors.setEnabled(flag)
 		self.form.offsetJoints.setEnabled(flag)
 		self.form.reusePieces.setEnabled(flag)
-		self.form.panelize.setEnabled(flag)		
+		self.form.panelize.setEnabled(flag)
+		self.panelPieces=[]	
 	
 	#Get the Steel Frame	
 	def getSteelFrame(self,selection):
@@ -207,10 +210,8 @@ class DialogPanelizer():
 			FreeCAD.Console.PrintWarning("Standard Panel Sizes not provided.\n")
 			return None
 
-		self.rectangles=fP.tools.divideFrame(self.frame,offSets,self.flip)
-		# # piezas=[(1219,2438),(2438,1219),(2743,1219),(1219,2743)]
-		# # self.listaPiezas=[]
-		# # for sR in self.rectangles:
+		self.rectangles=fP.tools.divideFrame(self.frame,offSets,self.flip)		
+			
 		thickness=self.form.panelThickness.property("quantity").Value
 		if len(self.existingmaterials)>0:
 			iM=self.form.materialCombo.currentIndex()
@@ -223,7 +224,13 @@ class DialogPanelizer():
 				material=None
 		else:
 			material=None
-		for r in self.rectangles:
+			
+		self.panelPieces=[]	
+		for sR in self.rectangles:	
+			t1=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],self.panelSizes)
+			self.panelPieces.extend(fP.tools.convertToRectangle(t1[0]))
+		
+		for r in self.panelPieces:
 			panelPiece = fP.tools.drawPanel(r,self.frame,self.flip,thickness,material)
 			fP.tools.groupPanelPieces(panelPiece, self.frame)
 		FreeCAD.ActiveDocument.recompute()
