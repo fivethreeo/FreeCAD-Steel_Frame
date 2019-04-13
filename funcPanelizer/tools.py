@@ -15,6 +15,9 @@ class Rectangle(object):
 		self.vertI=FreeCAD.Vector()
 		
 def convertToRectangle(lis):
+	"""
+	Convert a list with coordinates to a rectangle object
+	"""
 	rectList=[]
 	for e in lis:
 		subF=Rectangle()			
