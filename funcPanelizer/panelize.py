@@ -206,7 +206,7 @@ def paneliza(subFrame,piezas,reutilizar=1):
                            desperdicio+=piezaElegida[0]*falta #agregamos desperdicio por redefinicion
                            piezaEspecial=(piezaElegida[0],piezaElegida[1]-falta)
                            listaPiezas.append(((coordenadaPiezaX,coordenadaPiezaY,coordenadaPiezaZ),piezaEspecial))
-                           distanciaCubrirV -= piezaReEspecial[1]
+                           distanciaCubrirV -= piezaEspecial[1]
                     else: #no hay necesidad de redefinir pieza ni en alto
                            listaPiezas.append(((coordenadaPiezaX,coordenadaPiezaY,coordenadaPiezaZ),piezaElegida))
                            distanciaCubrirV -= piezaElegida[1]
@@ -302,9 +302,10 @@ def paneliza(subFrame,piezas,reutilizar=1):
  
     print('error Caso no contemplado')
     return listaPiezas,desperdicio,desperdicio/(ancho*alto)
-
-#subFrame=[(0,0,0),(6400,3309)] #punto inicio,largo,alto,direccion
+#Vector (2900.0, 0.0, 2000.0) 1000.0 1300.0
+subFrame=[(2900,0,2000),(1000,1300)] #punto inicio,largo,alto,direccion
 #piezas=[(1219,2438),(2438,1219),(2743,1219),(1219,2743)] #tamano de los paneles que juega
-#s,d,p=paneliza(subFrame,piezas,1)
-#print ('Desperdicio ',round(p*100,3),'%')
-#print ('Desperdicio ',round(d/1e6,2),'m2')
+piezas=[(1000,1000)]
+s,d,p=paneliza(subFrame,piezas,1)
+print ('Desperdicio ',round(p*100,3),'%')
+print ('Desperdicio ',round(d/1e6,2),'m2')
