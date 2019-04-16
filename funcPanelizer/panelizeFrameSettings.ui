@@ -671,6 +671,9 @@
             <property name="text">
              <string>300 mm</string>
             </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
+            </property>
             <property name="unit" stdset="0">
              <string>mm</string>
             </property>
@@ -690,6 +693,9 @@
            <widget class="Gui::InputField" name="minHorSize">
             <property name="text">
              <string>406.4 mm</string>
+            </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
             </property>
             <property name="unit" stdset="0">
              <string>mm</string>

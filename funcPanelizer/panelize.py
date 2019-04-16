@@ -42,14 +42,13 @@ def eligePieza(piezas,distanciaH,distanciaV):
     return (minpos,sumaDesperdicios[minpos])
     
     
-def paneliza(subFrame,piezas,reutilizar=1):
+def paneliza(subFrame,piezas,reutilizar=1,anchoMinimoLado=300,anchoMinimoAlto=500):
     
     '''Funcion que toma un subframe y regresa una lista de piezas para panelizarlo
     regresa una lista de tuplas (coordenadas,(piezax o y,piezaz)) para llenarlo'''
     desperdicio=0
     tamanoMinimo=300 #tama minimo para aceptar piezas sobrantes.
-    anchoMinimoLado=300 #tamano minimo para ajuste en lado derecho
-    anchoMinimoAlto=500 #tamano minimo para ajuste arriba
+
     listaPiezas=[] #tuplas de piezas a colocar ((x,y,z),largo,ancho,desperdicio)
     listaReuso=[] #aqui guardaremos las piezas de reuso.
     ancho = subFrame[1][0]

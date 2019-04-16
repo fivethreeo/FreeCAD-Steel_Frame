@@ -20,6 +20,7 @@ import funcPanelizer as fP
 
 #Reload in debug mode
 reload(fP.tools)
+reload(fP.panelize)
 
 
 
@@ -214,7 +215,14 @@ class DialogPanelizer():
 		
 		self.rectangles=fP.tools.divideFrame(self.frame,offSets,self.flip)	
 			
-		thickness=self.form.panelThickness.property("quantity").Value		
+		thickness = self.form.panelThickness.property("quantity").Value
+		minVertSize = self.form.minVertSize.property("quantity").Value
+		minHorSize = self.form.minHorSize.property("quantity").Value
+		if minHorSize <= self.frame.Separation:
+			FreeCAD.Console.PrintWarning("The minimum horizontal size is smaller than the stud separation size.\n")
+		if offSets['Top']>0 and minVertSize <= offSets['Top']:
+			FreeCAD.Console.PrintWarning("The minimum vertical size is smaller than the top offset.\n")
+			
 		
 		if len(self.existingmaterials)>0:
 			iM=self.form.materialCombo.currentIndex()
@@ -231,7 +239,8 @@ class DialogPanelizer():
 		reusePieces = self.form.reusePieces.isChecked()
 		self.panelPieces = []	
 		for sR in self.rectangles:			
-			panelizeResult=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],self.panelSizes, reusePieces)
+			panelizeResult=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],
+							self.panelSizes, reusePieces, minHorSize, minVertSize)
 			self.panelPieces.extend(fP.tools.convertToRectangle(panelizeResult[0]))
 		
 		for r in self.panelPieces:
@@ -241,6 +250,9 @@ class DialogPanelizer():
 		
 
 class PanelSizesDelegate(QtGui.QStyledItemDelegate):
+	"""
+	The Delegate Class to create the items in the panelSizes item container
+	"""
 	def __init__(self, parent=None, *args):
 		QtGui.QStyledItemDelegate.__init__(self, parent, *args)
 		
