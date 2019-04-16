@@ -183,8 +183,8 @@ class DialogPanelizer():
 					self.form.infoFace.setText(faceName)
 					self.enableFormElements(True)
 					faceVertex=self.face.Vertexes[0].Point
-					if abs(faceVertex.distanceToPlane(self.frame.Placement.Base,faceNormal))>self.frame.Thickness+tolerance:
-						self.flip=1
+					if abs(faceVertex.distanceToPlane(self.frame.Placement.Base,faceNormal))>self.frame.Width/2:
+						self.flip=1						
 					else:
 						self.flip=0					
 				else:
@@ -193,6 +193,7 @@ class DialogPanelizer():
 				self.form.infoFace.setText('Select a face \non the side to panelize.')
 		else:
 			self.form.infoFace.setText('Select a face \non the side to panelize.')
+		
 	
 	def panelize(self):
 		"""
@@ -209,10 +210,11 @@ class DialogPanelizer():
 		if len(self.panelSizes)==0:
 			FreeCAD.Console.PrintWarning("Standard Panel Sizes not provided.\n")
 			return None
-
-		self.rectangles=fP.tools.divideFrame(self.frame,offSets,self.flip)		
+		
+		self.rectangles=fP.tools.divideFrame(self.frame,offSets,self.flip)	
 			
-		thickness=self.form.panelThickness.property("quantity").Value
+		thickness=self.form.panelThickness.property("quantity").Value		
+		
 		if len(self.existingmaterials)>0:
 			iM=self.form.materialCombo.currentIndex()
 			try:
@@ -226,7 +228,7 @@ class DialogPanelizer():
 			material=None
 			
 		self.panelPieces=[]	
-		for sR in self.rectangles:	
+		for sR in self.rectangles:			
 			t1=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],self.panelSizes)
 			self.panelPieces.extend(fP.tools.convertToRectangle(t1[0]))
 		
