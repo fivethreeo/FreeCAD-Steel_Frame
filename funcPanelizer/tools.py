@@ -103,8 +103,9 @@ def divideFrame(steelFrame,offSets,flip):
 	
 	def createRectangles(fr):
 		"""
-		Recursive function that divides the received rectangle in two rectangles
+		Recursive function that divides the received rectangle in two or more rectangles
 		fr: receives an object of the class Rectangle (the frame)
+		It appends the final rectangles into the list rectangles
 		"""
 		#windows inside the frame
 		winInt=[w for w in windows if fr.vertI.x<=w[0] and fr.vertI.x+fr.Length>=w[0]+w[2] and fr.vertI.z<=w[1] and fr.vertI.z+fr.Height>=w[1]+w[3]]
