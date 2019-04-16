@@ -183,13 +183,16 @@
              <string/>
             </property>
             <property name="text">
-             <string>300 mm</string>
+             <string>0 mm</string>
+            </property>
+            <property name="singleStep">
+             <double>1.000000000000000</double>
             </property>
             <property name="unit" stdset="0">
              <string>mm</string>
             </property>
             <property name="quantity" stdset="0">
-             <double>300.000000000000000</double>
+             <double>0.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -281,13 +284,13 @@
              </size>
             </property>
             <property name="text">
-             <string>-13 mm</string>
+             <string>0 mm</string>
             </property>
             <property name="unit" stdset="0">
              <string>mm</string>
             </property>
             <property name="quantity" stdset="0">
-             <double>-13.000000000000000</double>
+             <double>0.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -508,25 +511,6 @@
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
-        <widget class="Gui::PrefCheckBox" name="reusePieces">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>460</y>
-           <width>196</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Use panel pieces</string>
-         </property>
-         <property name="tristate">
-          <bool>false</bool>
-         </property>
-        </widget>
        </widget>
        <widget class="QWidget" name="tab_3">
         <attribute name="title">
@@ -537,7 +521,7 @@
           <rect>
            <x>0</x>
            <y>110</y>
-           <width>191</width>
+           <width>211</width>
            <height>231</height>
           </rect>
          </property>
@@ -549,7 +533,7 @@
            <rect>
             <x>0</x>
             <y>20</y>
-            <width>191</width>
+            <width>201</width>
             <height>171</height>
            </rect>
           </property>
@@ -563,7 +547,7 @@
          <widget class="QWidget" name="gridLayoutWidget">
           <property name="geometry">
            <rect>
-            <x>10</x>
+            <x>20</x>
             <y>190</y>
             <width>168</width>
             <height>41</height>
@@ -600,7 +584,7 @@
           <item row="0" column="1">
            <widget class="Gui::InputField" name="panelThickness">
             <property name="text">
-             <string>10 mm</string>
+             <string>12.7 mm</string>
             </property>
             <property name="minimum">
              <double>0.000000000000000</double>
@@ -609,7 +593,7 @@
              <string>mm</string>
             </property>
             <property name="quantity" stdset="0">
-             <double>10.000000000000000</double>
+             <double>12.699999999999999</double>
             </property>
            </widget>
           </item>
@@ -638,6 +622,80 @@
             <property name="icon">
              <iconset theme="view-refresh">
               <normaloff>.</normaloff>.</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="Gui::PrefCheckBox" name="reusePieces">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>350</y>
+           <width>196</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Reuse panels waste</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="tristate">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QWidget" name="gridLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>380</y>
+           <width>211</width>
+           <height>80</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Min Vert Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="Gui::InputField" name="minVertSize">
+            <property name="text">
+             <string>300 mm</string>
+            </property>
+            <property name="unit" stdset="0">
+             <string>mm</string>
+            </property>
+            <property name="quantity" stdset="0">
+             <double>300.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Min Hor Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="Gui::InputField" name="minHorSize">
+            <property name="text">
+             <string>406.4 mm</string>
+            </property>
+            <property name="unit" stdset="0">
+             <string>mm</string>
+            </property>
+            <property name="quantity" stdset="0">
+             <double>406.399999999999977</double>
             </property>
            </widget>
           </item>
