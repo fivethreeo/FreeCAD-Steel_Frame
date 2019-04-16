@@ -45,7 +45,9 @@ class DialogPanelizer():
 		QtCore.QObject.connect(self.form.addButton,QtCore.SIGNAL("pressed()"),self.addPanelSize)
 		QtCore.QObject.connect(self.form.delButton,QtCore.SIGNAL("pressed()"),self.delPanelSize)
 		self.addPanelSize(1219,2743)
-		self.addPanelSize(1219,2438)
+		self.addPanelSize(2743,1219)
+		self.addPanelSize(1219,2438)		
+		self.addPanelSize(2438,1219)
 		###
 		self.existingmaterials = []
 		self.createDefaultMaterials()
@@ -88,8 +90,7 @@ class DialogPanelizer():
 			h = self.model.item(row,1).text()
 			length, height=FreeCAD.Units.Quantity(l).Value,FreeCAD.Units.Quantity(h).Value
 			if (length,height) not in sizes and (height,length) not in sizes:
-				sizes.append((length,height))
-				sizes.append((height,length))	
+				sizes.append((length,height))					
 		return sizes
 	
 	def createDefaultMaterials(self):
@@ -227,9 +228,10 @@ class DialogPanelizer():
 		else:
 			material=None
 			
-		self.panelPieces=[]	
+		reusePieces = self.form.reusePieces.isChecked()
+		self.panelPieces = []	
 		for sR in self.rectangles:			
-			t1=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],self.panelSizes)
+			t1=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],self.panelSizes, reusePieces)
 			self.panelPieces.extend(fP.tools.convertToRectangle(t1[0]))
 		
 		for r in self.panelPieces:
