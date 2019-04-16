@@ -231,8 +231,8 @@ class DialogPanelizer():
 		reusePieces = self.form.reusePieces.isChecked()
 		self.panelPieces = []	
 		for sR in self.rectangles:			
-			t1=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],self.panelSizes, reusePieces)
-			self.panelPieces.extend(fP.tools.convertToRectangle(t1[0]))
+			panelizeResult=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],self.panelSizes, reusePieces)
+			self.panelPieces.extend(fP.tools.convertToRectangle(panelizeResult[0]))
 		
 		for r in self.panelPieces:
 			panelPiece = fP.tools.drawPanel(r,self.frame,self.flip,thickness,material)
