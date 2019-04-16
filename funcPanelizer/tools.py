@@ -86,12 +86,15 @@ def divideFrame(steelFrame,offSets,flip):
 	frame.Height=steelFrame.Height.Value+offSets['Top']+offSets['Bottom']
 	
 	
-	if len(steelFrame.Windows)>0:                           #Gets the information about windows and doors
-		windows=[list(map(float,w.split(','))) for w in steelFrame.Windows]		
-		windows=sorted(windows,key=lambda x:x[0])		
-		for i,w in enumerate(windows):						#Adds the offsets and joints space to the windows and doors
-			of=offSets['Doors'] if w[1]==0 else offSets['Windows']
-			windows[i]=[w[0]+of,w[1] if w[1]==0 else w[1]+of,w[2]-2*of,w[3]-of if w[1]==0 else w[3]-2*of]
+	if len(steelFrame.Windows)>0:                        #Gets the information about windows and doors
+		if steelFrame.Windows[0]!='':
+			windows=[list(map(float,w.split(','))) for w in steelFrame.Windows]		
+			windows=sorted(windows,key=lambda x:x[0])		
+			for i,w in enumerate(windows):						#Adds the offsets and joints space to the windows and doors
+				of=offSets['Doors'] if w[1]==0 else offSets['Windows']
+				windows[i]=[w[0]+of,w[1] if w[1]==0 else w[1]+of,w[2]-2*of,w[3]-of if w[1]==0 else w[3]-2*of]
+		else:
+			windows=[]
 	else:
 		windows=[]
 	
