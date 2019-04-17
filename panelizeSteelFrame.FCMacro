@@ -21,6 +21,7 @@ import funcPanelizer as fP
 #Reload in debug mode
 reload(fP.tools)
 reload(fP.panelize)
+reload(fP.pdfTools)
 
 
 
@@ -195,6 +196,16 @@ class DialogPanelizer():
 				self.form.infoFace.setText('Select a face \non the side to panelize.')
 		else:
 			self.form.infoFace.setText('Select a face \non the side to panelize.')
+			
+	def exportPdf(self, thickness, material):
+		"""
+		Exports the panel pieces position in pdf
+		"""		
+		projectName = self.form.projectName.text()
+		projectRevision = self.form.projectRevision.text()
+		directory = self.form.directoryPdf.property("fileName")
+		assemblyName=fP.tools.assemblyName(self.frame)	
+		fP.pdfTools.createPdf(self.frame, self.panelPieces, self.flip, projectName, projectRevision, directory, assemblyName, thickness, material)
 		
 	
 	def panelize(self):
@@ -226,15 +237,14 @@ class DialogPanelizer():
 		
 		if len(self.existingmaterials)>0:
 			iM=self.form.materialCombo.currentIndex()
-			try:
-				material=self.existingmaterials[iM]
+			material=self.existingmaterials[iM]
+			if hasattr(material, 'Thicknesses'):			
 				if thickness<sum(material.Thicknesses):
 					FreeCAD.Console.PrintWarning("The thickness is too small for the material.\n")
 					return None
-			except:
-				material=None
 		else:
-			material=None
+			material = None
+
 			
 		reusePieces = self.form.reusePieces.isChecked()
 		self.panelPieces = []	
@@ -245,8 +255,17 @@ class DialogPanelizer():
 		
 		for r in self.panelPieces:
 			panelPiece = fP.tools.drawPanel(r,self.frame,self.flip,thickness,material)
+			setattr(r,'Label',panelPiece.Label)			
 			fP.tools.groupPanelPieces(panelPiece, self.frame)
 		FreeCAD.ActiveDocument.recompute()
+
+		#Exports the steel frame and the panel pieces to a pdf file
+		if self.form.exportPdf.isChecked():
+			self.exportPdf(thickness, material.Label)
+		self.panelPieces = []
+		self.rectangles = []
+		
+			
 		
 
 class PanelSizesDelegate(QtGui.QStyledItemDelegate):
