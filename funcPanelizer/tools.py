@@ -32,7 +32,7 @@ def convertToRectangle(lis):
 	return rectList
 
 		
-def drawPanel(rect,steelFrame,flip, thick, material=None):
+def drawPanel(rect,steelFrame,flip, thick, material=None, namePanel='Panel'):
 	"""
 	Draws the panel on the steelFrame
 	"""
@@ -52,7 +52,10 @@ def drawPanel(rect,steelFrame,flip, thick, material=None):
 	rot=steelFrame.Placement.Rotation.multiply(ro)	
 	
 	Rect=Draft.makeRectangle(rect.Length, rect.Height, placement=FreeCAD.Placement(place, rot))
-	panel = Arch.makePanel(Rect, thickness=thick)
+	if namePanel != '' and namePanel != 'Panel':
+		panel = Arch.makePanel(Rect, thickness=thick, name = namePanel)
+	else:
+		panel = Arch.makePanel(Rect, thickness=thick)
 	if material:	
 		panel.Material=material
 	return panel

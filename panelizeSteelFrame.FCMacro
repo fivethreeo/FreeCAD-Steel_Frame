@@ -236,7 +236,7 @@ class DialogPanelizer():
 			
 		
 		if len(self.existingmaterials)>0:
-			iM=self.form.materialCombo.currentIndex()
+			iM = self.form.materialCombo.currentIndex()
 			material=self.existingmaterials[iM]
 			if hasattr(material, 'Thicknesses'):			
 				if thickness<sum(material.Thicknesses):
@@ -253,8 +253,9 @@ class DialogPanelizer():
 							self.panelSizes, reusePieces, minHorSize, minVertSize)
 			self.panelPieces.extend(fP.tools.convertToRectangle(panelizeResult[0]))
 		
+
 		for r in self.panelPieces:
-			panelPiece = fP.tools.drawPanel(r,self.frame,self.flip,thickness,material)
+			panelPiece = fP.tools.drawPanel(r,self.frame,self.flip,thickness,material, self.form.panelName.text())
 			setattr(r,'Label',panelPiece.Label)			
 			fP.tools.groupPanelPieces(panelPiece, self.frame)
 		FreeCAD.ActiveDocument.recompute()
