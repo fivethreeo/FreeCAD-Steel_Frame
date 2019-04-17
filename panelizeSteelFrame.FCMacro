@@ -38,6 +38,7 @@ class DialogPanelizer():
 		self.form.updateMaterialsButton.clicked.connect(self.fillMaterialsCombo)		
 		self.form.reusePieces.setChecked(True)		
 		self.form.infoFace.setText("")
+		self.form.directoryPdf.setProperty("fileName",fP.tools.fileDir)
 		##Panels
 		self.model = QtGui.QStandardItemModel()
 		self.model.setHorizontalHeaderLabels(["Length","Height"])
@@ -49,7 +50,7 @@ class DialogPanelizer():
 		self.addPanelSize(1219,2743)
 		self.addPanelSize(2743,1219)
 		self.addPanelSize(1219,2438)		
-		self.addPanelSize(2438,1219)
+		self.addPanelSize(2438,1219)		
 		###
 		self.existingmaterials = []
 		self.createDefaultMaterials()
