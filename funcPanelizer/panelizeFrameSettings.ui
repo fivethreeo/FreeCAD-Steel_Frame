@@ -751,7 +751,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="nameProject"/>
+           <widget class="QLineEdit" name="projectName"/>
           </item>
           <item>
            <widget class="QLabel" name="labDir_3">
@@ -761,7 +761,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="revisionProject"/>
+           <widget class="QLineEdit" name="projectRevision"/>
           </item>
          </layout>
         </widget>
