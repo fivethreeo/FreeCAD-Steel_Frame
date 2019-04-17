@@ -577,7 +577,7 @@
            <x>0</x>
            <y>10</y>
            <width>221</width>
-           <height>81</height>
+           <height>95</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
@@ -622,6 +622,20 @@
             <property name="icon">
              <iconset theme="view-refresh">
               <normaloff>.</normaloff>.</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Label</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="panelName">
+            <property name="text">
+             <string>Panel</string>
             </property>
            </widget>
           </item>
