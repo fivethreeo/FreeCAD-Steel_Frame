@@ -3,6 +3,9 @@ from itertools import groupby
 
 import FreeCAD, Draft, Arch
 
+
+fileDir=os.path.dirname(FreeCAD.ActiveDocument.FileName)
+fileName=os.path.splitext(os.path.basename(FreeCAD.ActiveDocument.FileName))[0]
 #Path to the user Interface
 funcDir = os.path.dirname(__file__)
 pathUI=os.path.join(funcDir, "panelizeFrameSettings.ui")
@@ -13,6 +16,7 @@ class Rectangle(object):
 		self.Length=0
 		self.Height=0		
 		self.vertI=FreeCAD.Vector()
+		self.Label=''
 		
 def convertToRectangle(lis):
 	"""
@@ -229,3 +233,14 @@ def groupPanelPieces(panelPiece, steelFrame):
 		groupPanels.Label = str(steelFrame.Label) + "Panels"
 		groupPanels.addObject(steelFrame)
 	groupPanels.addObject(panelPiece)
+	
+def assemblyName(steelFrame):
+	"""
+	Concatenates the Frame label with the Assembly label if exists
+	"""
+	label=''
+	sFGroup = steelFrame.InList[0]
+	if len(sFGroup.InList)==1:
+		label = sFGroup.InList[0].Label+'_'
+	label += steelFrame.Label
+	return label
