@@ -69,17 +69,18 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
         for ns in range(1,nStuds):
             notFrames.append((studs[index][0]+ns*s,pz0,h,False))
      
-    studs+=notFrames    
+    studs+=notFrames
+    # postes se defininen asi: (px, pz, h, flipped):
     ##********Cortar los postes que atraviesan ventanas y puertas
-    for w in win:        
+    for w in win:    #                     poste dentro de la ventana en x   poste inicia bajo ventana     poste mas alto q  ventana?     
         interStuds = list(filter(lambda x: w[0]< x[0]< w[0]+w[2] and x[1]<= w[1] +pz0 and w[1]+w[3]< x[1]+x[2], studs))
         for iStu in interStuds:
             studs.remove(iStu)
             if w[1]>0: #Revisa si hay espacio para que haya poste abajo
                 studs.append((iStu[0],iStu[1],w[1]-iStu[1],iStu[3]))#Agrega el poste bajo la ventana
             if w[1]+w[3]<h-isBeamOn*zBeam: #Revisa si hay espacio arriba de la ventana                                
-                studs.append((iStu[0],w[1]+w[3],iStu[2]-w[1]-w[3]+iStu[1]-isBeamOn*zBeam-isFEMOff*thick,iStu[3]))                
-
+                #studs.append((iStu[0],w[1]+w[3],iStu[2]-w[1]-w[3]+iStu[1]-isBeamOn*zBeam-isFEMOff*thick,iStu[3]))                
+                studs.append((iStu[0],w[1]+w[3],h-w[1]-w[3]-isBeamOn*zBeam-isFEMOff*thick,iStu[3]))
     studs.sort(key=lambda tup: tup[0])
     return studs
  #------------------------------------------------------------------------------       
