@@ -16,6 +16,27 @@ import Part
 import FreeCAD
 App=FreeCAD
 #-------------------------------------------------------------------------------
+def cortaStud(poste,ventana,zBeam,isFEMOff=True,isBeamOn=False,thick=0.001):
+    '''this function takes a stud and a window and returns two studs resulting from
+    substracting the window to the original stud or the same stud if no intersection
+    exists'''
+    listaStuds=[]
+    if ventana[1] >= poste[1]+poste[2]: #stud does not reach the window height
+        listaStuds.append(poste)
+        return listaStuds
+    else: #stud passes the window height
+        #poste debajo de ventana
+        hdown=ventana[1]-poste[1]-thick*isFEMOff
+        posZ=poste[1]
+        listaStuds.append((poste[0],posZ,hdown,poste[3]))
+        # Poste arriba ventana
+        posX=poste[0]
+        posZ=ventana[1]+ventana[3]+thick*isFEMOff
+        posSize=poste[2]-ventana[3]-hdown-isBeamOn*zBeam-2*thick*isFEMOff
+        listaStuds.append((posX,posZ,posSize,poste[3]))
+        return listaStuds
+#------------------------------------------------------------------------------   
+        
 def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     """
     Función que calcula la longitud de los postes a utilizar para un muro
@@ -72,18 +93,16 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     studs+=notFrames
     # postes se defininen asi: (px, pz, h, flipped):
     ##********Cortar los postes que atraviesan ventanas y puertas
-    for w in win:    #                     poste dentro de la ventana en x   poste inicia bajo ventana     poste mas alto q  ventana?     
-        interStuds = list(filter(lambda x: w[0]< x[0]< w[0]+w[2] and x[1]<= w[1] +pz0 and w[1]+w[3]< x[1]+x[2], studs))
+    for w in win:    #                     poste dentro de la ventana en x       
+        interStuds = list(filter(lambda x: w[0]< x[0]< w[0]+w[2], studs))
         for iStu in interStuds:
-            studs.remove(iStu)
-            if w[1]>0: #Revisa si hay espacio para que haya poste abajo
-                studs.append((iStu[0],iStu[1],w[1]-iStu[1],iStu[3]))#Agrega el poste bajo la ventana
-            if w[1]+w[3]<h-isBeamOn*zBeam: #Revisa si hay espacio arriba de la ventana                                
-                #studs.append((iStu[0],w[1]+w[3],iStu[2]-w[1]-w[3]+iStu[1]-isBeamOn*zBeam-isFEMOff*thick,iStu[3]))                
-                studs.append((iStu[0],w[1]+w[3],h-w[1]-w[3]-isBeamOn*zBeam-isFEMOff*thick,iStu[3]))
+            studs.remove(iStu)     
+            studs.extend(cortaStud(iStu,w,zBeam,isFEMOff,isBeamOn,thick))
+            
     studs.sort(key=lambda tup: tup[0])
     return studs
- #------------------------------------------------------------------------------       
+ #------------------------------------------------------------------------------  
+   
 def Draw_Steel_Stud(y,x,th1,z,falange=8,fliped =0):
     '''Author = Humberto Hassey
     Version=1.0
