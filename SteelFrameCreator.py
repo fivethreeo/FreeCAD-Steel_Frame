@@ -18,21 +18,31 @@ App=FreeCAD
 #-------------------------------------------------------------------------------
 def cortaStud(poste,ventana,zBeam,isFEMOff=True,isBeamOn=False,thick=0.001):
     '''this function takes a stud and a window and returns two studs resulting from
-    substracting the window to the original stud or the same stud if no intersection
-    exists'''
+    substracting the window to the original stud or the same stud if no intersection is
+    present'''
     listaStuds=[]
-    if ventana[1] >= poste[1]+poste[2]: #stud does not reach the window height
+    if ventana[1]==0: #this is a door
+        # Poste arriba puerta
+        posX=poste[0]
+        posZ=ventana[3]+thick*isFEMOff
+        posSize=poste[2]-ventana[3]-2*thick*isFEMOff
+        listaStuds.append((posX,posZ,posSize,poste[3]))
+        return listaStuds
+    elif ventana[1] >= poste[1]+poste[2]: #stud does not reach the window height
         listaStuds.append(poste)
         return listaStuds
-    else: #stud passes the window height
+    elif poste[1] > ventana[1]+ventana[3]: #Stud above window and does not cross window
+        listaStuds.append(poste)
+        return listaStuds
+    else: # ventana[1]+ventana[3] < poste[1]+poste[2]: #stud passes the window height
         #poste debajo de ventana
-        hdown=ventana[1]-poste[1]-thick*isFEMOff
+        hdown=ventana[1]-poste[1]+thick*isFEMOff
         posZ=poste[1]
         listaStuds.append((poste[0],posZ,hdown,poste[3]))
         # Poste arriba ventana
         posX=poste[0]
         posZ=ventana[1]+ventana[3]+thick*isFEMOff
-        posSize=poste[2]-ventana[3]-hdown-isBeamOn*zBeam-2*thick*isFEMOff
+        posSize=poste[2]-ventana[3]-hdown-2*thick*isFEMOff
         listaStuds.append((posX,posZ,posSize,poste[3]))
         return listaStuds
 #------------------------------------------------------------------------------   
@@ -93,7 +103,12 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     studs+=notFrames
     # postes se defininen asi: (px, pz, h, flipped):
     ##********Cortar los postes que atraviesan ventanas y puertas
-    for w in win:    #                     poste dentro de la ventana en x       
+    copyWin=win[:]
+    if isBeamOn: #si es estructural, la trabe se trata como una ventana
+        xmin=min(x[0] for x in win)
+        xmax=max( x[0]+x[2] for x in win)
+        copyWin.append((xmin,h-zBeam-2*thick*isFEMOff,xmax-xmin,zBeam+2*thick*isFEMOff))
+    for w in copyWin:    #                     poste dentro de la ventana en x       
         interStuds = list(filter(lambda x: w[0]< x[0]< w[0]+w[2], studs))
         for iStu in interStuds:
             studs.remove(iStu)     
