@@ -36,13 +36,13 @@ def cortaStud(poste,ventana,zBeam,isFEMOff=True,isBeamOn=False,thick=0.001):
         return listaStuds
     else: # ventana[1]+ventana[3] < poste[1]+poste[2]: #stud passes the window height
         #poste debajo de ventana
-        hdown=ventana[1]-poste[1]+thick*isFEMOff
-        posZ=poste[1]
+        hdown=ventana[1]-poste[1]+2*thick*(not(isFEMOff))
+        posZ=poste[1]-thick*(not(isFEMOff))
         listaStuds.append((poste[0],posZ,hdown,poste[3]))
         # Poste arriba ventana
         posX=poste[0]
-        posZ=ventana[1]+ventana[3]+thick*isFEMOff
-        posSize=poste[2]-ventana[3]-hdown-2*thick*isFEMOff
+        posZ=ventana[1]+ventana[3]-thick*(not(isFEMOff))
+        posSize=poste[2]-ventana[3]-hdown+2*thick*(not(isFEMOff))
         listaStuds.append((posX,posZ,posSize,poste[3]))
         return listaStuds
 #------------------------------------------------------------------------------   
