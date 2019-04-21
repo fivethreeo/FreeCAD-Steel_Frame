@@ -34,6 +34,11 @@ def cortaStud(poste,ventana,zBeam,isFEMOff=True,isBeamOn=False,thick=0.001):
     elif poste[1] > ventana[1]+ventana[3]: #Stud above window and does not cross window
         listaStuds.append(poste)
         return listaStuds
+    elif  ventana[1]<poste[1]+poste[2]<ventana[1]+ventana[3]: #stud inside Structural beam
+        hdown=ventana[1]-poste[1]+2*thick*(not(isFEMOff))
+        posZ=poste[1]-thick*(not(isFEMOff))
+        listaStuds.append((poste[0],posZ,hdown,poste[3]))
+        return listaStuds
     else: # ventana[1]+ventana[3] < poste[1]+poste[2]: #stud passes the window height
         #poste debajo de ventana
         hdown=ventana[1]-poste[1]+2*thick*(not(isFEMOff))
@@ -107,7 +112,7 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     if isBeamOn: #si es estructural, la trabe se trata como una ventana
         xmin=min(x[0] for x in win)
         xmax=max( x[0]+x[2] for x in win)
-        copyWin.append((xmin,h-zBeam-1*thick,xmax-xmin,zBeam+1*thick*isFEMOff))
+        copyWin.append((xmin,h-zBeam-1*thick,xmax-xmin,2*zBeam+1*thick*isFEMOff)) #2 por que quiero la ventana mas alta que los postes
     for w in copyWin:    #                     poste dentro de la ventana en x       
         interStuds = list(filter(lambda x: w[0]< x[0]< w[0]+w[2], studs))
         for iStu in interStuds:
