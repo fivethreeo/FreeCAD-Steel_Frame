@@ -107,7 +107,7 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     if isBeamOn: #si es estructural, la trabe se trata como una ventana
         xmin=min(x[0] for x in win)
         xmax=max( x[0]+x[2] for x in win)
-        copyWin.append((xmin,h-zBeam-2*thick*isFEMOff,xmax-xmin,zBeam+2*thick*isFEMOff))
+        copyWin.append((xmin,h-zBeam-1*thick,xmax-xmin,zBeam+1*thick*isFEMOff))
     for w in copyWin:    #                     poste dentro de la ventana en x       
         interStuds = list(filter(lambda x: w[0]< x[0]< w[0]+w[2], studs))
         for iStu in interStuds:
