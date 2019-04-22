@@ -51,12 +51,12 @@ def paneliza(subFrame,piezas,reutilizar=1,anchoMinimoLado=300,anchoMinimoAlto=50
     regresa una lista de tuplas (coordenadas,(piezax o y,piezaz)) para llenarlo'''
     desperdicio=0
     tamanoMinimo=300 #tama minimo para aceptar piezas sobrantes.
-    print(piezas)
+    
     listaPiezas=[] #tuplas de piezas a colocar ((x,y,z),largo,ancho,desperdicio)
     listaReuso=[] #aqui guardaremos las piezas de reuso.
     ancho = subFrame[1][0]
     alto = subFrame[1][1]
-        
+    
     distanciaCubrirH=ancho
     distanciaCubrirV=alto
     while distanciaCubrirH > 0:
