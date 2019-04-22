@@ -116,7 +116,7 @@ def paneliza(subFrame,piezas,reutilizar=1,anchoMinimoLado=300,anchoMinimoAlto=50
                            desperdicio+=piezaElegida[0]*falta #agregamos desperdicio por redefinicion
                            piezaEspecial=(piezaElegida[0],piezaElegida[1]-falta)
                            listaPiezas.append(((coordenadaPiezaX,coordenadaPiezaY,coordenadaPiezaZ),piezaEspecial))
-                           distanciaCubrirV -= piezaReEspecial[1]
+                           distanciaCubrirV -= piezaEspecial[1]
                         else: #no hay necesidad de redefinir pieza ni en ancho ni alto
                            listaPiezas.append(((coordenadaPiezaX,coordenadaPiezaY,coordenadaPiezaZ),piezaElegida))
                            distanciaCubrirV -= piezaElegida[1]
