@@ -109,10 +109,11 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     # postes se defininen asi: (px, pz, h, flipped):
     ##********Cortar los postes que atraviesan ventanas y puertas
     copyWin=win[:]
-    if isBeamOn: #si es estructural, la trabe se trata como una ventana
-        xmin=min(x[0] for x in win)
-        xmax=max( x[0]+x[2] for x in win)
-        copyWin.append((xmin,h-zBeam-1*thick,xmax-xmin,2*zBeam+1*thick*isFEMOff)) #2 por que quiero la ventana mas alta que los postes
+    if isBeamOn: #If Structural, all Beams will be treated as windows to cut studs below them
+        for w in win: 
+            xmin=(w[0])
+            xmax=( w[0]+w[2])
+            copyWin.append((xmin,h-zBeam-1*thick,xmax-xmin,2*zBeam+1*thick*isFEMOff)) #2 por que quiero la ventana mas alta que los postes
     for w in copyWin:    #                     poste dentro de la ventana en x       
         interStuds = list(filter(lambda x: w[0]< x[0]< w[0]+w[2], studs))
         for iStu in interStuds:
