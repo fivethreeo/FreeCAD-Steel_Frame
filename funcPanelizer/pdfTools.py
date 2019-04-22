@@ -67,11 +67,19 @@ def createPdf(steelFrame, panelPieces, flip, projectName, version, directory, as
 	prefix = projectName if projectName != '' else fileName
 	prefix += "_v" + version if version != '' else ''	
 	##Directory
-	if directory == "" or directory == fileDir:		
-		newDir = oP.join(fileDir,"sF_Drawings_" + prefix)
-		if not os.path.exists(newDir):
-			os.makedirs(newDir)			
-		directory = newDir
+	if directory == "" or directory == fileDir:
+		if fileDir!="":	
+			newDir = oP.join(fileDir,"sF_Drawings_" + prefix)
+			if not os.path.exists(newDir):
+				try:
+					os.makedirs(newDir)
+				except:
+					FreeCAD.Console.PrintError("Cannot create directory inside the project folder. Permission denied.\n")
+					return
+			directory = newDir
+		else:
+			FreeCAD.Console.PrintError("There is no specified directory to save the pdf file.\n")
+			return
 	###Pdf name
 	pdfName = oP.join(directory,prefix+"_" + assemblyName + ".pdf")
 	FreeCAD.Console.PrintMessage("Saving pdf file...")
