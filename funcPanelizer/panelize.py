@@ -51,7 +51,7 @@ def paneliza(subFrame,piezas,reutilizar=1,anchoMinimoLado=300,anchoMinimoAlto=50
     regresa una lista de tuplas (coordenadas,(piezax o y,piezaz)) para llenarlo'''
     desperdicio=0
     tamanoMinimo=300 #tama minimo para aceptar piezas sobrantes.
-
+    print(piezas)
     listaPiezas=[] #tuplas de piezas a colocar ((x,y,z),largo,ancho,desperdicio)
     listaReuso=[] #aqui guardaremos las piezas de reuso.
     ancho = subFrame[1][0]
@@ -305,9 +305,9 @@ def paneliza(subFrame,piezas,reutilizar=1,anchoMinimoLado=300,anchoMinimoAlto=50
     print('error Caso no contemplado')
     return listaPiezas,desperdicio,desperdicio/(ancho*alto)
 #Vector (2900.0, 0.0, 2000.0) 1000.0 1300.0
-#subFrame=[(0,0,0),(2743,2438)] #punto inicio,largo,alto,direccion
-#piezas=[(1219,2438),(2438,1219),(2743,1219),(1219,2743)] #tamano de los paneles que juega
+subFrame=[(0,0,0),(2743,2438)] #punto inicio,largo,alto,direccion
+piezas=[(1219,2743),(2743,1219),(1219,2438),(2438,1219)] #tamano de los paneles que juega
 #piezas=[(1000,1000)]
-#s,d,p=paneliza(subFrame,piezas,1)
-#print ('Desperdicio ',round(p*100,3),'%')
-#print ('Desperdicio ',round(d/1e6,2),'m2')
+s,d,p=paneliza(subFrame,piezas,1)
+print ('Desperdicio ',round(p*100,3),'%')
+print ('Desperdicio ',round(d/1e6,2),'m2')
