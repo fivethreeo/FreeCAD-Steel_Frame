@@ -87,8 +87,12 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     if 0 not in [w[0] for w in win]: #Verifica si hay una ventana o puerta en la arista inicial para girar o no el primer poste
         studs.append((0,pz0,h,False))
     for w in win:
-        studs=AddStud(w[0],pz0,h,True,studs)
-        studs=AddStud(w[0]+w[2],pz0,h,False,studs)        
+        studs=AddStud(w[0],pz0,h,True,studs)        
+        studs=AddStud(w[0]+w[2],pz0,h,False,studs)   
+        ####Add here an extra stud is structural option is true
+        if isBeamOn == True:
+            studs=AddStud(w[0]-2*f,pz0,h,False,studs)
+            studs=AddStud(w[0]+w[2]+2*f,pz0,h,True,studs)
         #***Verificar qué pasa si el poste que ya existe tiene otra orientación
         #***Verificar qué pasa si ese poste pasa por una puerta o ventana
     if l not in [w[0]+w[2] for w in win]:
@@ -97,13 +101,13 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     #Se agregan los postes intermedios que no forman parte de marcos
     notFrames=[] #Lista para agregar los postes que no son marcos
     for index, stu in enumerate(studs[1::]): #Comienza a iterar desde el segundo elemento de los postes        
-        lBetFrames=stu[0]-studs[index][0]
-        extra=0
-        if lBetFrames%s >= margen:
-            extra=1
-        nStuds=int(lBetFrames/s)+extra        
+        lBetFrames = stu[0] - studs[index][0]
+        extra = 0        
+        if lBetFrames%s >= margen and float(lBetFrames/s).is_integer() != True:            
+            extra = 1        
+        nStuds=int(lBetFrames/s)+extra         
         for ns in range(1,nStuds):
-            notFrames.append((studs[index][0]+ns*s,pz0,h,False))
+            notFrames.append((studs[index][0]+ns*s,pz0,h,False))            
      
     studs+=notFrames
     # postes se defininen asi: (px, pz, h, flipped):
