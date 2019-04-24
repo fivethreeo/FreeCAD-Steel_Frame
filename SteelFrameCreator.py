@@ -89,10 +89,12 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     for w in win:
         studs=AddStud(w[0],pz0,h,True,studs)        
         studs=AddStud(w[0]+w[2],pz0,h,False,studs) 
-        ####Add here an extra stud is structural option is true
+    ####Add extra studs is structural option is true
         if isBeamOn == True:
-            studs=AddStud(w[0]-2*f,pz0,h,False,studs)
-            studs=AddStud(w[0]+w[2]+2*f,pz0,h,True,studs)
+            if not any([wi[0] < w[0]-2*f < wi[0]+ wi[2] for wi in win]):
+                studs=AddStud(w[0]-2*f,pz0,h,False,studs)
+            if not any([wi[0] < w[0]+w[2]+2*f < wi[0]+ wi[2] for wi in win]):
+                studs=AddStud(w[0]+w[2]+2*f,pz0,h,True,studs)
         #***Verificar qué pasa si el poste que ya existe tiene otra orientación
         #***Verificar qué pasa si ese poste pasa por una puerta o ventana
     if l not in [w[0]+w[2] for w in win]:
