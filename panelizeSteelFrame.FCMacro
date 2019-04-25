@@ -185,13 +185,12 @@ class DialogPanelizer():
                 
                 if faceNormal.cross(vectorWidth).isEqual(FreeCAD.Vector(0,0,0),tolerance): #Checks collinearity between the normal vector and vectorWidth
                     self.form.infoFace.setText(faceName)
-                    self.enableFormElements(True)
+                    self.enableFormElements(True)                    
                     
-                    vectorNormalFront=self.frame.Placement.Rotation.multVec(FreeCAD.Vector(0,-1,0))
-                    if vectorNormalFront.isEqual(faceNormal,tolerance): #If the normal Vector is equal to the normal vector on the side 1
-                        self.flip=0
-                    else:
+                    if vectorWidth.isEqual(faceNormal,tolerance): #If the normal Vector is equal to the normal vector on the side 1
                         self.flip=1
+                    else:
+                        self.flip=0
                     # faceVertex=self.face.Vertexes[0].Point
                     # if abs(faceVertex.distanceToPlane(self.frame.Placement.Base,faceNormal))>self.frame.Width/2:
                         # self.flip=1                     
