@@ -252,18 +252,25 @@ class DialogPanelizer():
 
             
         reusePieces = self.form.reusePieces.isChecked()
-        self.panelPieces = []   
+        self.panelPieces = []
+        waste = 0 
+        area = 0
         for sR in self.rectangles:                 
             panelizeResult=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],
                             self.panelSizes, reusePieces, minHorSize, minVertSize)
             self.panelPieces.extend(fP.tools.convertToRectangle(panelizeResult[0]))
+            waste += panelizeResult[1]
+            area += (sR.Length * sR.Height)
         
 
         for r in self.panelPieces:
             panelPiece = fP.tools.drawPanel(r,self.frame,self.flip,thickness,material, self.form.panelName.text())
             setattr(r,'Label',panelPiece.Label)         
             fP.tools.groupPanelPieces(panelPiece, self.frame)
-        FreeCAD.ActiveDocument.recompute()
+        FreeCAD.ActiveDocument.recompute()        
+        
+        FreeCAD.Console.PrintMessage('Waste: '+str(round(waste/1e6,2))+' m2')
+        FreeCAD.Console.PrintMessage(' ,'+str(round(waste*100/area,3))+' %\n')
 
         #Exports the steel frame and the panel pieces to a pdf file
         if self.form.exportPdf.isChecked():
