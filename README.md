@@ -3,6 +3,8 @@ FreeCAD Frame Creator:
 ==================================================================
 Installation:
 ==================================================================
+
+*THESE INSTALLATION INSTRUCTIONS ARE OUTDATED AND NO LONGER WORK, I WILL BE POSTING INSTALLATION INSTRUCTIONS SOON*
 in FreeCAD 0.16 go to Macro-->Macros 
 Hit the Create Button
 Copy and paste the code from the file Steel_Frame_Creator.py
