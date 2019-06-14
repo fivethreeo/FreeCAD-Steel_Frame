@@ -54,55 +54,55 @@ def cortaStud(poste,ventana,zBeam,isFEMOff=True,isBeamOn=False,thick=0.001):
         
 def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
     """
-    Función que calcula la longitud de los postes a utilizar para un muro
-    Recibe como parametros:
-        -l: (float) longitud (x) del muro
-        -h: (float) altura (z) del muro
-        -s: (float) separación entre postes a lo largo del eje x
-        -f: (float) longitud del "flange" del poste
-        -win: lista de tuplas con la información de las ventanas, cada tupla es como sigue:
-            (posición en x, posición en z, longitud en x, altura en z)        
-        -pz0: (float) Posición inicial en z de los postes.
+    Function that calculates the length of studs to use for a wall
+    Gets as parameters:
+        -l: (float) length (x) of the wall
+        -h: (float) height (z) of the wall
+        -s: (float) separation between studs along axis x
+        -f: (float) length of the  "flange" of the stud
+        -win: List of tuples with the information of the windows, every tupble goes like this:
+            (position in x, position in z, length in x, height in z)        
+        -pz0: (float) Initial position in Z of the studs.
         -isBeamOn: (Boolean) If the structural option is selected or not
         -zBeam: Beam height
         
-    Devuelve una lista de tuplas con la información de cada poste metálico:
+    Returns a list with tuples with the information of every steel stud:
         (px, pz, h, flipped):
-            px: (float) posición a lo largo del eje x
-            pz: (float) posición a lo largo del eje z
-            h: (float) altura en z
-            flipped: (boolean) indica si el poste va en posición invertida
+            px: (float) position along axis x
+            pz: (float) position along axis z
+            h: (float) heigt in z
+            flipped: (boolean) If the stud goes inverted
     """
     def AddStud(x,pz0,h,flipped,stu):
         """
-        Funcion que agrega los postes que enmarcan las ventanas y puertas.
-        Si ya existe el poste en esa posición entonces no agrega uno más
+        Function that adds the studs that encompass windows and doors.
+        If the stud already exists in that position then it does not add one more.
         """
         if x not in [s[0] for s in stu]:
             stu.append((x,pz0,h,flipped)) #(px,pz,height,flipped)
         return stu    
     
-    margen=2*f #Espacio mínimo entre dos postes
+    margen=2*f #Minimum space between studs
     studs=[]
-    if 0 not in [w[0] for w in win]: #Verifica si hay una ventana o puerta en la arista inicial para girar o no el primer poste
+    if 0 not in [w[0] for w in win]: #Chech if there is a window or door on the initial edge to rotate or not the first post. 
         studs.append((0,pz0,h,False))
     for w in win:
         studs=AddStud(w[0],pz0,h,True,studs)        
         studs=AddStud(w[0]+w[2],pz0,h,False,studs) 
-    ####Add extra studs is structural option is true
+    ####Add extra studs if structural option is true
         if isBeamOn == True:
             if not any([wi[0] < w[0]-2*f < wi[0]+ wi[2] for wi in win]):
                 studs=AddStud(w[0]-2*f,pz0,h,False,studs)
             if not any([wi[0] < w[0]+w[2]+2*f < wi[0]+ wi[2] for wi in win]):
                 studs=AddStud(w[0]+w[2]+2*f,pz0,h,True,studs)
-        #***Verificar qué pasa si el poste que ya existe tiene otra orientación
-        #***Verificar qué pasa si ese poste pasa por una puerta o ventana
+        #***Check what happens if the stud already exists and has another orientation
+        #***Check what happens if that stud passes troughg a door or window. Verificar qué pasa si ese poste pasa por una puerta o ventana
     if l not in [w[0]+w[2] for w in win]:
-        studs.append((l,pz0,h, True)) #Agrega el último poste verificando que no esté agregado aún como marco de puerta o ventana
-    studs.sort(key=lambda tup: tup[0]) #Ordena a los postes por su posición en el eje x
-    #Se agregan los postes intermedios que no forman parte de marcos
-    notFrames=[] #Lista para agregar los postes que no son marcos
-    for index, stu in enumerate(studs[1::]): #Comienza a iterar desde el segundo elemento de los postes        
+        studs.append((l,pz0,h, True)) #Add the last stud, checking that it is already not added as frame of a door or window.
+    studs.sort(key=lambda tup: tup[0]) #Sort studs by position along axis X
+    #Add intermediate studs that are not part of the frames
+    notFrames=[] #List to add studs that are not frames.
+    for index, stu in enumerate(studs[1::]): #Start iterating from the second element of the studs.        
         lBetFrames = stu[0] - studs[index][0]       
         extra = 0        
         if lBetFrames%s >= margen and float(lBetFrames/s).is_integer() != True:    
@@ -115,15 +115,15 @@ def calcStuds(l,h,s,f,win,isFEMOff,pz0=0,isBeamOn=False,zBeam=0,thick=0):
             notFrames.append((stu[0]-lastSep/2,pz0,h,False))
      
     studs+=notFrames
-    # postes se defininen asi: (px, pz, h, flipped):
-    ##********Cortar los postes que atraviesan ventanas y puertas
+    # Studs are defined like this: (px, pz, h, flipped):
+    ##********Cut the studs that go trough windows and doors
     copyWin=win[:]
     if isBeamOn: #If Structural, all Beams will be treated as windows to cut studs below them
         for w in win: 
             xmin=(w[0])
             xmax=( w[0]+w[2])
-            copyWin.append((xmin,h-zBeam-1*thick,xmax-xmin,2*zBeam+1*thick*isFEMOff)) #2 por que quiero la ventana mas alta que los postes
-    for w in copyWin:    #                     poste dentro de la ventana en x       
+            copyWin.append((xmin,h-zBeam-1*thick,xmax-xmin,2*zBeam+1*thick*isFEMOff)) #2 because I want the winow higher than the studs
+    for w in copyWin:    #                     stud inside window in x       
         interStuds = list(filter(lambda x: w[0]< x[0]< w[0]+w[2], studs))
         for iStu in interStuds:
             studs.remove(iStu)     
@@ -145,7 +145,7 @@ def Draw_Steel_Stud(y,x,th1,z,falange=8,fliped =0):
     F=1
     if fliped ==1:
         F=-1
-    # Vertices del stud
+    # Vertices of the stud
     V1=FreeCAD.Vector(0,0,0)
     V2=FreeCAD.Vector(x*F,0,0)
     V3=FreeCAD.Vector(x*F,falange,0)
@@ -189,7 +189,7 @@ def Draw_Steel_Track(x,y,falange,th1,lcut=0,rcut=0,fliped=0):
     F=1
     if fliped ==0:
         F=-1
-    # Vertices del canal
+    # Vertices the track
     V1=FreeCAD.Vector(0,0,0)
     V11=FreeCAD.Vector(0,th1,0)
     V12=FreeCAD.Vector(0,y-th1,0)
@@ -282,7 +282,7 @@ def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1,FEM=True):
     p1=Draw_half(x,y1,z,th1,falange,0)
     p2=Draw_half(x,y1,z,th1,falange,1)
     if  box==1:
-        v1=FreeCAD.Vector(0,-y/2.0+((th1+1.7272)*FEM),0) #1.72=ga14 de la pieza con la que se monta la viga        
+        v1=FreeCAD.Vector(0,-y/2.0+((th1+1.7272)*FEM),0) #1.72=ga14 of the clips to mount the piece        
         v2=FreeCAD.Vector(0,y/2.0-((th1+1.7272)*FEM),0)
         p1.Placement.Base=v1
         p2.Placement.Base=v2
@@ -292,11 +292,11 @@ def Draw_Box_Beam(x,y,y1,z,th1,falange=8,box=1,FEM=True):
     return P# comp
 #------------------------------------------------------------------------------
 def vigass(vigas):
-    '''Funcion que sustituye una lista de vigas=[(pos x,longitud)] y entrega una
-    lista mejorada en que los traslapes son contados como una sola viga
-    para poner una sola viga sobre ventanas/puertas que se traslapan'''
+    ''' Function that substitutes a list of beams=[(pos x,length)] and returns an
+    enhanced list where the overlaps are counted as only one beam
+    to place only one beam over doors / windows that overlap'''
     def isin(x1,x2,xt1,xt2):
-        if (x1<=xt1) and (xt1 <= x2): #se traslapan las trabes y deb en cambiarse por una
+        if (x1<=xt1) and (xt1 <= x2): #Beams overlap and must be changed for one.
             return True
         else:
             return False
@@ -306,7 +306,7 @@ def vigass(vigas):
         x1_final=x1_inicial+a[1]
         x2_inicial=vigas[indice+1][0]
         x2_final=x2_inicial+vigas[indice+1][1]
-        if isin(x1_inicial,x1_final,x2_inicial,x2_final): #Trabes Traslapadas
+        if isin(x1_inicial,x1_final,x2_inicial,x2_final): #Overlapped beams
             vigas.pop(indice)
             vigas.pop(indice)
             vigas.insert(0,(x1_inicial,max(x2_final,x1_final)-x1_inicial))
@@ -348,18 +348,18 @@ class Steel_Frame:
         self.Object = obj
     def execute(self,obj):
         ventanas=[]
-        trabes=[] #trabes estructurales
+        trabes=[] #Structural beams
         nvent=len(obj.Windows)
         if obj.Windows[0]!='':     # If There are windows in this frame        
             for a in range(len(obj.Windows)):
-                ventanas.append(eval(obj.Windows[a])) #crea la lista de ventanas        
+                ventanas.append(eval(obj.Windows[a])) #create list of windows       
                 trabes.append((eval(obj.Windows[a])[0],eval(obj.Windows[a])[2]))
-        puertas=[x for x in ventanas if x[1]==0] #obtener todas las puertas para poder cortar el track de abajo
-        puertas.sort(key=lambda tup: tup[0])        #ordenar las puertas por coordenada x
-        ltrack=0 #contadores para cuantificacion de track y stud
-        lstud=0 #contadores para cuantificacion de track y stud
+        puertas=[x for x in ventanas if x[1]==0] #Get all doors to be able to cut the track below.
+        puertas.sort(key=lambda tup: tup[0])        #Sort doors by x coordinate
+        ltrack=0 #counter to quantify the track and stud
+        lstud=0 #counter to quantify the track and stud
         #post_W=0
-        FEM=not(obj.FEM)#FEM=hacer postes y tracks mismo tamaño
+        FEM=not(obj.FEM)#FEM=Make studs and tracks the same width.
                 
         gauges={25:0.4572, 22:0.6858, 20:0.8382, 18:1.0922, 16:1.3716, 14:1.7272, 12:2.4638,10:2.9972}
         if obj.Gauge.Value in gauges and obj.Gauge.Value !=0:
@@ -372,64 +372,64 @@ class Steel_Frame:
         fal=obj.Lip.Value; Flip=0
         postes=calcStuds(obj.Length.Value,obj.Height.Value,obj.Separation.Value,obj.Falange.Value,ventanas,FEM,0,obj.Structural,obj.Beam_Height.Value,thick=th1)    #0 decia th1
         parte=[] #list of parts that will make the frame
-################### Dibuja Postes
-        for ip,poste in enumerate(postes):  #-1 para que no dibuje el poste final, pues este va volteado
-            parte.append(Draw_Steel_Stud(y-2*th1*FEM,x,th1,poste[2]-2*th1*FEM,fal,poste[3])) #dibujar poste
-            parte[ip].Placement.Base=FreeCAD.Vector(poste[0],th1*FEM,poste[1]+th1*FEM)#Colocar poste #corregir Z para FEM
+################### Draw Studs
+        for ip,poste in enumerate(postes):  #-1 so it will not draw the last stud since that one goes flipped
+            parte.append(Draw_Steel_Stud(y-2*th1*FEM,x,th1,poste[2]-2*th1*FEM,fal,poste[3])) #draw stud
+            parte[ip].Placement.Base=FreeCAD.Vector(poste[0],th1*FEM,poste[1]+th1*FEM)#place stud #correct Z for FEM
             lstud+=poste[2]-2*th1*FEM
         
-################## Dibuja Tracks
-        #dibujo track de abajo        
-        if len(puertas)==0:    #si no hay puertas el track de abajo va corrido    
+################## Draw Tracks
+        #Lower Track        
+        if len(puertas)==0:    #If no doors, the track goes uninterrupted    
             L=obj.Length.Value 
             lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
             lt.Placement.Base=FreeCAD.Vector(0,0,0)
             ltrack+=L
             parte.append(lt)
         else:
-            #dibuja el track desde 0 a la primer puerta
+            #draw track from 0 to the first door
             L=puertas[0][0]
             lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
             lt.Placement.Base=FreeCAD.Vector(0,0,0)
             ltrack+=L
             parte.append(lt)
-            #dibuja el track desde la puerta n a la n+1
+            #draw track from door n to door n+1
             Puertas_hechas=1
             while len(puertas)>Puertas_hechas:
                 L=puertas[Puertas_hechas][0]-puertas[Puertas_hechas-1][0]-puertas[Puertas_hechas-1][2]
                 lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
-                pos=puertas[Puertas_hechas-1][0]+puertas[Puertas_hechas-1][2] #calculo de la posicion del tramo
+                pos=puertas[Puertas_hechas-1][0]+puertas[Puertas_hechas-1][2] #calculate the position of the segment
                 lt.Placement.Base=FreeCAD.Vector(pos,0,0)
                 ltrack+=L
                 parte.append(lt)
                 Puertas_hechas+=1
-            #dibujar tramo de la ultima puerta al final
+            #draw segment from last door to end
             L=obj.Length.Value-(puertas[-1][0]+puertas[-1][2])
             lt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=1)
             lt.Placement.Base=FreeCAD.Vector(puertas[-1][0]+puertas[-1][2],0,0)
             ltrack+=L
             parte.append(lt)
-##########Dibujo del Track de arriba
+########## Draw upper track
         L=obj.Length.Value         
         tt=Draw_Steel_Track(L,y,obj.Falange.Value,th1,fliped=0) #top Track
         tt.Placement.Base=FreeCAD.Vector(0,0,z)
         ltrack+=L
         parte.append(tt)
-        for vent in ventanas: #dibujo Tracks de ventanas y puertas
+        for vent in ventanas: #Draw tracks for doors and windows
             v=Draw_Steel_Track(vent[2]+2*x,y,x,th1,x,x,1) #top piece x=flange
             v.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1]+vent[3])
             ltrack+=vent[2]+2*x
             parte.append(v)
-            if vent[1]!=0:     #si es puerta no dibujo track abajo        
+            if vent[1]!=0:     #If it is a door, don't draw the lower track        
                 v1=Draw_Steel_Track(vent[2]+2*x,y,x,th1,x,x,0) #bottom piece x=flange
                 v1.Placement.Base=FreeCAD.Vector(vent[0]-x,0,vent[1])
                 ltrack+=vent[2]+2*x
                 parte.append(v1)
-################## Dibujo Trabes Estructurales Box Beams
+################## Draw Structural Box Beams
         if obj.Structural ==True:
             trabes=vigass(trabes)
             for a in trabes:
-                xs=a[1] #longitud de la trabe
+                xs=a[1] #length of the beam
                 ys=obj.Stud_Width.Value
                 yf=obj.Width.Value
                 zs=obj.Beam_Height.Value            
@@ -441,9 +441,9 @@ class Steel_Frame:
                 sb2.Placement.Base=FreeCAD.Vector(a[0],0,obj.Height.Value-obj.Beam_Height.Value-(th1*FEM))
                 ltrack+=xs
                 parte.append(sb2)
-                #aqui Falta Agregar las longitudes de las secciones OJO OJO OJO OJO OJO
+                #here we are missing to add the lengths of the sections!!!
                 
-            #####dibujo de piezas especiales para el montaje de la trabe
+            ##### Draw special clips to mount the beam
                 if obj.Box:
                     e1=Draw_Steel_Track(zs,yf-(2*th1*FEM),obj.Falange.Value,1.7272,lcut=0,rcut=0,fliped=0)#Ga14
                     e1.Placement.Rotation= App.Rotation(App.Vector(0,1,0),-90)
@@ -464,7 +464,7 @@ class Steel_Frame:
         obj.Stud_L=FreeCAD.Units.Metre*lstud/1e3
         obj.Track_L=FreeCAD.Units.Metre*ltrack/1e3
     
-########## Calculo centro de masa
+########## Calculate Center of mass
         if not(obj.FEM):    
             v=FreeCAD.Vector(0,0,0)
             solidos=obj.Shape.Solids 
