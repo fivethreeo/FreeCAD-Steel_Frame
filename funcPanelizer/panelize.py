@@ -9,9 +9,10 @@ Created on Thu Jan 18 12:39:21 2018
 
 
 def calculaDesperdicio(longitudPieza,anchoDePieza,distanciaCubrir):
-    ''' Funcion que calcula el desperdicio en terminos de area de acuerdo al 
-    la longitud de una pieza en el sentido que se estudia y el ancho perpendicular
-    y la distancia a cubrir, regresa el desperdicio en unidades cuadradas'''
+    ''' Funtion to calculate the waste in terms of area given the
+    length of a piece in the direction analyzed, the perpendicular width 
+    and the distance to cover, it Returns the waste in square units'''
+    
     if longitudPieza > distanciaCubrir:
         return (longitudPieza-distanciaCubrir)*anchoDePieza
     elif longitudPieza == distanciaCubrir:
@@ -23,8 +24,8 @@ def calculaDesperdicio(longitudPieza,anchoDePieza,distanciaCubrir):
             return (longitudPieza-(distanciaCubrir%longitudPieza))*anchoDePieza
     
 def reduceListaPiezas(piezas,restriccion):
-    '''Funcion que reduce la lista de piezas a usar cuando solo pueden ser utilizadas
-    ciertas piezas con el ancho = restriccion'''
+    '''Function that reduces the list of pieces available when certain pieces can only be 
+    used with the width = restriccion'''
     resultado=[]
     for candidato in piezas:
         if candidato[0]==restriccion:
@@ -32,10 +33,9 @@ def reduceListaPiezas(piezas,restriccion):
     return resultado
 
 def eligePieza(piezas,distanciaH,distanciaV): 
-    ''' Funcion para encontrar el desperdicion minimo dadas distancias a cubrir
-    horizontal y vertical y varias piezas regresa una tupla con la pieza con desperdicio minimo
-    y el desperdicio (Area)'''
-    
+    ''' Function to find the minimum waste given the horizontal and vertical distance to cover and several pieces.
+    it returns a tuple with the piece with minimum waste and the waste (Area)'''
+        
     #revisamos en ambas direcciones
     desperdiciosV= [calculaDesperdicio(x[1],x[0],distanciaV) for x in piezas]
     desperdiciosH= [calculaDesperdicio(x[0],x[1],distanciaH) for x in piezas]
@@ -47,8 +47,9 @@ def eligePieza(piezas,distanciaH,distanciaV):
     
 def paneliza(subFrame,piezas,reutilizar=1,anchoMinimoLado=300,anchoMinimoAlto=500):
     
-    '''Funcion que toma un subframe y regresa una lista de piezas para panelizarlo
-    regresa una lista de tuplas (coordenadas,(piezax o y,piezaz)) para llenarlo'''
+    ''' Function that takes a subframe and returns a list of pieces to panelze it
+    it returns a list of tuples (coordinates,piecex or y, piece z) to fill the subframe.
+    '''
     desperdicio=0
     tamanoMinimo=300 #tama minimo para aceptar piezas sobrantes.
     
@@ -302,7 +303,7 @@ def paneliza(subFrame,piezas,reutilizar=1,anchoMinimoLado=300,anchoMinimoAlto=50
                     listaPiezas.append(((coordenadaPiezaX,coordenadaPiezaY,coordenadaPiezaZ),piezaCortada))
                     return listaPiezas,desperdicio,desperdicio/(ancho*alto)
  
-    print('error Caso no contemplado')
+    print('error Case not contemplated')
     return listaPiezas,desperdicio,desperdicio/(ancho*alto)
 #Vector (2900.0, 0.0, 2000.0) 1000.0 1300.0
 #subFrame=[(0,0,0),(2743,2438)] #punto inicio,largo,alto,direccion
