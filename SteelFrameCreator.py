@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import Part
-import FreeCAD
-App = FreeCAD
 
 __Title__ = "Steel Frame Creator"
 __Author__ = "Humberto Hassey, Beatriz Arellano"
@@ -19,6 +16,10 @@ __Requires__ = "freecad 0.19"
 __Communication__ = \
     "https://forum.freecadweb.org/viewtopic.php?flangeLength=23&t=26092"
 
+
+import Part
+import FreeCAD
+App = FreeCAD
 
 def cutStud(stud,
             opening,
@@ -104,7 +105,7 @@ def calcStuds(length,
     margin = 2 * flangeLength  #Minimum space between studs
     studs = []
     # Check if there is a window or door on the initial edge to rotate or not the first post.
-    if 0 not in [ window[0] for w in windows ]: 
+    if 0 not in [ window[0] for window in windows ]: 
         studs.append((0, initialZ, height, False))
     for window in windows:
         studs = AddStud(window[0], initialZ, height, True, studs)
@@ -118,7 +119,7 @@ def calcStuds(length,
                 studs = AddStud(window[0] - 2 * flangeLength, initialZ, height,
                                 False, studs)
             if not any([
-                otherWindow[0] < window[0] + w[2] + 2 * flangeLength <
+                otherWindow[0] < window[0] + window[2] + 2 * flangeLength <
                 otherWindow[0] + otherWindow[2] for otherWindow in windows
             ]):
                 studs = AddStud(window[0] + window[2] + 2 * flangeLength,
@@ -222,7 +223,7 @@ def Draw_Steel_Track(length, width, flangeHeight, thickness, leftCut=0, rightCut
     # Draw a Steel Track
     # length=Length
     # width=Width
-    # flangeHeight=Falange Height
+    # flangeHeight=Flange_Width Height
     # thickness=steel thickness
     # flipped=[boolean] Draw flangeHeight to +z?
 
@@ -373,8 +374,8 @@ class Steel_Frame:
         obj.addProperty("App::PropertyLength", "Width", "Frame").Width = 152.4
         obj.addProperty("App::PropertyLength", "Separation",
                         "Frame").Separation = 304.8
-        obj.addProperty("App::PropertyLength", "Falange",
-                        "Stud").Falange = 41.275
+        obj.addProperty("App::PropertyLength", "Flange_Width",
+                        "Stud").Flange_Width = 41.275
         obj.addProperty("App::PropertyLength", "Lip", "Stud").Lip = 8
         obj.addProperty("App::PropertyLength", "Thickness",
                         "Steel").Thickness = 0.8382
@@ -405,20 +406,20 @@ class Steel_Frame:
 
     def execute(self, obj):
         openings = []
-        beams = []  #Structural beams
-        if obj.Windows[0] != '':  # If There are windows in this frame
+        beams = [] # Structural beams
+        if obj.Windows[0] != '': # If There are windows in this frame
             for index in range(len(obj.Windows)):
                 openings.append(eval(
-                    obj.Windows[index]))  #create list of windows
+                    obj.Windows[index])) # create list of windows
                 beams.append((eval(obj.Windows[index])[0],
                               eval(obj.Windows[index])[2]))
-        doors = [door for door in openings if door[1] == 0
-                 ]  #Get all doors to be able to cut the track below.
-        doors.sort(key=lambda door: door[0])  #Sort doors by x coordinate
-        trackCount = 0  #counter to quantify the track and stud
-        studCount = 0  #counter to quantify the track and stud
+        # Get all doors to be able to cut the track below.
+        doors = [door for door in openings if door[1] == 0]
+        doors.sort(key=lambda door: door[0]) # Sort doors by x coordinate
+        trackCount = 0 #counter to quantify the track and stud
+        studCount = 0 # counter to quantify the track and stud
         #post_W=0
-        FEM = not (obj.FEM)  #FEM=Make studs and tracks the same width.
+        FEM = not (obj.FEM) # FEM = Make studs and tracks the same width.
 
         gauges = {
             25: 0.4572,
@@ -436,17 +437,20 @@ class Steel_Frame:
             obj.Gauge.Value = 0
         if obj.Thickness.Value not in gauges.values() and obj.Gauge.Value != 0:
             obj.Gauge.Value = 0
-        x = obj.Falange.Value
-        y = obj.Width.Value
-        z = obj.Height.Value
+
+        flangeWidth = obj.Flange_Width.Value
+        frameWidth = obj.Width.Value
+        frameHeight = obj.Height.Value
         thickness = obj.Thickness.Value
         flangeLip = obj.Lip.Value
+
         Flip = 0
+
         studs = calcStuds(
             obj.Length.Value,
             obj.Height.Value,
             obj.Separation.Value,
-            obj.Falange.Value,
+            flangeWidth,
             openings,
             FEM,
             0,
@@ -459,7 +463,7 @@ class Steel_Frame:
         for indice, stud in enumerate(studs):
             # -1 so it will not draw the last stud since that one goes flipped
             parts.append(
-                Draw_Steel_Stud(y - 2 * thickness * FEM, x, thickness,
+                Draw_Steel_Stud(frameWidth - 2 * thickness * FEM, flangeWidth, thickness,
                                 stud[2] - 2 * thickness * FEM, flangeLip,
                                 stud[3])) # draw stud
             parts[indice].Placement.Base = FreeCAD.Vector(
@@ -471,62 +475,61 @@ class Steel_Frame:
 
 		## Lower Track
         if len(doors) == 0: # If no doors, the track goes uninterrupted
-            L = obj.Length.Value
+            trackLength = obj.Length.Value
             lowerTrack = Draw_Steel_Track(
-                L, y, obj.Falange.Value, thickness, flipped=1)
+                trackLength, frameWidth, flangeWidth, thickness, flipped=1)
             lowerTrack.Placement.Base = FreeCAD.Vector(0, 0, 0)
-            trackCount += L
+            trackCount += trackLength
             parts.append(lowerTrack)
         else:
             # draw track from 0 to the first door
-            L = doors[0][0]
+            trackLength = doors[0][0]
             lowerTrack = Draw_Steel_Track(
-                L, y, obj.Falange.Value, thickness, flipped=1)
+                trackLength, frameWidth, flangeWidth, thickness, flipped=1)
             lowerTrack.Placement.Base = FreeCAD.Vector(0, 0, 0)
-            trackCount += L
+            trackCount += trackLength
             parts.append(lowerTrack)
             # draw track from door n to door n+1
-            Puertas_hechas = 1
-            while len(doors) > Puertas_hechas:
-                L = doors[Puertas_hechas][0] - doors[Puertas_hechas -
-                                                     1][0] - doors[Puertas_hechas
-                                                                   - 1][2]
+            doors_Completed = 1
+            while len(doors) > doors_Completed:
+                trackLength = doors[doors_Completed][0] - doors[doors_Completed - 1][0] \
+                  - doors[doors_Completed - 1][2]
                 lowerTrack = Draw_Steel_Track(
-                    L, y, obj.Falange.Value, thickness, flipped=1)
-                pos = doors[Puertas_hechas -
-                            1][0] + doors[Puertas_hechas -
-                                          1][2]  # calculate the position of the segment
+                    trackLength, frameWidth, flangeWidth, thickness, flipped=1)
+                # calculate the position of the segment
+                pos = doors[doors_Completed - 1][0] \
+                    + doors[doors_Completed - 1][2]
                 lowerTrack.Placement.Base = FreeCAD.Vector(pos, 0, 0)
-                trackCount += L
+                trackCount += trackLength
                 parts.append(lowerTrack)
-                Puertas_hechas += 1
+                doors_Completed += 1
             # draw segment from last door to end
-            L = obj.Length.Value - (doors[-1][0] + doors[-1][2])
+            trackLength = obj.Length.Value - (doors[-1][0] + doors[-1][2])
             lowerTrack = Draw_Steel_Track(
-                L, y, obj.Falange.Value, thickness, flipped=1)
-            lowerTrack.Placement.Base = FreeCAD.Vector(doors[-1][0] + doors[-1][2], 0,
-                                               0)
-            trackCount += L
+                trackLength, frameWidth, flangeWidth, thickness, flipped=1)
+            lowerTrack.Placement.Base = FreeCAD.Vector(doors[-1][0] \
+            	+ doors[-1][2], 0, 0)
+            trackCount += trackLength
             parts.append(lowerTrack)
         # Draw upper track
-        L = obj.Length.Value
+        trackLength = obj.Length.Value
         upperTrack = Draw_Steel_Track(
-            L, y, obj.Falange.Value, thickness, flipped=0)  #top Track
-        upperTrack.Placement.Base = FreeCAD.Vector(0, 0, z)
-        trackCount += L
+            trackLength, frameWidth, flangeWidth, thickness, flipped=0)  #top Track
+        upperTrack.Placement.Base = FreeCAD.Vector(0, 0, frameHeight)
+        trackCount += trackLength
         parts.append(upperTrack)
-        for vent in openings:  #Draw tracks for doors and windows
-            v = Draw_Steel_Track(vent[2] + 2 * x, y, x, thickness, x, x,
-                                 1)  #top piece x=flange
-            v.Placement.Base = FreeCAD.Vector(vent[0] - x, 0,
-                                              vent[1] + vent[3])
-            trackCount += vent[2] + 2 * x
+        for opening in openings: # Draw tracks for doors and windows
+            v = Draw_Steel_Track(opening[2] + 2 * flangeWidth, frameWidth, flangeWidth,
+            	                 thickness, flangeWidth, flangeWidth, 1)  # top piece flangeWidth=flange
+            v.Placement.Base = FreeCAD.Vector(opening[0] - flangeWidth, 0,
+                                              opening[1] + opening[3])
+            trackCount += opening[2] + 2 * flangeWidth
             parts.append(v)
-            if vent[1] != 0:  #If it is a door, don't draw the lower track
-                v1 = Draw_Steel_Track(vent[2] + 2 * x, y, x, thickness, x, x,
-                                      0)  #bottom piece x=flange
-                v1.Placement.Base = FreeCAD.Vector(vent[0] - x, 0, vent[1])
-                trackCount += vent[2] + 2 * x
+            if opening[1] != 0:  #If it is a door, don't draw the lower track
+                v1 = Draw_Steel_Track(opening[2] + 2 * flangeWidth, frameWidth, flangeWidth, thickness,
+                	                  flangeWidth, flangeWidth, 0)  #bottom piece flangeWidth=flange
+                v1.Placement.Base = FreeCAD.Vector(opening[0] - flangeWidth, 0, opening[1])
+                trackCount += opening[2] + 2 * flangeWidth
                 parts.append(v1)
         # Draw Structural Box Beams
         if obj.Structural == True:
@@ -539,14 +542,14 @@ class Steel_Frame:
                 sb1 = Draw_Box_Beam(xs, yf, ys, zs, thickness, obj.Lip.Value,
                                     obj.Box, FEM)
                 sb1.Placement.Base = FreeCAD.Vector(
-                    a[0], y / 2, obj.Height.Value - obj.Beam_Height.Value -
+                    a[0], frameWidth / 2, obj.Height.Value - obj.Beam_Height.Value -
                     (thickness * FEM))
                 parts.append(sb1)
                 #Draw Track Below beam...
                 sb2 = Draw_Steel_Track(
                     xs,
                     obj.Width.Value,
-                    obj.Falange.Value,
+                    flangeWidth,
                     thickness,
                     leftCut=0,
                     rightCut=0,
@@ -563,7 +566,7 @@ class Steel_Frame:
                     e1 = Draw_Steel_Track(
                         zs,
                         yf - (2 * thickness * FEM),
-                        obj.Falange.Value,
+                        flangeWidth,
                         1.7272,
                         leftCut=0,
                         rightCut=0,
@@ -577,7 +580,7 @@ class Steel_Frame:
                     e2 = Draw_Steel_Track(
                         zs,
                         yf - (2 * thickness * FEM),
-                        obj.Falange.Value,
+                        flangeWidth,
                         1.7272,
                         leftCut=0,
                         rightCut=0,
