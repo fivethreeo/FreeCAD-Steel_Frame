@@ -171,7 +171,7 @@ def calcStuds(length,
     return studs
 
 
-def Draw_Steel_Stud(depth, width, thickness, height, flangeLip=8, flipped=0):
+def Draw_Steel_Stud(depth, width, thickness, height, lipWidth=8, flipped=0):
     # Author = Humberto Hassey
     # Version=1.0
     # Draw a Steel stud
@@ -187,14 +187,14 @@ def Draw_Steel_Stud(depth, width, thickness, height, flangeLip=8, flipped=0):
     # Vertices of the stud
     V1 = FreeCAD.Vector(0, 0, 0)
     V2 = FreeCAD.Vector(width * F, 0, 0)
-    V3 = FreeCAD.Vector(width * F, flangeLip, 0)
-    V4 = FreeCAD.Vector((width - thickness) * F, flangeLip, 0)
+    V3 = FreeCAD.Vector(width * F, lipWidth, 0)
+    V4 = FreeCAD.Vector((width - thickness) * F, lipWidth, 0)
     V5 = FreeCAD.Vector((width - thickness) * F, thickness, 0)
     V6 = FreeCAD.Vector(thickness * F, thickness, 0)
     V7 = FreeCAD.Vector(thickness * F, depth - thickness, 0)
     V8 = FreeCAD.Vector((width - thickness) * F, depth - thickness, 0)
-    V9 = FreeCAD.Vector((width - thickness) * F, depth - flangeLip, 0)
-    V10 = FreeCAD.Vector(width * F, depth - flangeLip, 0)
+    V9 = FreeCAD.Vector((width - thickness) * F, depth - lipWidth, 0)
+    V10 = FreeCAD.Vector(width * F, depth - lipWidth, 0)
     V11 = FreeCAD.Vector(width * F, depth, 0)
     V12 = FreeCAD.Vector(0, depth, 0)
 
@@ -223,7 +223,7 @@ def Draw_Steel_Track(length, width, flangeHeight, thickness, leftCut=0, rightCut
     # Draw a Steel Track
     # length=Length
     # width=Width
-    # flangeHeight=Flange_Width Height
+    # flangeHeight=Flange Height
     # thickness=steel thickness
     # flipped=[boolean] Draw flangeHeight to +z?
 
@@ -273,7 +273,7 @@ def Draw_Steel_Track(length, width, flangeHeight, thickness, leftCut=0, rightCut
     return P
 
 
-def Draw_Box_Beam(length, boxWidth, studWidth, height, thickness, flangeHeight=8, box=1, FEM=True):
+def Draw_Box_Beam(length, boxWidth, studWidth, height, thickness, lipWidth=8, box=1, FEM=True):
     # Author = Humberto Hassey
     # Version=1.0
     # Draw a Steel stud
@@ -283,7 +283,7 @@ def Draw_Box_Beam(length, boxWidth, studWidth, height, thickness, flangeHeight=8
     # height=height
     # thickness=steel thickness'
     
-    def Draw_half(length, studWidth, height, thickness, flangeHeight=8, flipped=0, FEM=True):
+    def Draw_half(length, studWidth, height, thickness, lipWidth=8, flipped=0, FEM=True):
         boxWidth = studWidth
         F = 1
         if flipped == 1:
@@ -291,14 +291,14 @@ def Draw_Box_Beam(length, boxWidth, studWidth, height, thickness, flangeHeight=8
         # Vertices del stud
         V1 = FreeCAD.Vector(0, 0, 0)
         V2 = FreeCAD.Vector(0, boxWidth * F, 0)
-        V3 = FreeCAD.Vector(0, boxWidth * F, flangeHeight)
-        V4 = FreeCAD.Vector(0, (boxWidth - thickness) * F, flangeHeight)
+        V3 = FreeCAD.Vector(0, boxWidth * F, lipWidth)
+        V4 = FreeCAD.Vector(0, (boxWidth - thickness) * F, lipWidth)
         V5 = FreeCAD.Vector(0, (boxWidth - thickness) * F, thickness)
         V6 = FreeCAD.Vector(0, thickness * F, thickness)
         V7 = FreeCAD.Vector(0, thickness * F, height - thickness)  #length por height
         V8 = FreeCAD.Vector(0, (boxWidth - thickness) * F, height - thickness)
-        V9 = FreeCAD.Vector(0, (boxWidth - thickness) * F, height - flangeHeight)
-        V10 = FreeCAD.Vector(0, boxWidth * F, height - flangeHeight)
+        V9 = FreeCAD.Vector(0, (boxWidth - thickness) * F, height - lipWidth)
+        V10 = FreeCAD.Vector(0, boxWidth * F, height - lipWidth)
         V11 = FreeCAD.Vector(0, boxWidth * F, height)
         V12 = FreeCAD.Vector(0, 0, height)
 
@@ -321,8 +321,8 @@ def Draw_Box_Beam(length, boxWidth, studWidth, height, thickness, flangeHeight=8
         P = F.extrude(FreeCAD.Vector(length, 0, 0))
         return P
 
-    p1 = Draw_half(length, studWidth, height, thickness, flangeHeight, 0)
-    p2 = Draw_half(length, studWidth, height, thickness, flangeHeight, 1)
+    p1 = Draw_half(length, studWidth, height, thickness, lipWidth, 0)
+    p2 = Draw_half(length, studWidth, height, thickness, lipWidth, 1)
     if box == 1:
         v1 = FreeCAD.Vector(0, -boxWidth / 2.0 + ((thickness + 1.7272) * FEM),
                             0)  #1.72=ga14 of the clips to mount the piece
@@ -374,8 +374,8 @@ class Steel_Frame:
         obj.addProperty("App::PropertyLength", "Width", "Frame").Width = 152.4
         obj.addProperty("App::PropertyLength", "Separation",
                         "Frame").Separation = 304.8
-        obj.addProperty("App::PropertyLength", "Flange_Width",
-                        "Stud").Flange_Width = 41.275
+        obj.addProperty("App::PropertyLength", "Flange",
+                        "Stud").Flange = 41.275
         obj.addProperty("App::PropertyLength", "Lip", "Stud").Lip = 8
         obj.addProperty("App::PropertyLength", "Thickness",
                         "Steel").Thickness = 0.8382
@@ -416,8 +416,8 @@ class Steel_Frame:
         # Get all doors to be able to cut the track below.
         doors = [door for door in openings if door[1] == 0]
         doors.sort(key=lambda door: door[0]) # Sort doors by x coordinate
-        trackCount = 0 #counter to quantify the track and stud
-        studCount = 0 # counter to quantify the track and stud
+        currentTracX = 0 # varaiable to keep track of position of tracks along the length
+        currentStudZ = 0 # varaiable to keep track of position of studs along the height
         #post_W=0
         FEM = not (obj.FEM) # FEM = Make studs and tracks the same width.
 
@@ -438,19 +438,20 @@ class Steel_Frame:
         if obj.Thickness.Value not in gauges.values() and obj.Gauge.Value != 0:
             obj.Gauge.Value = 0
 
-        flangeWidth = obj.Flange_Width.Value
+        flangeLength = obj.Flange.Value
         frameWidth = obj.Width.Value
         frameHeight = obj.Height.Value
+        frameLength = obj.Length.Value
         thickness = obj.Thickness.Value
-        flangeLip = obj.Lip.Value
+        lipWidth = obj.Lip.Value
 
         Flip = 0
 
         studs = calcStuds(
-            obj.Length.Value,
-            obj.Height.Value,
+            frameLength,
+            frameHeight,
             obj.Separation.Value,
-            flangeWidth,
+            flangeLength,
             openings,
             FEM,
             0,
@@ -463,31 +464,31 @@ class Steel_Frame:
         for indice, stud in enumerate(studs):
             # -1 so it will not draw the last stud since that one goes flipped
             parts.append(
-                Draw_Steel_Stud(frameWidth - 2 * thickness * FEM, flangeWidth, thickness,
-                                stud[2] - 2 * thickness * FEM, flangeLip,
+                Draw_Steel_Stud(frameWidth - 2 * thickness * FEM, flangeLength, thickness,
+                                stud[2] - 2 * thickness * FEM, lipWidth,
                                 stud[3])) # draw stud
             parts[indice].Placement.Base = FreeCAD.Vector(
                 stud[0], thickness * FEM,
                 stud[1] + thickness * FEM) # place stud #correct Z for FEM
-            studCount += stud[2] - 2 * thickness * FEM
+            currentStudZ += stud[2] - 2 * thickness * FEM
 
 		# Draw Tracks
 
 		## Lower Track
         if len(doors) == 0: # If no doors, the track goes uninterrupted
-            trackLength = obj.Length.Value
+            trackLength = frameLength
             lowerTrack = Draw_Steel_Track(
-                trackLength, frameWidth, flangeWidth, thickness, flipped=1)
+                trackLength, frameWidth, flangeLength, thickness, flipped=1)
             lowerTrack.Placement.Base = FreeCAD.Vector(0, 0, 0)
-            trackCount += trackLength
+            currentTracX += trackLength
             parts.append(lowerTrack)
         else:
             # draw track from 0 to the first door
             trackLength = doors[0][0]
             lowerTrack = Draw_Steel_Track(
-                trackLength, frameWidth, flangeWidth, thickness, flipped=1)
+                trackLength, frameWidth, flangeLength, thickness, flipped=1)
             lowerTrack.Placement.Base = FreeCAD.Vector(0, 0, 0)
-            trackCount += trackLength
+            currentTracX += trackLength
             parts.append(lowerTrack)
             # draw track from door n to door n+1
             doors_Completed = 1
@@ -495,78 +496,78 @@ class Steel_Frame:
                 trackLength = doors[doors_Completed][0] - doors[doors_Completed - 1][0] \
                   - doors[doors_Completed - 1][2]
                 lowerTrack = Draw_Steel_Track(
-                    trackLength, frameWidth, flangeWidth, thickness, flipped=1)
+                    trackLength, frameWidth, flangeLength, thickness, flipped=1)
                 # calculate the position of the segment
                 pos = doors[doors_Completed - 1][0] \
                     + doors[doors_Completed - 1][2]
                 lowerTrack.Placement.Base = FreeCAD.Vector(pos, 0, 0)
-                trackCount += trackLength
+                currentTracX += trackLength
                 parts.append(lowerTrack)
                 doors_Completed += 1
             # draw segment from last door to end
-            trackLength = obj.Length.Value - (doors[-1][0] + doors[-1][2])
+            trackLength = frameLength - (doors[-1][0] + doors[-1][2])
             lowerTrack = Draw_Steel_Track(
-                trackLength, frameWidth, flangeWidth, thickness, flipped=1)
+                trackLength, frameWidth, flangeLength, thickness, flipped=1)
             lowerTrack.Placement.Base = FreeCAD.Vector(doors[-1][0] \
             	+ doors[-1][2], 0, 0)
-            trackCount += trackLength
+            currentTracX += trackLength
             parts.append(lowerTrack)
         # Draw upper track
-        trackLength = obj.Length.Value
+        trackLength = frameLength
         upperTrack = Draw_Steel_Track(
-            trackLength, frameWidth, flangeWidth, thickness, flipped=0)  #top Track
+            trackLength, frameWidth, flangeLength, thickness, flipped=0)  #top Track
         upperTrack.Placement.Base = FreeCAD.Vector(0, 0, frameHeight)
-        trackCount += trackLength
+        currentTracX += trackLength
         parts.append(upperTrack)
         for opening in openings: # Draw tracks for doors and windows
-            v = Draw_Steel_Track(opening[2] + 2 * flangeWidth, frameWidth, flangeWidth,
-            	                 thickness, flangeWidth, flangeWidth, 1)  # top piece flangeWidth=flange
-            v.Placement.Base = FreeCAD.Vector(opening[0] - flangeWidth, 0,
+            upperOpeningTrack = Draw_Steel_Track(opening[2] + 2 * flangeLength, frameWidth, flangeLength,
+            	                 thickness, flangeLength, flangeLength, 1)  # top piece flangeLength=flange
+            upperOpeningTrack.Placement.Base = FreeCAD.Vector(opening[0] - flangeLength, 0,
                                               opening[1] + opening[3])
-            trackCount += opening[2] + 2 * flangeWidth
-            parts.append(v)
+            currentTracX += opening[2] + 2 * flangeLength
+            parts.append(upperOpeningTrack)
             if opening[1] != 0:  #If it is a door, don't draw the lower track
-                v1 = Draw_Steel_Track(opening[2] + 2 * flangeWidth, frameWidth, flangeWidth, thickness,
-                	                  flangeWidth, flangeWidth, 0)  #bottom piece flangeWidth=flange
-                v1.Placement.Base = FreeCAD.Vector(opening[0] - flangeWidth, 0, opening[1])
-                trackCount += opening[2] + 2 * flangeWidth
-                parts.append(v1)
+                lowerOpeningTrack = Draw_Steel_Track(opening[2] + 2 * flangeLength, frameWidth, flangeLength, thickness,
+                	                  flangeLength, flangeLength, 0)  #bottom piece flangeLength=flange
+                lowerOpeningTrack.Placement.Base = FreeCAD.Vector(opening[0] - flangeLength, 0, opening[1])
+                currentTracX += opening[2] + 2 * flangeLength
+                parts.append(lowerOpeningTrack)
         # Draw Structural Box Beams
         if obj.Structural == True:
             beams = cutBeams(beams)
-            for a in beams:
-                xs = a[1]  #length of the beam
-                ys = obj.Stud_Width.Value
-                yf = obj.Width.Value
-                zs = obj.Beam_Height.Value
-                sb1 = Draw_Box_Beam(xs, yf, ys, zs, thickness, obj.Lip.Value,
+            for beam in beams:
+                beamLength = beam[1]  #length of the beam
+                studWidth = obj.Stud_Width.Value
+                boxWidth = obj.Width.Value
+                beamHeight = obj.Beam_Height.Value
+                structuralBeam = Draw_Box_Beam(beamLength, boxWidth, studWidth, beamHeight, thickness, lipWidth,
                                     obj.Box, FEM)
-                sb1.Placement.Base = FreeCAD.Vector(
-                    a[0], frameWidth / 2, obj.Height.Value - obj.Beam_Height.Value -
+                structuralBeam.Placement.Base = FreeCAD.Vector(
+                    beam[0], frameWidth / 2, frameHeight - beamHeight -
                     (thickness * FEM))
-                parts.append(sb1)
+                parts.append(structuralBeam)
                 #Draw Track Below beam...
-                sb2 = Draw_Steel_Track(
-                    xs,
-                    obj.Width.Value,
-                    flangeWidth,
+                belowBeamTrack = Draw_Steel_Track(
+                    beamLength,
+                    frameWidth,
+                    flangeLength,
                     thickness,
                     leftCut=0,
                     rightCut=0,
                     flipped=0)
-                sb2.Placement.Base = FreeCAD.Vector(
-                    a[0], 0, obj.Height.Value - obj.Beam_Height.Value -
+                belowBeamTrack.Placement.Base = FreeCAD.Vector(
+                    beam[0], 0, frameHeight - beamHeight -
                     (thickness * FEM))
-                trackCount += xs
-                parts.append(sb2)
+                currentTracX += beamLength
+                parts.append(belowBeamTrack)
                 # here we are missing to add the lengths of the sections!!!
 
                 # Draw special clips to mount the beam
                 if obj.Box:
                     e1 = Draw_Steel_Track(
-                        zs,
-                        yf - (2 * thickness * FEM),
-                        flangeWidth,
+                        beamHeight,
+                        boxWidth - (2 * thickness * FEM),
+                        flangeLength,
                         1.7272,
                         leftCut=0,
                         rightCut=0,
@@ -574,13 +575,13 @@ class Steel_Frame:
                     e1.Placement.Rotation = App.Rotation(
                         App.Vector(0, 1, 0), -90)
                     e1.Placement.Base = FreeCAD.Vector(
-                        a[0], thickness * FEM,
-                        obj.Height.Value - obj.Beam_Height.Value -
+                        beam[0], thickness * FEM,
+                        frameHeight - beamHeight -
                         (thickness * FEM))
                     e2 = Draw_Steel_Track(
-                        zs,
-                        yf - (2 * thickness * FEM),
-                        flangeWidth,
+                        beamHeight,
+                        boxWidth - (2 * thickness * FEM),
+                        flangeLength,
                         1.7272,
                         leftCut=0,
                         rightCut=0,
@@ -588,8 +589,8 @@ class Steel_Frame:
                     e2.Placement.Rotation = App.Rotation(
                         App.Vector(0, 1, 0), -90)
                     e2.Placement.Base = FreeCAD.Vector(
-                        a[0] + a[1], thickness * FEM,
-                        obj.Height.Value - obj.Beam_Height.Value -
+                        beam[0] + beam[1], thickness * FEM,
+                        frameHeight - beamHeight -
                         (thickness * FEM))
                     parts.append(e1)
                     parts.append(e2)
@@ -601,15 +602,15 @@ class Steel_Frame:
             print('Center of Mass', obj.Shape.CenterOfMass)
         obj.Shape = comp
         obj.Weight = comp.Volume * 7850 / 1e9
-        obj.Stud_L = FreeCAD.Units.Metre * studCount / 1e3
-        obj.Track_L = FreeCAD.Units.Metre * trackCount / 1e3
+        obj.Stud_L = FreeCAD.Units.Metre * currentStudZ / 1e3
+        obj.Track_L = FreeCAD.Units.Metre * currentTracX / 1e3
 
         ########## Calculate Center of mass
         if not (obj.FEM):
             v = FreeCAD.Vector(0, 0, 0)
-            solidos = obj.Shape.Solids
-            for b in solidos:
-                v2 = b.CenterOfMass * b.Volume
+            solids = obj.Shape.Solids
+            for solid in solids:
+                v2 = solid.CenterOfMass * solid.Volume
                 v = v.add(v2)
             vt = obj.Shape.Volume
             print('Center of Mass', v * (1 / vt))
