@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import Part
+import FreeCAD
+App = FreeCAD
 
 __Title__ = "Steel Frame Creator"
 __Author__ = "Humberto Hassey, Beatriz Arellano"
@@ -17,10 +20,6 @@ __Communication__ = \
     "https://forum.freecadweb.org/viewtopic.php?flangeLength=23&t=26092"
 
 
-import Part
-import FreeCAD
-App = FreeCAD
-
 def cutStud(stud,
             opening,
             beamHeight,
@@ -33,25 +32,30 @@ def cutStud(stud,
     # stud or the same stud if no intersection is present
 
     studList = []
-    if opening[1] == 0: # This is a door
+    if opening[1] == 0:  # This is a door
         # Placement of upper opening
         posX = stud[0]
         posZ = opening[3] + thickness * isFEMOff
         posSize = stud[2] - opening[3] - 2 * thickness * isFEMOff
         studList.append((posX, posZ, posSize, stud[3]))
         return studList
-    elif opening[1] >= stud[1] + stud[2]: # Stud does not reach the window height
+    # Stud does not reach the window height
+    elif opening[1] >= stud[1] + stud[2]:
         studList.append(stud)
         return studList
-    elif stud[1] > opening[1] + opening[3]: # Stud above window and does not cross window
+    # Stud above window and does not cross window
+    elif stud[1] > opening[1] + opening[3]:
         studList.append(stud)
         return studList
-    elif opening[1] < stud[1] + stud[2] < opening[1] + opening[3]: # Stud inside Structural beam
+    # Stud inside structural beam
+    elif opening[1] < stud[1] + stud[2] < opening[1] + opening[3]:
         hdown = opening[1] - stud[1] + 2 * thickness * (not (isFEMOff))
         posZ = stud[1] - thickness * (not (isFEMOff))
         studList.append((stud[0], posZ, hdown, stud[3]))
         return studList
-    else:  # Opening[1]+opening[3] < stud[1]+stud[2]: # Stud passes the window height
+    else:
+        # opening[1]+opening[3] < stud[1]+stud[2]:
+        # Stud passes the window height
         # Placement of lower opening
         hdown = opening[1] - stud[1] + 2 * thickness * (not (isFEMOff))
         posZ = stud[1] - thickness * (not (isFEMOff))
@@ -81,12 +85,13 @@ def calcStuds(length,
     #     -height: (float) height (z) of the wall
     #     -separation: (float) separation between studs along axis x
     #     -flangeLength: (float) length of the  "flange" of the stud
-    #     -windows: List of tuples with the information of the windows, every tupble goes like this:
-    #         (position in x, position in z, length in x, height in z)        
+    #     -windows: List of tuples with the information of the windows,
+    #               every tuple goes like this:
+    #         (position in x, position in z, length in x, height in z)
     #     -initialZ: (float) Initial position in Z of the studs.
     #     -isBeamOn: (Boolean) If the structural option is selected or not
     #     -beamHeight: Beam height
-        
+
     # Returns a list with tuples with the information of every steel stud:
     #     (px, pz, height, flipped):
     #         px: (float) position along axis x
@@ -102,16 +107,17 @@ def calcStuds(length,
             # (px,pz,height,flipped)
         return studs
 
-    margin = 2 * flangeLength  #Minimum space between studs
+    margin = 2 * flangeLength  # Minimum space between studs
     studs = []
-    # Check if there is a window or door on the initial edge to rotate or not the first post.
-    if 0 not in [ window[0] for window in windows ]: 
+    # Check if there is a window or door on the initial edge to rotate or not
+    # the first post.
+    if 0 not in [window[0] for window in windows]:
         studs.append((0, initialZ, height, False))
     for window in windows:
         studs = AddStud(window[0], initialZ, height, True, studs)
         studs = AddStud(window[0] + window[2], initialZ, height, False, studs)
         # Add extra studs if structural option is true
-        if isBeamOn == True:
+        if isBeamOn:
             if not any([
                 otherWindow[0] < window[0] - 2 * flangeLength <
                 otherWindow[0] + otherWindow[2] for otherWindow in windows
@@ -124,48 +130,69 @@ def calcStuds(length,
             ]):
                 studs = AddStud(window[0] + window[2] + 2 * flangeLength,
                                 initialZ, height, True, studs)
-        # Check what happens if the stud already exists and has another orientation
-        # Check what happens if that stud passes trough a door or window. Verificar qué pasa si ese poste pasa por una puerta o doors
+        # Check what happens if the stud already exists
+        # and has another orientation
+        # Check what happens if that stud passes trough a door or window.
     if length not in [window[0] + window[2] for window in windows]:
-    	# Add the last stud, checking that it is already not added as frame of a door or window.
-        studs.append( (length, initialZ, height, True) )  
+        # Add the last stud, checking that it is already not added as frame of
+        # a door or window.
+        studs.append((length, initialZ, height, True))
     studs.sort(key=lambda stud: stud[0])  # Sort studs by position along axis X
     # Add intermediate studs that are not part of the frames
-    notFrames = []  #List to add studs that are not frames.
+    notFrames = []  # List to add studs that are not frames.
     # Start iterating from the second element of the studs.
-    for index, stud in enumerate(studs[1::]):  
+    for index, stud in enumerate(studs[1::]):
         frameDistance = stud[0] - studs[index][0]
         extra = 0
         if frameDistance % separation >= margin and float(
-                frameDistance / separation).is_integer() != True:
+                frameDistance / separation).is_integer() is True:
             extra = 1
         numberOfStuds = int(frameDistance / separation) + extra
         for studNumber in range(1, numberOfStuds):
-            notFrames.append((studs[index][0] + studNumber * separation, initialZ,
-                              height, False))
-        lastSeparation = stud[0] - notFrames[-1][0] if numberOfStuds > 1 else frameDistance
+            notFrames.append(
+                (studs[index][0] +
+                 studNumber *
+                 separation,
+                 initialZ,
+                 height,
+                 False))
+        lastSeparation = stud[0] - \
+            notFrames[-1][0] if numberOfStuds > 1 else frameDistance
         # If there is a space bigger than the separation between studs
-        if lastSeparation > separation and lastSeparation >= margin:  
-            notFrames.append((stud[0] - lastSeparation / 2, initialZ, height, False))
+        if lastSeparation > separation and lastSeparation >= margin:
+            notFrames.append(
+                (stud[0] - lastSeparation / 2, initialZ, height, False))
 
     studs += notFrames
     # Studs are defined like this: (px, pz, height, flipped):
     # Cut the studs that go trough windows and doors
     windowCopies = windows[:]
-    if isBeamOn:  # If Structural, all Beams will be treated as windows to cut studs below them
+    # If structural, all beams will be treated as
+    # windows to cut studs below them
+    if isBeamOn:
         for window in windows:
             xmin = (window[0])
             xmax = (window[0] + window[2])
             windowCopies.append(
                 (xmin, height - beamHeight - 1 * thickness, xmax - xmin,
-                 2 * beamHeight + 1 * thickness * isFEMOff ))
-                 # 2 because I want the window higher than the studs
+                 2 * beamHeight + 1 * thickness * isFEMOff))
+            # 2 because I want the window higher than the studs
     for window in windowCopies:  # Stud inside window in x
-        interStuds = list(filter(lambda x: window[0] < x[0] < window[0] + window[2], studs))
+        interStuds = list(
+            filter(
+                lambda x: window[0] < x[0] < window[0] +
+                window[2],
+                studs))
         for iStu in interStuds:
             studs.remove(iStu)
             studs.extend(
-                cutStud(iStu, window, beamHeight, isFEMOff, isBeamOn, thickness))
+                cutStud(
+                    iStu,
+                    window,
+                    beamHeight,
+                    isFEMOff,
+                    isBeamOn,
+                    thickness))
 
     studs.sort(key=lambda tup: tup[0])
     return studs
@@ -198,7 +225,7 @@ def Draw_Steel_Stud(depth, width, thickness, height, lipWidth=8, flipped=0):
     V11 = FreeCAD.Vector(width * F, depth, 0)
     V12 = FreeCAD.Vector(0, depth, 0)
 
-    #Lines
+    # Lines
     L1 = Part.makeLine(V1, V2)
     L2 = Part.makeLine(V2, V3)
     L3 = Part.makeLine(V3, V4)
@@ -218,7 +245,14 @@ def Draw_Steel_Stud(depth, width, thickness, height, lipWidth=8, flipped=0):
     return P
 
 
-def Draw_Steel_Track(length, width, flangeHeight, thickness, leftCut=0, rightCut=0, flipped=0):
+def Draw_Steel_Track(
+        length,
+        width,
+        flangeHeight,
+        thickness,
+        leftCut=0,
+        rightCut=0,
+        flipped=0):
     # Version=2.0
     # Draw a Steel Track
     # Length=Length
@@ -242,8 +276,8 @@ def Draw_Steel_Track(length, width, flangeHeight, thickness, leftCut=0, rightCut
     V7 = FreeCAD.Vector(0, thickness, flangeHeight * F)
     V8 = FreeCAD.Vector(0, 0, flangeHeight * F)
 
-    #Lines
-    L1 = Part.makeLine(V1, V11)  #changed Line to makeLine
+    # Lines
+    L1 = Part.makeLine(V1, V11)  # changed Line to makeLine
     L2 = Part.makeLine(V11, V12)
     L3 = Part.makeLine(V12, V2)
     L4 = Part.makeLine(V2, V3)
@@ -273,7 +307,15 @@ def Draw_Steel_Track(length, width, flangeHeight, thickness, leftCut=0, rightCut
     return P
 
 
-def Draw_Box_Beam(length, boxWidth, studWidth, height, thickness, lipWidth=8, box=1, FEM=True):
+def Draw_Box_Beam(
+        length,
+        boxWidth,
+        studWidth,
+        height,
+        thickness,
+        lipWidth=8,
+        box=1,
+        FEM=True):
     # Author = Humberto Hassey
     # Version=1.0
     # Draw a Steel stud
@@ -282,8 +324,15 @@ def Draw_Box_Beam(length, boxWidth, studWidth, height, thickness, lipWidth=8, bo
     # StudWidth=width of the individual stud
     # Height=height
     # Thickness=steel thickness'
-    
-    def Draw_half(length, studWidth, height, thickness, lipWidth=8, flipped=0, FEM=True):
+
+    def Draw_half(
+            length,
+            studWidth,
+            height,
+            thickness,
+            lipWidth=8,
+            flipped=0,
+            FEM=True):
         boxWidth = studWidth
         F = 1
         if flipped == 1:
@@ -295,14 +344,15 @@ def Draw_Box_Beam(length, boxWidth, studWidth, height, thickness, lipWidth=8, bo
         V4 = FreeCAD.Vector(0, (boxWidth - thickness) * F, lipWidth)
         V5 = FreeCAD.Vector(0, (boxWidth - thickness) * F, thickness)
         V6 = FreeCAD.Vector(0, thickness * F, thickness)
-        V7 = FreeCAD.Vector(0, thickness * F, height - thickness)  #length por height
+        V7 = FreeCAD.Vector(0, thickness * F, height -
+                            thickness)  # length por height
         V8 = FreeCAD.Vector(0, (boxWidth - thickness) * F, height - thickness)
         V9 = FreeCAD.Vector(0, (boxWidth - thickness) * F, height - lipWidth)
         V10 = FreeCAD.Vector(0, boxWidth * F, height - lipWidth)
         V11 = FreeCAD.Vector(0, boxWidth * F, height)
         V12 = FreeCAD.Vector(0, 0, height)
 
-        #Lines
+        # Lines
         L1 = Part.makeLine(V1, V2)
         L2 = Part.makeLine(V2, V3)
         L3 = Part.makeLine(V3, V4)
@@ -325,12 +375,13 @@ def Draw_Box_Beam(length, boxWidth, studWidth, height, thickness, lipWidth=8, bo
     p2 = Draw_half(length, studWidth, height, thickness, lipWidth, 1)
     if box == 1:
         v1 = FreeCAD.Vector(0, -boxWidth / 2.0 + ((thickness + 1.7272) * FEM),
-                            0)  #1.72=ga14 of the clips to mount the piece
-        v2 = FreeCAD.Vector(0, boxWidth / 2.0 - ((thickness + 1.7272) * FEM), 0)
+                            0)  # 1.72=ga14 of the clips to mount the piece
+        v2 = FreeCAD.Vector(0, boxWidth / 2.0 -
+                            ((thickness + 1.7272) * FEM), 0)
         p1.Placement.Base = v1
         p2.Placement.Base = v2
     P = p1.fuse(p2)
-    #comp=Part.makeCompound([p1,p2])
+    # comp=Part.makeCompound([p1,p2])
 
     return P  # Comp
 
@@ -342,7 +393,7 @@ def cutBeams(beams):
 
     def isin(x1, x2, xt1, xt2):
         if (x1 <= xt1) and (xt1 <= x2):
-          # Beams overlap and must be changed for one.
+            # Beams overlap and must be changed for one.
             return True
         else:
             return False
@@ -353,17 +404,23 @@ def cutBeams(beams):
         x1_final = x1_initial + beam[1]
         x2_initial = beams[indice + 1][0]
         x2_final = x2_initial + beams[indice + 1][1]
-        if isin(x1_initial, x1_final, x2_initial, x2_final):  # Overlapped beams
+        if isin(
+                x1_initial,
+                x1_final,
+                x2_initial,
+                x2_final):  # Overlapped beams
             beams.pop(indice)
             beams.pop(indice)
             beams.insert(0, (x1_initial, max(x2_final, x1_final) - x1_initial))
-            return cutBeams(beams)  # Repeat until there are no overlaping beams
+            # Repeat until there are no overlaping beams
+            return cutBeams(beams)
     return beams
 
 
 class Steel_Frame:
     def __init__(self, obj):
-        self.Object = obj  # Line not neccesary this was to try to keep the object after copying
+        # Line not neccesary this was to try to keep the object after copying
+        self.Object = obj
         doc = App.ActiveDocument
         obj.Proxy = self
         obj.addProperty("App::PropertyBool", "FEM", "Frame").FEM = False
@@ -393,11 +450,11 @@ class Steel_Frame:
                         "Structural").Stud_Width = 41.275
         obj.addProperty("App::PropertyBool", "Box", "Structural").Box = True
 
-    #def onChanged(self, fp, prop):
-    #FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
+    # def onChanged(self, fp, prop):
+    #     FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
 
-    #def onChanged(self, obj, prop):
-    #   App.activeDocument().recompute()
+    # def onChanged(self, obj, prop):
+    #     App.activeDocument().recompute()
 
     def onDocumentRestored(self, obj):
         # Restore object references on reload
@@ -406,20 +463,22 @@ class Steel_Frame:
 
     def execute(self, obj):
         openings = []
-        beams = [] # Structural beams
-        if obj.Windows[0] != '': # If There are windows in this frame
+        beams = []  # Structural beams
+        if obj.Windows[0] != '':  # If There are windows in this frame
             for index in range(len(obj.Windows)):
                 openings.append(eval(
-                    obj.Windows[index])) # Create list of windows
+                    obj.Windows[index]))  # Create list of windows
                 beams.append((eval(obj.Windows[index])[0],
                               eval(obj.Windows[index])[2]))
         # Get all doors to be able to cut the track below.
         doors = [door for door in openings if door[1] == 0]
-        doors.sort(key=lambda door: door[0]) # Sort doors by x coordinate
-        currentTracX = 0 # Varaiable to keep track of position of tracks along the length
-        currentStudZ = 0 # Varaiable to keep track of position of studs along the height
-        #post_W=0
-        FEM = not (obj.FEM) # FEM = Make studs and tracks the same width.
+        doors.sort(key=lambda door: door[0])  # Sort doors by x coordinate
+        # Varaiable to keep track of position of tracks along the length
+        currentTracX = 0
+        # Varaiable to keep track of position of studs along the height
+        currentStudZ = 0
+        # post_W=0
+        FEM = not (obj.FEM)  # FEM = Make studs and tracks the same width.
 
         gauges = {
             25: 0.4572,
@@ -457,25 +516,29 @@ class Steel_Frame:
             0,
             obj.Structural,
             obj.Beam_Height.Value,
-            thickness=thickness) # 0 decia thickness
+            thickness=thickness)  # 0 decia thickness
 
-        parts = [] # List of parts that will make the frame
+        parts = []  # List of parts that will make the frame
         # Draw Studs
         for indice, stud in enumerate(studs):
             # -1 so it will not draw the last stud since that one goes flipped
             parts.append(
-                Draw_Steel_Stud(frameWidth - 2 * thickness * FEM, flangeLength, thickness,
-                                stud[2] - 2 * thickness * FEM, lipWidth,
-                                stud[3])) # Draw stud
+                Draw_Steel_Stud(
+                    frameWidth - 2 * thickness * FEM,
+                    flangeLength,
+                    thickness,
+                    stud[2] - 2 * thickness * FEM,
+                    lipWidth,
+                    stud[3]))  # Draw stud
             parts[indice].Placement.Base = FreeCAD.Vector(
                 stud[0], thickness * FEM,
-                stud[1] + thickness * FEM) # Place stud #correct Z for FEM
+                stud[1] + thickness * FEM)  # Place stud #correct Z for FEM
             currentStudZ += stud[2] - 2 * thickness * FEM
 
-		# Draw Tracks
+            # Draw Tracks
 
-		## Lower Track
-        if len(doors) == 0: # If no doors, the track goes uninterrupted
+            # Lower Track
+        if len(doors) == 0:  # If no doors, the track goes uninterrupted
             trackLength = frameLength
             lowerTrack = Draw_Steel_Track(
                 trackLength, frameWidth, flangeLength, thickness, flipped=1)
@@ -493,10 +556,12 @@ class Steel_Frame:
             # Draw track from door n to door n+1
             doors_Completed = 1
             while len(doors) > doors_Completed:
-                trackLength = doors[doors_Completed][0] - doors[doors_Completed - 1][0] \
-                  - doors[doors_Completed - 1][2]
+                trackLength = doors[doors_Completed][0] - \
+                    doors[doors_Completed - 1][0] - \
+                    doors[doors_Completed - 1][2]
                 lowerTrack = Draw_Steel_Track(
-                    trackLength, frameWidth, flangeLength, thickness, flipped=1)
+                    trackLength, frameWidth, flangeLength,
+                    thickness, flipped=1)
                 # Calculate the position of the segment
                 pos = doors[doors_Completed - 1][0] \
                     + doors[doors_Completed - 1][2]
@@ -508,40 +573,64 @@ class Steel_Frame:
             trackLength = frameLength - (doors[-1][0] + doors[-1][2])
             lowerTrack = Draw_Steel_Track(
                 trackLength, frameWidth, flangeLength, thickness, flipped=1)
-            lowerTrack.Placement.Base = FreeCAD.Vector(doors[-1][0] \
-            	+ doors[-1][2], 0, 0)
+            lowerTrack.Placement.Base = FreeCAD.Vector(
+            	doors[-1][0] + doors[-1][2], 0, 0)
             currentTracX += trackLength
             parts.append(lowerTrack)
         # Draw upper track
         trackLength = frameLength
         upperTrack = Draw_Steel_Track(
-            trackLength, frameWidth, flangeLength, thickness, flipped=0)  # Top Track
+            trackLength,
+            frameWidth,
+            flangeLength,
+            thickness,
+            flipped=0)  # Top Track
         upperTrack.Placement.Base = FreeCAD.Vector(0, 0, frameHeight)
         currentTracX += trackLength
         parts.append(upperTrack)
-        for opening in openings: # Draw tracks for doors and windows
-            upperOpeningTrack = Draw_Steel_Track(opening[2] + 2 * flangeLength, frameWidth, flangeLength,
-            	                 thickness, flangeLength, flangeLength, 1)  # Top piece flangeLength=flange
-            upperOpeningTrack.Placement.Base = FreeCAD.Vector(opening[0] - flangeLength, 0,
-                                              opening[1] + opening[3])
+        for opening in openings:  # Draw tracks for doors and windows
+            upperOpeningTrack = Draw_Steel_Track(
+                opening[2] + 2 * flangeLength,
+                frameWidth,
+                flangeLength,
+                thickness,
+                flangeLength,
+                flangeLength,
+                1)  # Top piece flangeLength=flange
+            upperOpeningTrack.Placement.Base = FreeCAD.Vector(
+                opening[0] - flangeLength, 0, opening[1] + opening[3])
             currentTracX += opening[2] + 2 * flangeLength
             parts.append(upperOpeningTrack)
             if opening[1] != 0:  # If it is a door, don't draw the lower track
-                lowerOpeningTrack = Draw_Steel_Track(opening[2] + 2 * flangeLength, frameWidth, flangeLength, thickness,
-                	                  flangeLength, flangeLength, 0)  # Bottom piece flangeLength=flange
-                lowerOpeningTrack.Placement.Base = FreeCAD.Vector(opening[0] - flangeLength, 0, opening[1])
+                lowerOpeningTrack = Draw_Steel_Track(
+                    opening[2] + 2 * flangeLength,
+                    frameWidth,
+                    flangeLength,
+                    thickness,
+                    flangeLength,
+                    flangeLength,
+                    0)  # Bottom piece flangeLength=flange
+                lowerOpeningTrack.Placement.Base = FreeCAD.Vector(
+                    opening[0] - flangeLength, 0, opening[1])
                 currentTracX += opening[2] + 2 * flangeLength
                 parts.append(lowerOpeningTrack)
         # Draw Structural Box Beams
-        if obj.Structural == True:
+        if obj.Structural:
             beams = cutBeams(beams)
             for beam in beams:
                 beamLength = beam[1]  # Length of the beam
                 studWidth = obj.Stud_Width.Value
                 boxWidth = obj.Width.Value
                 beamHeight = obj.Beam_Height.Value
-                structuralBeam = Draw_Box_Beam(beamLength, boxWidth, studWidth, beamHeight, thickness, lipWidth,
-                                    obj.Box, FEM)
+                structuralBeam = Draw_Box_Beam(
+                    beamLength,
+                    boxWidth,
+                    studWidth,
+                    beamHeight,
+                    thickness,
+                    lipWidth,
+                    obj.Box,
+                    FEM)
                 structuralBeam.Placement.Base = FreeCAD.Vector(
                     beam[0], frameWidth / 2, frameHeight - beamHeight -
                     (thickness * FEM))
@@ -589,9 +678,9 @@ class Steel_Frame:
                     e2.Placement.Rotation = App.Rotation(
                         App.Vector(0, 1, 0), -90)
                     e2.Placement.Base = FreeCAD.Vector(
-                        beam[0] + beam[1], thickness * FEM,
-                        frameHeight - beamHeight -
-                        (thickness * FEM))
+                        beam[0] + beam[1],
+                        thickness * FEM,
+                        frameHeight - beamHeight - (thickness * FEM))
                     parts.append(e1)
                     parts.append(e2)
         comp = Part.makeCompound(parts)
@@ -616,8 +705,8 @@ class Steel_Frame:
             print('Center of Mass', v * (1 / vt))
 
 
-#a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
-#Steel_Frame(a)
-#a.ViewObject.Proxy    =    0
+# a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Steel_Frame")
+# Steel_Frame(a)
+# a.ViewObject.Proxy = 0
 
-#App.ActiveDocument.recompute()
+# App.ActiveDocument.recompute()
