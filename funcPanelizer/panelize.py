@@ -57,7 +57,8 @@ def panelize(subFrame,
              minimumWideSide=300,
              minimumTallSide=500):
     # Function that takes a subframe and returns a list of pieces to panelze it
-    # it returns a list of tuples (coordinates,piecex or y, piece z) to fill the subframe.
+    # it returns a list of tuples (coordinates,piecex or y, piece z) to fill
+    # the subframe.
 
     waste = 0
     minimumSize = 300  # Tama minimo para aceptar pieces sobrantes.
@@ -86,9 +87,10 @@ def panelize(subFrame,
                     beforeChoicePiece = pieces[choosePiece(
                         pieces, horizontalCoverDistance,
                         verticalCoverDistance)[0]]
-                    # Revisamos si la pieza pre elegida puede llenar el espacio missingDistancente
+                    # Revisamos si la pieza pre elegida puede llenar el espacio
+                    # missingDistancente
                     if beforeChoicePiece[0] >= horizontalCoverDistance and firstPieceWidth >= horizontalCoverDistance:
-                        chosenPiece = beforeChoicePiece  #si si, tomamos esta pieza como buena
+                        chosenPiece = beforeChoicePiece  # si si, tomamos esta pieza como buena
                     else:  # La pieza pre elegida no llena el espacio y hay que limitar a pieces con el width de la que sobro
                         pieceWidth = chosenPiece[0]
                         possiblePieces = reducePieceList(pieces, pieceWidth)
@@ -100,27 +102,36 @@ def panelize(subFrame,
                 chosenPiece = reuseList.pop()
                 firstPiece = 0
 
-            if chosenPiece[0] < horizontalCoverDistance:  # La pieza <= que la dist horizontal
+            # La pieza <= que la dist horizontal
+            if chosenPiece[0] < horizontalCoverDistance:
                 if chosenPiece[1] < verticalCoverDistance:
                     # 1 Pieza < dist horizontal y pieza < dist vertical
-                    # No hay que cortar la pieza, calculamos coordenadas y la colocamos y ajusto distancias
-                    pieceCoordinateX = subFrame[0][0] + width - horizontalCoverDistance
+                    # No hay que cortar la pieza, calculamos coordenadas y la
+                    # colocamos y ajusto distancias
+                    pieceCoordinateX = subFrame[0][0] + \
+                        width - horizontalCoverDistance
                     pieceCoordinateY = subFrame[0][1]
-                    pieceCoordinateZ = subFrame[0][2] + height - verticalCoverDistance
-                    # Revisar que la pieza ultima en el margen derecho no sea menor que el minimo
-                    if horizontalCoverDistance - chosenPiece[0] < minimumWideSide:
-                        remainingDistance = horizontalCoverDistance - chosenPiece[0]
+                    pieceCoordinateZ = subFrame[0][2] + \
+                        height - verticalCoverDistance
+                    # Revisar que la pieza ultima en el margen derecho no sea
+                    # menor que el minimo
+                    if horizontalCoverDistance - \
+                            chosenPiece[0] < minimumWideSide:
+                        remainingDistance = horizontalCoverDistance - \
+                            chosenPiece[0]
                         missingDistance = minimumWideSide - remainingDistance
-                        waste += chosenPiece[
-                            1] * missingDistance  # Agregamos waste por redefinicion
+                        # Agregamos waste por redefinicion
+                        waste += chosenPiece[1] * missingDistance
                         spechialPiece = (chosenPiece[0] - missingDistance,
                                          chosenPiece[1])
 
-                        if verticalCoverDistance - chosenPiece[1] < minimumTallSide:  # Hay ajuste en width y en height
-                            remainingDistance = verticalCoverDistance - chosenPiece[1]
+                        if verticalCoverDistance - \
+                                chosenPiece[1] < minimumTallSide:  # Hay ajuste en width y en height
+                            remainingDistance = verticalCoverDistance - \
+                                chosenPiece[1]
                             missingDistance = minimumTallSide - remainingDistance
-                            waste += spechialPiece[
-                                0] * missingDistance  # Agregamos waste por redefinicion
+                            # Agregamos waste por redefinicion
+                            waste += spechialPiece[0] * missingDistance
                             piezaReEspecial = (
                                 spechialPiece[0],
                                 chosenPiece[1] - missingDistance)
@@ -134,11 +145,13 @@ def panelize(subFrame,
                                   pieceCoordinateZ), spechialPiece))
                             verticalCoverDistance -= spechialPiece[1]
                     else:  # No hay necesidad de redefinir la pieza en lo width
-                        if verticalCoverDistance - chosenPiece[1] < minimumTallSide:  #pero si hay ajuste en height
-                            remainingDistance = verticalCoverDistance - chosenPiece[1]
+                        if verticalCoverDistance - \
+                                chosenPiece[1] < minimumTallSide:  # pero si hay ajuste en height
+                            remainingDistance = verticalCoverDistance - \
+                                chosenPiece[1]
                             missingDistance = minimumTallSide - remainingDistance
-                            waste += chosenPiece[
-                                0] * missingDistance  #agregamos waste por redefinicion
+                            # agregamos waste por redefinicion
+                            waste += chosenPiece[0] * missingDistance
                             spechialPiece = (chosenPiece[0],
                                              chosenPiece[1] - missingDistance)
                             pieceList.append(
@@ -153,15 +166,20 @@ def panelize(subFrame,
 
                 elif chosenPiece[1] == verticalCoverDistance:
                     # 2 Pieza < dist horizontal y pieza = dist vertical
-                    pieceCoordinateX = subFrame[0][0] + width - horizontalCoverDistance
+                    pieceCoordinateX = subFrame[0][0] + \
+                        width - horizontalCoverDistance
                     pieceCoordinateY = subFrame[0][1]
-                    pieceCoordinateZ = subFrame[0][2] + height - verticalCoverDistance
-                    # Revisar que la pieza ultima en el margen derecho no sea menor que el minimo
-                    if horizontalCoverDistance - chosenPiece[0] < minimumWideSide:
-                        remainingDistance = horizontalCoverDistance - chosenPiece[0]
+                    pieceCoordinateZ = subFrame[0][2] + \
+                        height - verticalCoverDistance
+                    # Revisar que la pieza ultima en el margen derecho no sea
+                    # menor que el minimo
+                    if horizontalCoverDistance - \
+                            chosenPiece[0] < minimumWideSide:
+                        remainingDistance = horizontalCoverDistance - \
+                            chosenPiece[0]
                         missingDistance = minimumWideSide - remainingDistance
-                        waste += chosenPiece[
-                            1] * missingDistance  # Agregamos waste por redefinicion
+                        # Agregamos waste por redefinicion
+                        waste += chosenPiece[1] * missingDistance
                         spechialPiece = (chosenPiece[0] - missingDistance,
                                          chosenPiece[1])
                         pieceList.append(((pieceCoordinateX, pieceCoordinateY,
@@ -178,18 +196,24 @@ def panelize(subFrame,
 
                 else:
                     # 3 pieza < dist horizontal y pieza > dist Vertical
-                    # Hay que cortar la pieza horizontalmente, calcular coords e iniciar nueva columna.
+                    # Hay que cortar la pieza horizontalmente, calcular coords
+                    # e iniciar nueva columna.
                     cutPiece = (chosenPiece[0], verticalCoverDistance)
 
-                    pieceCoordinateX = subFrame[0][0] + width - horizontalCoverDistance
+                    pieceCoordinateX = subFrame[0][0] + \
+                        width - horizontalCoverDistance
                     pieceCoordinateY = subFrame[0][1]
-                    pieceCoordinateZ = subFrame[0][2] + height - verticalCoverDistance
-                    # Revisar que la proxima pieza ultima en el margen derecho no sea menor que el minimo
-                    if horizontalCoverDistance - chosenPiece[0] < minimumWideSide:
-                        remainingDistance = horizontalCoverDistance - chosenPiece[0]
+                    pieceCoordinateZ = subFrame[0][2] + \
+                        height - verticalCoverDistance
+                    # Revisar que la proxima pieza ultima en el margen derecho
+                    # no sea menor que el minimo
+                    if horizontalCoverDistance - \
+                            chosenPiece[0] < minimumWideSide:
+                        remainingDistance = horizontalCoverDistance - \
+                            chosenPiece[0]
                         missingDistance = minimumWideSide - remainingDistance
-                        waste += cutPiece[
-                            1] * missingDistance  # Agregamos waste por redefinicion
+                        # Agregamos waste por redefinicion
+                        waste += cutPiece[1] * missingDistance
                         spechialPiece = (cutPiece[0] - missingDistance,
                                          cutPiece[1])
                         pieceList.append(((pieceCoordinateX, pieceCoordinateY,
@@ -224,22 +248,28 @@ def panelize(subFrame,
                     verticalCoverDistance = 0  # Esto tal vez sobra
 
             # Agregar la pieza a la lista de pieces
-            elif chosenPiece[
-                    0] == horizontalCoverDistance:  #la pieza > la distancia horizontal
+            # la pieza > la distancia horizontal
+            elif chosenPiece[0] == horizontalCoverDistance:
                 if chosenPiece[1] < verticalCoverDistance:
                     # 4 Pieza = dist horizontal y pieza < dist vertical
-                    # No hay que cortar, calcular coords y ajustar dist vertical
+                    # No hay que cortar, calcular coords y ajustar dist
+                    # vertical
 
-                    pieceCoordinateX = subFrame[0][0] + width - horizontalCoverDistance
+                    pieceCoordinateX = subFrame[0][0] + \
+                        width - horizontalCoverDistance
                     pieceCoordinateY = subFrame[0][1]
-                    pieceCoordinateZ = subFrame[0][2] + height - verticalCoverDistance
+                    pieceCoordinateZ = subFrame[0][2] + \
+                        height - verticalCoverDistance
 
-                    # Revisamos si hay que ajustar la pieza verticalmente para no generar una pieza < minima
-                    if verticalCoverDistance - chosenPiece[1] < minimumTallSide:  #pero si hay ajuste en height
-                        remainingDistance = verticalCoverDistance - chosenPiece[1]
+                    # Revisamos si hay que ajustar la pieza verticalmente para
+                    # no generar una pieza < minima
+                    if verticalCoverDistance - \
+                            chosenPiece[1] < minimumTallSide:  # pero si hay ajuste en height
+                        remainingDistance = verticalCoverDistance - \
+                            chosenPiece[1]
                         missingDistance = minimumTallSide - remainingDistance
-                        waste += chosenPiece[
-                            0] * missingDistance  #agregamos waste por redefinicion
+                        # agregamos waste por redefinicion
+                        waste += chosenPiece[0] * missingDistance
                         spechialPiece = (chosenPiece[0],
                                          chosenPiece[1] - missingDistance)
                         pieceList.append(((pieceCoordinateX, pieceCoordinateY,
@@ -252,10 +282,13 @@ def panelize(subFrame,
 
                 elif chosenPiece[1] == verticalCoverDistance:
                     # 5 pieza = dist horizontal y pieza = dist Vertical
-                    # Meter pieza a la lista, calcular coords salir del programa.
-                    pieceCoordinateX = subFrame[0][0] + width - horizontalCoverDistance
+                    # Meter pieza a la lista, calcular coords salir del
+                    # programa.
+                    pieceCoordinateX = subFrame[0][0] + \
+                        width - horizontalCoverDistance
                     pieceCoordinateY = subFrame[0][1]
-                    pieceCoordinateZ = subFrame[0][2] + height - verticalCoverDistance
+                    pieceCoordinateZ = subFrame[0][2] + \
+                        height - verticalCoverDistance
 
                     pieceList.append(((pieceCoordinateX, pieceCoordinateY,
                                        pieceCoordinateZ), chosenPiece))
@@ -263,12 +296,14 @@ def panelize(subFrame,
                     return pieceList, waste, waste / (width * height)
                 else:
                     # 6 pieza = dist horizontal y pieza > dist Vertical
-                    # Hay que cortar la pieza horizontalmente, calcular coords e iniciar nueva columna.
+                    # Hay que cortar la pieza horizontalmente, calcular coords
+                    # e iniciar nueva columna.
                     cutPiece = (horizontalCoverDistance, verticalCoverDistance)
 
                     pieceCoordinateX = subFrame[0][0] + width - cutPiece[0]
                     pieceCoordinateY = subFrame[0][1]
-                    # HorizontalCoverDistance -= piezaMinimo[0] # Actualizamos la distancia a cubrir
+                    # HorizontalCoverDistance -= piezaMinimo[0] # Actualizamos
+                    # la distancia a cubrir
                     pieceCoordinateZ = subFrame[0][2] + height - cutPiece[1]
                     pieceList.append(((pieceCoordinateX, pieceCoordinateY,
                                        pieceCoordinateZ), cutPiece))
@@ -284,21 +319,27 @@ def panelize(subFrame,
 
                 if chosenPiece[1] < verticalCoverDistance:
                     # 7 Pieza > dist horizontal y pieza < dist vertical
-                    # Hay que cortar la pieza verticalmente, calculamos coordenadas y la colocamos y ajustamos coords
+                    # Hay que cortar la pieza verticalmente, calculamos
+                    # coordenadas y la colocamos y ajustamos coords
                     cutPiece = (horizontalCoverDistance, chosenPiece[1])
                     waste += (chosenPiece[0] - horizontalCoverDistance
                               ) * chosenPiece[1]
 
-                    pieceCoordinateX = subFrame[0][0] + width - horizontalCoverDistance
+                    pieceCoordinateX = subFrame[0][0] + \
+                        width - horizontalCoverDistance
                     pieceCoordinateY = subFrame[0][1]
 
-                    pieceCoordinateZ = subFrame[0][2] + height - verticalCoverDistance
-                    # Revisamos si hay que ajustar la pieza verticalmente para no generar una pieza < minima
-                    if verticalCoverDistance - chosenPiece[1] < minimumTallSide:  # Pero si hay ajuste en height
-                        remainingDistance = verticalCoverDistance - chosenPiece[1]
+                    pieceCoordinateZ = subFrame[0][2] + \
+                        height - verticalCoverDistance
+                    # Revisamos si hay que ajustar la pieza verticalmente para
+                    # no generar una pieza < minima
+                    if verticalCoverDistance - \
+                            chosenPiece[1] < minimumTallSide:  # Pero si hay ajuste en height
+                        remainingDistance = verticalCoverDistance - \
+                            chosenPiece[1]
                         missingDistance = minimumTallSide - remainingDistance
-                        waste += cutPiece[
-                            0] * missingDistance  # Agregamos waste por redefinicion
+                        # Agregamos waste por redefinicion
+                        waste += cutPiece[0] * missingDistance
                         spechialPiece = (cutPiece[0],
                                          cutPiece[1] - missingDistance)
                         pieceList.append(((pieceCoordinateX, pieceCoordinateY,
@@ -311,23 +352,27 @@ def panelize(subFrame,
 
                 elif chosenPiece[1] == verticalCoverDistance:
                     # 8 pieza > dist horizontal y pieza = dist Vertical
-                    # Hay que cortar la pieza verticalmente, calcular coords y salir
+                    # Hay que cortar la pieza verticalmente, calcular coords y
+                    # salir
                     cutPiece = (horizontalCoverDistance, verticalCoverDistance)
                     waste += (chosenPiece[0] - horizontalCoverDistance
                               ) * chosenPiece[1]
 
                     pieceCoordinateX = subFrame[0][0] + width - cutPiece[0]
                     pieceCoordinateY = subFrame[0][1]
-                    # HorizontalCoverDistance -= piezaMinimo[0] #actualizamos la distancia a cubrir
-                    pieceCoordinateZ = subFrame[0][2] + height - cutPiece[1]  # Estaba esto subFrame[0][2]
+                    # HorizontalCoverDistance -= piezaMinimo[0] #actualizamos
+                    # la distancia a cubrir
+                    # Estaba esto subFrame[0][2]
+                    pieceCoordinateZ = subFrame[0][2] + height - cutPiece[1]
                     pieceList.append(((pieceCoordinateX, pieceCoordinateY,
                                        pieceCoordinateZ), cutPiece))
-                    horizontalCoverDistance = 0  #actualizamos la distancia a cubrir
+                    horizontalCoverDistance = 0  # actualizamos la distancia a cubrir
                     verticalCoverDistance = 0
                     return pieceList, waste, waste / (width * height)
                 else:
                     # 9 pieza > dist horizontal y pieza > dist Vertical
-                    # Hay que cortar la pieza horizontalmente, calcular coords y salir
+                    # Hay que cortar la pieza horizontalmente, calcular coords
+                    # y salir
                     cutPiece = (horizontalCoverDistance, verticalCoverDistance)
                     desp = (chosenPiece[0] * chosenPiece[1]) - (
                         horizontalCoverDistance * verticalCoverDistance)
@@ -335,8 +380,10 @@ def panelize(subFrame,
 
                     pieceCoordinateX = subFrame[0][0] + width - cutPiece[0]
                     pieceCoordinateY = subFrame[0][1]
-                    # HorizontalCoverDistance -= piezaMinimo[0] #actualizamos la distancia a cubrir
-                    pieceCoordinateZ = subFrame[0][2] + height - cutPiece[1]  # Estaba esto subFrame[0][2]
+                    # HorizontalCoverDistance -= piezaMinimo[0] #actualizamos
+                    # la distancia a cubrir
+                    # Estaba esto subFrame[0][2]
+                    pieceCoordinateZ = subFrame[0][2] + height - cutPiece[1]
                     pieceList.append(((pieceCoordinateX, pieceCoordinateY,
                                        pieceCoordinateZ), cutPiece))
                     return pieceList, waste, waste / (width * height)
@@ -345,10 +392,10 @@ def panelize(subFrame,
     return pieceList, waste, waste / (width * height)
 
 
-#Vector (2900.0, 0.0, 2000.0) 1000.0 1300.0
-#subFrame=[(0,0,0),(2743,2438)] #punto inicio,largo,height,direccion
-#pieces=[(1219,2743),(2743,1219),(1219,2438),(2438,1219)] #tamano de los paneles que juega
-#pieces=[(1000,1000)]
-#s,d,p=paneliza(subFrame,pieces,1)
+# Vector (2900.0, 0.0, 2000.0) 1000.0 1300.0
+# subFrame=[(0,0,0),(2743,2438)] #punto inicio,largo,height,direccion
+# pieces=[(1219,2743),(2743,1219),(1219,2438),(2438,1219)] #tamano de los paneles que juega
+# pieces=[(1000,1000)]
+# s,d,p=paneliza(subFrame,pieces,1)
 #print ('Desperdicio ',round(p*100,3),'%')
 #print ('Desperdicio ',round(d/1e6,2),'m2')
