@@ -1,3 +1,17 @@
+
+import os, sys
+sys.path.append(os.path.dirname(__file__))
+
+from importlib import reload
+from PySide import QtGui, QtCore
+import FreeCADGui, Arch, Draft
+import funcPanelizer as fP
+
+#Reload in debug mode
+reload(fP.tools)
+reload(fP.panelize)
+reload(fP.pdfTools)
+
 __Name__ = 'Panelize Steel Frame'
 __Comment__ = ''
 __Author__ = ''
@@ -12,17 +26,6 @@ __Status__ = 'Pre-alpha'
 __Requires__ = ''
 __Communication__ = ''
 __Files__ = ''
-
-from importlib import reload
-from PySide import QtGui, QtCore
-import FreeCADGui, Arch, Draft
-import funcPanelizer as fP
-
-#Reload in debug mode
-reload(fP.tools)
-reload(fP.panelize)
-reload(fP.pdfTools)
-
 
 
 class DialogPanelizer():
@@ -256,7 +259,7 @@ class DialogPanelizer():
         waste = 0 
         area = 0
         for sR in self.rectangles:                 
-            panelizeResult=fP.panelize.paneliza([tuple(sR.vertI),(sR.Length,sR.Height)],
+            panelizeResult=fP.panelize.panelize([tuple(sR.vertI),(sR.Length,sR.Height)],
                             self.panelSizes, reusePieces, minHorSize, minVertSize)
             self.panelPieces.extend(fP.tools.convertToRectangle(panelizeResult[0]))
             waste += panelizeResult[1]
