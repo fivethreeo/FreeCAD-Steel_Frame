@@ -2,12 +2,14 @@
 
 ## Installation:
 
+```bash
 cd ~/.FreeCAD
 mkdir Macro
 wget https://github.com/fivethreeo/FreeCAD-Steel_Frame/archive/master.zip
 unzip master.zip
 mv FreeCAD-Steel_Frame-master/* .
 rm -rf FreeCAD-Steel_Frame-master
+```
 
 ## Operating Instruccions:
 
