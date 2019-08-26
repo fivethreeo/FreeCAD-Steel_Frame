@@ -11,7 +11,12 @@ mv FreeCAD-Steel_Frame-master/* .
 rm -rf FreeCAD-Steel_Frame-master
 ```
 
-## Operating Instruccions:
+## Operating Instructions:
+
+In FreeCAD 0.19+ go to Macro-->Macros 
+
+An icon Steel_Frame.svg is included in case you want to assign
+the macro to a button as it is covered in the FreeCAD documentation.
 
 To choose the steel Gauge, type any gauge you want, i.e.  10, 14 or 22 etc.. If you want
 a custom thickness, then set the gauge to 0 and proceed to change the thickness 
