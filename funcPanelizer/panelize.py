@@ -35,7 +35,8 @@ def reducePieceList(pieces, restriction):
 
 
 def choosePiece(pieces, horizontalDistance, verticalDistance):
-    # Function to find the minimum waste given the horizontal and vertical distance to cover and several pieces.
+    # Function to find the minimum waste given the horizontal and vertical
+    # distance to cover and several pieces.
     # it returns a tuple with the piece with minimum waste and the waste (Area)
 
     # Revise in both directions
@@ -76,22 +77,28 @@ def panelize(subFrame,
         while verticalCoverDistance > 0:
             # Codigo que solo se ejecuta si es la primera pieza de la columna
             if len(reuseList) == 0:
-                if firstPiece == 1:  # Podemos escoger la siguiente pieza arriba con cualquier width
+                # Podemos escoger la siguiente pieza arriba con cualquier width
+                if firstPiece == 1:
                     chosenPiece = pieces[choosePiece(pieces,
                                                      horizontalCoverDistance,
                                                      verticalCoverDistance)[0]]
                     firstPiece = 0  # Elegimos pieza
-
-                else:  # Ya hay una pieza abajo y solo podemos escoger pieces con el mismo width.
+                # Ya hay una pieza abajo y solo podemos escoger
+                # pieces con el mismo width.
+                else:
                     firstPieceWidth = pieceList[-1][1][0]
                     beforeChoicePiece = pieces[choosePiece(
                         pieces, horizontalCoverDistance,
                         verticalCoverDistance)[0]]
                     # Revisamos si la pieza pre elegida puede llenar el espacio
                     # missingDistancente
-                    if beforeChoicePiece[0] >= horizontalCoverDistance and firstPieceWidth >= horizontalCoverDistance:
-                        chosenPiece = beforeChoicePiece  # si si, tomamos esta pieza como buena
-                    else:  # La pieza pre elegida no llena el espacio y hay que limitar a pieces con el width de la que sobro
+                    if (beforeChoicePiece[0] >= horizontalCoverDistance and
+                            firstPieceWidth >= horizontalCoverDistance):
+                        # si si, tomamos esta pieza como buena
+                        chosenPiece = beforeChoicePiece
+                    # La pieza pre elegida no llena el espacio y hay
+                    # que limitar a pieces con el width de la que sobro
+                    else:
                         pieceWidth = chosenPiece[0]
                         possiblePieces = reducePieceList(pieces, pieceWidth)
                         chosenPiece = possiblePieces[choosePiece(
@@ -124,12 +131,13 @@ def panelize(subFrame,
                         waste += chosenPiece[1] * missingDistance
                         spechialPiece = (chosenPiece[0] - missingDistance,
                                          chosenPiece[1])
-
+                        # Hay ajuste en width y en height
                         if verticalCoverDistance - \
-                                chosenPiece[1] < minimumTallSide:  # Hay ajuste en width y en height
+                                chosenPiece[1] < minimumTallSide:
                             remainingDistance = verticalCoverDistance - \
                                 chosenPiece[1]
-                            missingDistance = minimumTallSide - remainingDistance
+                            missingDistance = minimumTallSide - \
+                                remainingDistance
                             # Agregamos waste por redefinicion
                             waste += spechialPiece[0] * missingDistance
                             piezaReEspecial = (
@@ -144,12 +152,15 @@ def panelize(subFrame,
                                 ((pieceCoordinateX, pieceCoordinateY,
                                   pieceCoordinateZ), spechialPiece))
                             verticalCoverDistance -= spechialPiece[1]
-                    else:  # No hay necesidad de redefinir la pieza en lo width
+                    # No hay necesidad de redefinir la pieza en lo width
+                    else:
                         if verticalCoverDistance - \
-                                chosenPiece[1] < minimumTallSide:  # pero si hay ajuste en height
+                                chosenPiece[1] < minimumTallSide:
+                            # pero si hay ajuste en height
                             remainingDistance = verticalCoverDistance - \
                                 chosenPiece[1]
-                            missingDistance = minimumTallSide - remainingDistance
+                            missingDistance = minimumTallSide - \
+                                remainingDistance
                             # agregamos waste por redefinicion
                             waste += chosenPiece[0] * missingDistance
                             spechialPiece = (chosenPiece[0],
@@ -158,7 +169,9 @@ def panelize(subFrame,
                                 ((pieceCoordinateX, pieceCoordinateY,
                                   pieceCoordinateZ), spechialPiece))
                             verticalCoverDistance -= spechialPiece[1]
-                        else:  # No hay necesidad de redefinir pieza ni en width ni height
+                        # No hay necesidad de redefinir pieza
+                        # ni en width ni height
+                        else:
                             pieceList.append(
                                 ((pieceCoordinateX, pieceCoordinateY,
                                   pieceCoordinateZ), chosenPiece))
@@ -235,7 +248,9 @@ def panelize(subFrame,
                                         chosenPiece[1] - cutPiece[1])
                         if surplusPiece[1] >= minimumSize:
                             reuseList.append(surplusPiece)
-                        else:  # La pieza no se utilizó por ser chica y por lo tanto se desperdicia
+                        # La pieza no se utilizó por ser chica #
+                        # y por lo tanto se desperdicia
+                        else:
                             waste += (
                                 chosenPiece[1] - verticalCoverDistanceBefore
                             ) * cutPiece[0]
@@ -264,7 +279,8 @@ def panelize(subFrame,
                     # Revisamos si hay que ajustar la pieza verticalmente para
                     # no generar una pieza < minima
                     if verticalCoverDistance - \
-                            chosenPiece[1] < minimumTallSide:  # pero si hay ajuste en height
+                            chosenPiece[1] < minimumTallSide:
+                        # pero si hay ajuste en height
                         remainingDistance = verticalCoverDistance - \
                             chosenPiece[1]
                         missingDistance = minimumTallSide - remainingDistance
@@ -334,7 +350,8 @@ def panelize(subFrame,
                     # Revisamos si hay que ajustar la pieza verticalmente para
                     # no generar una pieza < minima
                     if verticalCoverDistance - \
-                            chosenPiece[1] < minimumTallSide:  # Pero si hay ajuste en height
+                            chosenPiece[1] < minimumTallSide:
+                        # Pero si hay ajuste en height
                         remainingDistance = verticalCoverDistance - \
                             chosenPiece[1]
                         missingDistance = minimumTallSide - remainingDistance
@@ -366,7 +383,8 @@ def panelize(subFrame,
                     pieceCoordinateZ = subFrame[0][2] + height - cutPiece[1]
                     pieceList.append(((pieceCoordinateX, pieceCoordinateY,
                                        pieceCoordinateZ), cutPiece))
-                    horizontalCoverDistance = 0  # actualizamos la distancia a cubrir
+                    # actualizamos la distancia a cubrir
+                    horizontalCoverDistance = 0
                     verticalCoverDistance = 0
                     return pieceList, waste, waste / (width * height)
                 else:
@@ -394,8 +412,9 @@ def panelize(subFrame,
 
 # Vector (2900.0, 0.0, 2000.0) 1000.0 1300.0
 # subFrame=[(0,0,0),(2743,2438)] #punto inicio,largo,height,direccion
-# pieces=[(1219,2743),(2743,1219),(1219,2438),(2438,1219)] #tamano de los paneles que juega
+# pieces=[(1219,2743),(2743,1219),(1219,2438),(2438,1219)]
+# tamano de los paneles que juega
 # pieces=[(1000,1000)]
 # s,d,p=paneliza(subFrame,pieces,1)
-#print ('Desperdicio ',round(p*100,3),'%')
-#print ('Desperdicio ',round(d/1e6,2),'m2')
+# print ('Desperdicio ',round(p*100,3),'%')
+# print ('Desperdicio ',round(d/1e6,2),'m2')
