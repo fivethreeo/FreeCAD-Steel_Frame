@@ -62,10 +62,10 @@ def panelize(subFrame,
     # the subframe.
 
     waste = 0
-    minimumSize = 300  # Tama minimo para aceptar pieces sobrantes.
+    minimumSize = 300  # Minimum to accept surplus pieces
 
-    pieceList = []  # Tuplas de pieces a colocar ((x,y,z),largo,width,waste)
-    reuseList = []  # Aqui guardaremos las pieces de reuso.
+    pieceList = []  # Tuples of pieces to search ((x,y,z),largo,width,waste)
+    reuseList = []  # Here we store pieces for reuse 
     width = subFrame[1][0]
     height = subFrame[1][1]
 
@@ -75,29 +75,30 @@ def panelize(subFrame,
         firstPiece = 1
         verticalCoverDistance = height
         while verticalCoverDistance > 0:
-            # Codigo que solo se ejecuta si es la primera pieza de la columna
+            # Code that only runs if it is the first piece of the column
             if len(reuseList) == 0:
-                # Podemos escoger la siguiente pieza arriba con cualquier width
+                # The first piece on the bottom can be of any width
                 if firstPiece == 1:
                     chosenPiece = pieces[choosePiece(pieces,
                                                      horizontalCoverDistance,
                                                      verticalCoverDistance)[0]]
-                    firstPiece = 0  # Elegimos pieza
-                # Ya hay una pieza abajo y solo podemos escoger
-                # pieces con el mismo width.
+                    firstPiece = 0  # We have chosen the first piece
+                # There is already a piece below and we can only
+                # choose pieces with the same width
                 else:
                     firstPieceWidth = pieceList[-1][1][0]
                     beforeChoicePiece = pieces[choosePiece(
                         pieces, horizontalCoverDistance,
                         verticalCoverDistance)[0]]
-                    # Revisamos si la pieza pre elegida puede llenar el espacio
-                    # missingDistancente
+                    # We check if the pre-chosen piece can fill the
+                    # missing space
                     if (beforeChoicePiece[0] >= horizontalCoverDistance and
                             firstPieceWidth >= horizontalCoverDistance):
-                        # si si, tomamos esta pieza como buena
+                        # We accept this as a good piece
                         chosenPiece = beforeChoicePiece
-                    # La pieza pre elegida no llena el espacio y hay
-                    # que limitar a pieces con el width de la que sobro
+                    # The pre-chosen piece does not fill the space and
+                    # you have to limit pieces to the width
+                    # of the remaining space
                     else:
                         pieceWidth = chosenPiece[0]
                         possiblePieces = reducePieceList(pieces, pieceWidth)
@@ -105,14 +106,14 @@ def panelize(subFrame,
                             possiblePieces, pieceWidth,
                             verticalCoverDistance)[0]]
 
-            else:  # Tomar la pieza que sobro
+            else:  # Choose a surplus piece
                 chosenPiece = reuseList.pop()
                 firstPiece = 0
 
-            # La pieza <= que la dist horizontal
+            # piece <= than the horizontal distance
             if chosenPiece[0] < horizontalCoverDistance:
                 if chosenPiece[1] < verticalCoverDistance:
-                    # 1 Pieza < dist horizontal y pieza < dist vertical
+                    # 1. piece < horizontal dist and piece < vertical dist
                     # No hay que cortar la pieza, calculamos coordenadas y la
                     # colocamos y ajusto distancias
                     pieceCoordinateX = subFrame[0][0] + \
