@@ -109,13 +109,12 @@ def panelize(subFrame,
             else:  # Choose a surplus piece
                 chosenPiece = reuseList.pop()
                 firstPiece = 0
-
             # piece <= than the horizontal distance
             if chosenPiece[0] < horizontalCoverDistance:
                 if chosenPiece[1] < verticalCoverDistance:
                     # 1. piece < horizontal dist and piece < vertical dist
-                    # No hay que cortar la pieza, calculamos coordenadas y la
-                    # colocamos y ajusto distancias
+                    # You don't have to cut the piece. Calculate coordinates,
+                    # place it and adjust distances
                     pieceCoordinateX = subFrame[0][0] + \
                         width - horizontalCoverDistance
                     pieceCoordinateY = subFrame[0][1]
