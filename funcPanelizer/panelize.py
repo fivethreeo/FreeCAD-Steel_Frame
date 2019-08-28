@@ -120,8 +120,8 @@ def panelize(subFrame,
                     pieceCoordinateY = subFrame[0][1]
                     pieceCoordinateZ = subFrame[0][2] + \
                         height - verticalCoverDistance
-                    # Revisar que la pieza ultima en el margen derecho no sea
-                    # menor que el minimo
+                    # Check that the width of the last piece in the
+                    # right margin is not less than the minimum
                     if horizontalCoverDistance - \
                             chosenPiece[0] < minimumWideSide:
                         remainingDistance = horizontalCoverDistance - \
@@ -178,14 +178,14 @@ def panelize(subFrame,
                             verticalCoverDistance -= chosenPiece[1]
 
                 elif chosenPiece[1] == verticalCoverDistance:
-                    # 2 Pieza < dist horizontal y pieza = dist vertical
+                    # 2. piece < horizontal dist and piece = vertical dist
                     pieceCoordinateX = subFrame[0][0] + \
                         width - horizontalCoverDistance
                     pieceCoordinateY = subFrame[0][1]
                     pieceCoordinateZ = subFrame[0][2] + \
                         height - verticalCoverDistance
-                    # Revisar que la pieza ultima en el margen derecho no sea
-                    # menor que el minimo
+                    # Check that the width of the last piece in the
+                    # right margin is not less than the minimum
                     if horizontalCoverDistance - \
                             chosenPiece[0] < minimumWideSide:
                         remainingDistance = horizontalCoverDistance - \
@@ -208,9 +208,9 @@ def panelize(subFrame,
                         firstPiece = 1
 
                 else:
-                    # 3 pieza < dist horizontal y pieza > dist Vertical
-                    # Hay que cortar la pieza horizontalmente, calcular coords
-                    # e iniciar nueva columna.
+                    # 3. piece < horizontal dist and piece > vertical dist
+                    # You have to cut the piece horizontally, calculate
+                    # coords and start a new column.
                     cutPiece = (chosenPiece[0], verticalCoverDistance)
 
                     pieceCoordinateX = subFrame[0][0] + \
