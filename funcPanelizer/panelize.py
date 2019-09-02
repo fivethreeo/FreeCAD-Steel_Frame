@@ -199,12 +199,12 @@ def panelize(subFrame,
                                            pieceCoordinateZ), spechialPiece))
                         verticalCoverDistance = 0
                         horizontalCoverDistance -= spechialPiece[0]
-                    else:  # No hay necesidad de redefinir la pieza
+                    else:  # No need to redefine the piece
                         pieceList.append(((pieceCoordinateX, pieceCoordinateY,
                                            pieceCoordinateZ), chosenPiece))
                         verticalCoverDistance = 0
                         horizontalCoverDistance -= chosenPiece[
-                            0]  # Actualizamos la distancia a cubrir
+                            0]  # We update the distance to cover
                         firstPiece = 1
 
                 else:
@@ -225,7 +225,7 @@ def panelize(subFrame,
                         remainingDistance = horizontalCoverDistance - \
                             chosenPiece[0]
                         missingDistance = minimumWideSide - remainingDistance
-                        # Agregamos waste por redefinicion
+                        # We add waste by redefinition
                         waste += cutPiece[1] * missingDistance
                         spechialPiece = (cutPiece[0] - missingDistance,
                                          cutPiece[1])
@@ -234,16 +234,16 @@ def panelize(subFrame,
                         verticalCoverDistanceBefore = verticalCoverDistance
                         verticalCoverDistance = 0
                         horizontalCoverDistance -= spechialPiece[0]
-                    else:  # No hay necesidad de redefinir la pieza
+                    else:  # No need to redefine the piece
                         pieceList.append(((pieceCoordinateX, pieceCoordinateY,
                                            pieceCoordinateZ), cutPiece))
                         verticalCoverDistanceBefore = verticalCoverDistance
                         verticalCoverDistance = 0
                         horizontalCoverDistance -= cutPiece[
-                            0]  # Actualizamos la distancia a cubrir
+                            0]  # We update the distance to cover
                         firstPiece = 1
-
-                    if reuse == 1:  # Si se reutiliza la pieza que sobraría
+                    # If the piece that is left over should be reused
+                    if reuse == 1:
                         surplusPiece = (cutPiece[0],
                                         chosenPiece[1] - cutPiece[1])
                         if surplusPiece[1] >= minimumSize:
