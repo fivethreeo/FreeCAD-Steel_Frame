@@ -8,7 +8,7 @@ Created on Thu Jan 18 12:39:21 2018
 
 
 def calculateWaste(pieceLength, pieceWidth, coverDistance):
-    # Funtion to calculate the waste in terms of area given the
+    # Function to calculate the waste in terms of area given the
     # length of a piece in the direction analyzed, the perpendicular width
     # and the distance to cover, it Returns the waste in square units
 
@@ -57,8 +57,8 @@ def panelize(subFrame,
              reuse=1,
              minimumWideSide=300,
              minimumTallSide=500):
-    # Function that takes a subframe and returns a list of pieces to panelze it
-    # it returns a list of tuples (coordinates,piecex or y, piece z) to fill
+    # Function that takes a subframe and returns a list of pieces to panelize it
+    # it returns a list of tuples (coordinates, piecex or y, piece z) to fill
     # the subframe.
 
     waste = 0

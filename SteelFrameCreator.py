@@ -419,7 +419,7 @@ def cutBeams(beams):
 
 class Steel_Frame:
     def __init__(self, obj):
-        # Line not neccesary this was to try to keep the object after copying
+        # Line not neccessary this was to try to keep the object after copying
         self.Object = obj
         doc = App.ActiveDocument
         obj.Proxy = self
